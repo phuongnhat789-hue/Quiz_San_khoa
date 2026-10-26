@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Sản Khoa Quiz - 50 Ca Lâm Sàng Bài 03 (Mobile-First)</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            med: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b'
+            }
+          },
+          screens: {
+            'xs': '420px'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap');
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* Touch actions for smooth swipe without page pull-refresh bugs */
+    #swipe-area {
+      touch-action: pan-y pinch-zoom;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 h-full flex flex-col select-none transition-colors duration-200 overflow-hidden">
+
+  <!-- TOP HEADER (Gọn gàng cho cả Mobile & Desktop) -->
+  <header class="h-13 sm:h-16 shrink-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-b border-slate-200 dark:border-slate-800 z-30 px-3 sm:px-6 flex items-center justify-between shadow-xs">
+    <!-- Brand / Title -->
+    <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+      <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-teal-600 to-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs shadow-teal-500/30">
+        <i class="fa-solid fa-stethoscope text-sm sm:text-base"></i>
+      </div>
+      <div class="min-w-0">
+        <div class="flex items-center gap-1.5">
+          <span class="text-[9px] sm:text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300 uppercase tracking-wider font-mono">BÀI 03</span>
+          <h1 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">
+            Chẩn Đoán Có Thai & Tuổi Thai
+          </h1>
+        </div>
+        <p class="hidden xs:block text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">50 Ca Lâm Sàng • Ôn Thi Bác Sĩ Nội Trú</p>
+      </div>
+    </div>
+
+    <!-- Quick Action Toolset -->
+    <div class="flex items-center gap-1 sm:gap-2">
+      <!-- Progress Pill (Ẩn trên màn hình rất hẹp, hiện trên tablet/desktop) -->
+      <div class="hidden md:flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-medium border border-slate-200 dark:border-slate-700">
+        <span>Tiến độ: <strong id="progress-percent" class="text-teal-600 dark:text-teal-400">0%</strong></span>
+        <span class="text-slate-300 dark:text-slate-600">|</span>
+        <span>Đúng: <strong id="correct-ratio" class="text-emerald-600 dark:text-emerald-400 font-mono">0/50</strong></span>
+      </div>
+
+      <!-- Mode Toggle (Luyện tập / Thi thử) -->
+      <button onclick="toggleExamMode()" id="mode-btn" class="h-8 px-2 sm:px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] sm:text-xs font-semibold flex items-center gap-1 transition" title="Đổi chế độ Luyện tập / Thi thử">
+        <i class="fa-solid fa-graduation-cap text-teal-600 dark:text-teal-400"></i>
+        <span id="mode-label" class="hidden sm:inline">Luyện tập</span>
+      </button>
+
+      <!-- Bookmark Star in Header -->
+      <button onclick="toggleBookmarkCurrent()" id="header-star-btn" class="h-8 w-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:text-amber-500 transition" title="Ghi nhớ câu hiện tại">
+        <i class="fa-regular fa-star text-sm"></i>
+      </button>
+
+      <!-- Dark Mode Switch -->
+      <button onclick="toggleDarkMode()" class="h-8 w-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="Đổi giao diện Sáng / Tối">
+        <i id="theme-icon" class="fa-solid fa-moon text-xs sm:text-sm"></i>
+      </button>
+
+      <!-- Reset Progress -->
+      <button onclick="promptResetProgress()" class="h-8 w-8 rounded-lg border border-rose-200 dark:border-rose-900/40 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center justify-center transition" title="Làm lại từ đầu">
+        <i class="fa-solid fa-rotate-left text-xs"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- THIN PROGRESS BAR -->
+  <div class="h-1 bg-slate-200 dark:bg-slate-800 w-full shrink-0">
+    <div id="progress-bar" class="h-1 bg-teal-500 transition-all duration-300" style="width: 0%"></div>
+  </div>
+
+  <!-- HORIZONTALLY SCROLLABLE FILTER BAR (Tối ưu vuốt ngang trên Mobile) -->
+  <div class="shrink-0 bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 px-3 py-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+    <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider shrink-0 flex items-center gap-1 mr-1">
+      <i class="fa-solid fa-filter text-teal-600"></i> Lọc:
+    </span>
+    <button onclick="setFilter('all')" class="filter-pill shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-medium transition bg-teal-600 text-white" data-f="all">Tất cả (50)</button>
+    <button onclick="setFilter('starred')" class="filter-pill shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-medium transition bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200" data-f="starred">
+      <i class="fa-solid fa-star text-amber-500 mr-0.5"></i> Nhớ (<span id="count-starred">0</span>)
+    </button>
+    <button onclick="setFilter('wrong')" class="filter-pill shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-medium transition bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200" data-f="wrong">
+      <i class="fa-solid fa-xmark text-rose-500 mr-0.5"></i> Sai (<span id="count-wrong">0</span>)
+    </button>
+    <button onclick="setFilter('unanswered')" class="filter-pill shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-medium transition bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200" data-f="unanswered">
+      Chưa làm (<span id="count-unanswered">50</span>)
+    </button>
+    <button onclick="setFilter('ivf')" class="filter-pill shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-medium transition bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200" data-f="ivf">IVF / HRT</button>
+    <button onclick="setFilter('us')" class="filter-pill shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-medium transition bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200" data-f="us">Siêu âm CRL</button>
+    <button onclick="setFilter('level4')" class="filter-pill shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-medium transition bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200" data-f="level4">Mức 4 Vận dụng cao</button>
+  </div>
+
+  <!-- MAIN BODY: RESPONSIVE SPLIT (Desktop 2 Cột, Mobile 1 Cột cuộn trơn tru) -->
+  <main class="flex-1 min-h-0 w-full max-w-7xl mx-auto p-2 sm:p-4 grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 overflow-hidden">
+
+    <!-- CỘT CHÍNH (Mobile: Chiếm toàn bộ, Desktop: 7 hoặc 8 Cột) -->
+    <section id="swipe-area" class="md:col-span-7 lg:col-span-8 flex flex-col h-full min-h-0 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm overflow-hidden relative">
+      
+      <!-- Sub-header metadata -->
+      <div class="px-3 sm:px-5 py-2 sm:py-2.5 bg-slate-50/90 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <span id="case-badge" class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md bg-teal-600 text-white font-bold text-[11px] sm:text-xs uppercase font-mono">
+            CA 01/50
+          </span>
+          <span id="level-badge" class="px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-medium bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+            Mức 3
+          </span>
+          <span id="status-pill" class="hidden text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded"></span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Mobile matrix quick button -->
+          <button onclick="openMatrixDrawer()" class="md:hidden flex items-center gap-1 text-[11px] px-2 py-1 rounded-lg bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-800 font-semibold text-teal-700 dark:text-teal-300">
+            <i class="fa-solid fa-table-cells text-xs"></i> <span>Mục lục</span>
+          </button>
+          
+          <button onclick="toggleBookmarkCurrent()" id="panel-star-btn" class="hidden sm:flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 font-medium text-slate-500 hover:text-amber-500 transition">
+            <i id="star-icon" class="fa-regular fa-star text-amber-500"></i>
+            <span id="star-text">Ghi nhớ</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Vùng cuộn nội dung câu hỏi + phương án (Vuốt trái/phải để chuyển câu) -->
+      <div id="question-scroll-pane" class="flex-1 min-h-0 overflow-y-auto custom-scrollbar p-3.5 sm:p-5 flex flex-col gap-3 sm:gap-4 select-text">
+        
+        <!-- Tiêu đề ca -->
+        <h2 id="q-title" class="text-xs sm:text-sm md:text-base font-bold text-slate-900 dark:text-white leading-snug">
+          Đang tải dữ liệu ca bệnh...
+        </h2>
+
+        <!-- Tình huống lâm sàng đóng khung đặc trưng y khoa -->
+        <div class="p-3 sm:p-4 rounded-xl bg-amber-50/70 dark:bg-amber-950/25 border border-amber-200/60 dark:border-amber-900/40 text-slate-800 dark:text-slate-200">
+          <div class="text-[10px] font-extrabold uppercase tracking-widest text-amber-800 dark:text-amber-400 mb-1 flex items-center gap-1.5">
+            <i class="fa-solid fa-hospital-user"></i> Tình Huống Lâm Sàng
+          </div>
+          <p id="q-vignette" class="text-xs sm:text-[13px] md:text-sm leading-relaxed text-justify">
+            ...
+          </p>
+        </div>
+
+        <!-- Lệnh hỏi -->
+        <div class="bg-teal-50/50 dark:bg-teal-950/20 p-2.5 sm:p-3.5 rounded-xl border border-teal-200/50 dark:border-teal-900/40">
+          <p id="q-question" class="text-xs sm:text-sm font-bold text-teal-950 dark:text-teal-200 leading-snug">
+            ...
+          </p>
+        </div>
+
+        <!-- 4 Lựa chọn A, B, C, D (Large Tap Target >= 48px trên điện thoại) -->
+        <div id="options-container" class="flex flex-col gap-2 sm:gap-2.5 pt-0.5">
+          <!-- Render tự động -->
+        </div>
+
+        <!-- Khối Biện luận & Ghi chú thu gọn dành riêng cho màn hình Mobile (nằm ngay dưới các lựa chọn khi cuộn) -->
+        <div class="md:hidden mt-2 pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-teal-700 dark:text-teal-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-book-medical"></i> Biện Luận & Ghi Chú
+            </span>
+            <span id="mobile-note-saved" class="text-[10px] text-emerald-600 font-semibold opacity-0 transition-opacity">
+              <i class="fa-solid fa-check"></i> Đã lưu note
+            </span>
+          </div>
+
+          <!-- Mobile Explanation Container -->
+          <div id="mobile-explanation-box"></div>
+
+          <!-- Mobile Notes Area -->
+          <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-2.5 bg-slate-50 dark:bg-slate-950">
+            <label class="block text-[11px] font-medium text-slate-500 dark:text-slate-400 mb-1.5">Ghi chú cá nhân cho ca này:</label>
+            <textarea id="mobile-note-input" oninput="saveCurrentNote(this.value, 'mobile')" placeholder="Ghi lại kinh nghiệm, công thức Naegele, bẫy đo CRL..." class="w-full h-20 p-2 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-teal-500/40 resize-none font-sans"></textarea>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- DESKTOP BOTTOM CONTROL BAR (Ẩn trên mobile vì mobile đã có sticky bar bên dưới) -->
+      <div class="hidden md:flex h-12 px-4 bg-slate-50/90 dark:bg-slate-800/80 border-t border-slate-200 dark:border-slate-800 items-center justify-between shrink-0">
+        <button onclick="prevQuestion()" id="prev-btn" class="h-8 px-3 rounded-xl border border-slate-300 dark:border-slate-600 text-xs font-semibold hover:bg-white dark:hover:bg-slate-700 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-arrow-left"></i> <span>Câu trước</span>
+        </button>
+
+        <div class="text-[11px] font-medium text-slate-400">
+          Phím tắt: <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-[10px] font-mono">1-4</kbd> / <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-[10px] font-mono">← →</kbd>
+        </div>
+
+        <button onclick="nextQuestion()" id="next-btn" class="h-8 px-3.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-xs shadow-teal-600/30">
+          <span>Câu sau</span> <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- CỘT PHỤ (Chỉ hiển thị trên Desktop >= 768px: Ma trận + Biện luận & Ghi chú) -->
+    <aside class="hidden md:flex md:col-span-5 lg:col-span-4 flex-col h-full min-h-0 gap-3 overflow-hidden">
+      
+      <!-- Desktop Matrix Box -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm p-3 flex flex-col shrink-0 gap-2">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-grid-2 text-teal-600"></i> Ma Trận 50 Ca
+          </span>
+          <span id="desktop-filtered-label" class="text-[11px] text-slate-400 font-mono">50 Ca</span>
+        </div>
+
+        <div id="desktop-matrix-grid" class="grid grid-cols-10 gap-1 max-h-32 overflow-y-auto custom-scrollbar p-1 bg-slate-50 dark:bg-slate-950/60 rounded-xl border border-slate-200/80 dark:border-slate-800">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <!-- Desktop Biện luận & Ghi chú tab container -->
+      <div class="flex-1 min-h-0 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm p-3.5 flex flex-col overflow-hidden select-text">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2 mb-2.5 shrink-0">
+          <div class="flex items-center gap-3">
+            <button onclick="switchRightTab('explanation')" id="tab-btn-exp" class="text-xs font-bold pb-1 text-teal-600 dark:text-teal-400 border-b-2 border-teal-600 flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-lightbulb"></i> Biện luận
+            </button>
+            <button onclick="switchRightTab('notes')" id="tab-btn-note" class="text-xs font-bold pb-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-pen-to-square"></i> Ghi chú
+            </button>
+          </div>
+          <span id="desktop-note-indicator" class="text-[10px] text-emerald-600 font-semibold opacity-0 transition-opacity">
+            <i class="fa-solid fa-check"></i> Đã lưu
+          </span>
+        </div>
+
+        <!-- Tab 1: Biện luận -->
+        <div id="tab-pane-explanation" class="flex-1 min-h-0 overflow-y-auto custom-scrollbar pr-1">
+          <div id="desktop-explanation-box" class="space-y-2 text-xs text-slate-700 dark:text-slate-300 leading-relaxed text-justify">
+            <!-- Render dynamically -->
+          </div>
+        </div>
+
+        <!-- Tab 2: Notes -->
+        <div id="tab-pane-notes" class="flex-1 min-h-0 hidden flex-col">
+          <textarea id="desktop-note-input" oninput="saveCurrentNote(this.value, 'desktop')" placeholder="Nhập ghi chú cho ca này..." class="flex-1 w-full p-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-teal-500/40 resize-none font-sans custom-scrollbar"></textarea>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- MOBILE STICKY FLOATING BOTTOM BAR (Ghim đáy cho điện thoại - Thao tác 1 chạm) -->
+  <footer class="md:hidden shrink-0 h-13 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-t border-slate-200 dark:border-slate-800 px-3 flex items-center justify-between z-30 shadow-lg">
+    <button onclick="prevQuestion()" class="h-10 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 active:scale-95 text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5 transition">
+      <i class="fa-solid fa-chevron-left text-teal-600"></i> <span>Trước</span>
+    </button>
+
+    <!-- Button mở danh sách / ma trận dạng Bottom Sheet -->
+    <button onclick="openMatrixDrawer()" class="h-10 px-4 rounded-xl bg-teal-50 dark:bg-teal-950/70 border border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-300 active:scale-95 text-xs font-extrabold flex items-center gap-1.5 transition">
+      <i class="fa-solid fa-list-ol"></i>
+      <span id="mobile-footer-counter">1 / 50</span>
+    </button>
+
+    <button onclick="nextQuestion()" class="h-10 px-3.5 rounded-xl bg-teal-600 hover:bg-teal-700 active:scale-95 text-xs font-bold text-white flex items-center gap-1.5 transition shadow-xs shadow-teal-600/40">
+      <span>Sau</span> <i class="fa-solid fa-chevron-right text-xs"></i>
+    </button>
+  </footer>
+
+  <!-- MOBILE BOTTOM SHEET DRAWER (DANH SÁCH 50 CÂU & CHUYỂN NHANH) -->
+  <div id="matrix-drawer-backdrop" onclick="closeMatrixDrawer()" class="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-xs hidden transition-opacity"></div>
+  
+  <div id="matrix-drawer" class="fixed bottom-0 inset-x-0 z-50 bg-white dark:bg-slate-900 rounded-t-3xl border-t border-slate-200 dark:border-slate-800 shadow-2xl max-h-[82vh] flex flex-col transform translate-y-full transition-transform duration-300 ease-out">
+    <!-- Drawer Handle -->
+    <div class="py-2.5 flex items-center justify-center cursor-pointer" onclick="closeMatrixDrawer()">
+      <div class="w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+    </div>
+
+    <!-- Drawer Title & Summary -->
+    <div class="px-5 py-2 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+      <div>
+        <h3 class="text-sm font-bold text-slate-900 dark:text-white">Mục Lục 50 Ca Lâm Sàng</h3>
+        <p class="text-[11px] text-slate-500">Chạm vào số ca để chuyển câu ngay lập tức</p>
+      </div>
+      <button onclick="closeMatrixDrawer()" class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 text-xs">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <!-- Grid 50 buttons for Mobile Drawer -->
+    <div class="p-4 overflow-y-auto custom-scrollbar flex-1 min-h-0">
+      <div id="mobile-matrix-grid" class="grid grid-cols-5 xs:grid-cols-6 gap-2">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Legend Footer inside Drawer -->
+    <div class="px-4 py-2.5 bg-slate-50 dark:bg-slate-950/70 border-t border-slate-200 dark:border-slate-800 text-[10px] flex items-center justify-around text-slate-500">
+      <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-emerald-500 inline-block"></span> Đúng</div>
+      <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-rose-500 inline-block"></span> Sai</div>
+      <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-slate-200 dark:bg-slate-700 inline-block"></span> Chưa làm</div>
+      <div class="flex items-center gap-1"><i class="fa-solid fa-star text-amber-500"></i> Đã nhớ</div>
+    </div>
+  </div>
+
+  <!-- RESET CONFIRMATION MODAL -->
+  <div id="reset-modal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-sm w-full p-5 border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col gap-3">
+      <div class="w-11 h-11 rounded-full bg-rose-100 dark:bg-rose-950/60 text-rose-600 flex items-center justify-center text-lg mx-auto">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <div class="text-center">
+        <h3 class="font-bold text-slate-900 dark:text-white text-sm">Đặt lại toàn bộ bài làm?</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          Các đáp án đã chọn sẽ được xóa để bạn thi lại từ đầu. Ghi chú cá nhân của bạn vẫn được lưu giữ an toàn.
+        </p>
+      </div>
+      <div class="flex items-center gap-2 mt-2">
+        <button onclick="closeResetModal()" class="w-1/2 py-2.5 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">Hủy</button>
+        <button onclick="confirmResetProgress()" class="w-1/2 py-2.5 text-xs font-semibold rounded-xl bg-rose-600 hover:bg-rose-700 text-white transition">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENGINE LOGIC & DỮ LIỆU 50 CA SẢN KHOA BÀI 03 -->
+  <script>
+    // 50 Clinical Cases Data
+    const rawQuestions = [
+      {
+        id: 1,
+        title: "CA LÂM SÀNG 01: THAI KỲ IVF CHUYỂN PHÔI NANG NGÀY 5 VÀ XÁC ĐỊNH NGÀY DỰ SINH",
+        level: "Mức 3 - Vận dụng",
+        tags: ["ivf", "us"],
+        vignette: "Sản phụ 32 tuổi, PARA 0000, vô sinh 3 năm do tắc hai vòi tử cung, thực hiện thụ tinh trong ống nghiệm (IVF). Sản phụ được chuẩn bị niêm mạc bằng chu kỳ nội tiết nhân tạo HRT và được chuyển 01 phôi nang ngày 5 vào ngày 10/03/2026. Khám thai quý 1 vào ngày 02/06/2026: Sinh hiệu ổn định, tử cung lớn mấp mé khớp mu. Siêu âm thai đường bụng: Một thai sống trong buồng tử cung, đo CRL = 64 mm (máy siêu âm tính tương đương 12 tuần 5 ngày). Bác sĩ siêu âm in phiếu hẹn ngày dự sinh là 10/12/2026 dựa trên CRL, khiến sản phụ băn khoăn vì trung tâm IVF hẹn ngày 26/11/2026.",
+        question: "Theo nguyên tắc sản khoa chuẩn mực, ngày dự sinh chính thức được xác lập cho sản phụ này là ngày nào?",
+        options: {
+          A: "Ngày 10/12/2026 xác lập theo chiều dài đầu mông trên siêu âm.",
+          B: "Ngày 26/11/2026 xác lập theo ngày chuyển phôi nang ngày 5.",
+          C: "Ngày 03/12/2026 tính theo trung bình cộng giữa hai phương pháp.",
+          D: "Ngày 17/12/2026 xác lập khi siêu âm lại hình thái ở quý hai."
+        },
+        correct: "B",
+        explanation: "Trong thụ tinh trong ống nghiệm (IVF), thời điểm thụ tinh và tuổi phôi được biết chính xác tuyệt đối. Ngày đầu kỳ kinh cuối quy ước đối với phôi ngày 5: LMP = Ngày chuyển phôi - 19 ngày (10/03 - 19 ngày = 19/02/2026). Theo quy tắc Naegele: Ngày dự sinh = Ngày + 7, Tháng + 9 -> 26/11/2026. Ngày dự sinh tính theo ngày chuyển phôi là chuẩn vàng bất biến, không hiệu chỉnh theo siêu âm CRL. Loại trừ A vì siêu âm CRL quý 1 dù chính xác nhưng vẫn có sai số sinh học ± 5 đến 7 ngày, không thể thay thế ngày chuyển phôi IVF. Loại trừ C và D vì không có cơ sở lấy trung bình cộng hay chờ quý 2."
+      },
+      {
+        id: 2,
+        title: "CA LÂM SÀNG 02: PHÂN BIỆT TÚI THAI THẬT VÀ TÚI THAI GIẢ TRONG NGHI NGỜ THAI LẠC CHỖ",
+        level: "Mức 3 - Phân tích",
+        tags: ["us"],
+        vignette: "Bệnh nhân nữ 26 tuổi, PARA 0000, trễ kinh 5 tuần 4 ngày, tiền sử kinh nguyệt đều 28 ngày. Bệnh nhân vào viện vì ra máu âm đạo rỉ rả màu nâu đen kèm đau tức nhẹ hạ vị lệch bên phải. Khám thực thể: Sinh hiệu bình thường, ấn tức hố chậu phải, thân tử cung to hơn bình thường nhẹ. Định lượng beta-hCG huyết thanh = 1.850 mIU/mL. Siêu âm TVS: Buồng tử cung có một túi dịch nhỏ d = 6 mm nằm ở chính giữa khoang nội mạc, bao quanh bởi một đường viền tăng âm đơn độc, không có dấu màng rụng đôi (Double-decidual sign). Cạnh buồng trứng phải có khối echo hỗn hợp kích thước 18 x 14 mm.",
+        question: "Nhận định hình ảnh học chuẩn xác nhất về túi dịch quan sát thấy trong lòng tử cung là gì?",
+        options: {
+          A: "Túi thai sớm đang làm tổ bình thường nhưng chưa có phôi.",
+          B: "Túi thai giả do dịch tụ trong buồng tử cung ở thai ngoài.",
+          C: "Hình ảnh túi thai bị bóc tách dọa sẩy ở giai đoạn rất sớm.",
+          D: "Túi thai trống đã ngừng phát triển cần can thiệp nạo buồng."
+        },
+        correct: "B",
+        explanation: "Túi thai thật trên siêu âm thường nằm lệch tâm dưới lớp nội mạc và có dấu hiệu màng rụng đôi (double-decidual sign) gồm 2 lớp phản âm dày. Túi thai giả (pseudo-gestational sac) nằm ở chính giữa khoang nội mạc, chỉ có một lớp viền màng rụng đơn độc, bên trong chứa dịch máu, hay gặp trong thai lạc chỗ. Kết hợp beta-hCG 1.850 mIU/mL và khối cạnh tử cung phải, đây là túi thai giả của thai lạc chỗ. Loại trừ A, C, D vì hình ảnh túi dịch trung tâm không có màng rụng đôi không thể là thai trong tử cung bình thường hay dọa sẩy."
+      },
+      {
+        id: 3,
+        title: "CA LÂM SÀNG 03: HIỆU CHỈNH QUY TẮC NAEGELE Ở PHỤ NỮ CÓ CHU KỲ KINH DÀI 35 NGÀY",
+        level: "Mức 4 - Phân tích & Đánh giá",
+        tags: ["level4"],
+        vignette: "Sản phụ 27 tuổi, con so, chu kỳ kinh nguyệt rất đều nhưng kéo dài 35 ngày. Ngày đầu của kỳ kinh cuối cùng là ngày 01/01/2026. Bác sĩ tuyến dưới tính ngày dự sinh theo quy tắc Naegele cổ điển là 08/10/2026. Đến tuần thứ 8 tính theo ngày kinh, siêu âm đo CRL = 14 mm (tương đương 7 tuần 5 ngày). Bác sĩ tuyến dưới chẩn đoán thai có dấu hiệu chậm tăng trưởng so với ngày kinh (lệch gần 1 tuần).",
+        question: "Nhận định y khoa nào giải thích đúng đắn nhất về tình trạng tuổi thai của sản phụ?",
+        options: {
+          A: "Thai chậm tăng trưởng sớm do suy giảm chức năng nội tiết của hoàng thể thai kỳ.",
+          B: "Thai phát triển hoàn toàn bình thường sau khi hiệu chỉnh ngày rụng trứng.",
+          C: "Thai có nguy cơ cao bị ngừng tiến triển trong buồng tử cung cần xét nghiệm lại.",
+          D: "Phép đo siêu âm sai số nghiêm trọng do tư thế giải phẫu tử cung gập sau."
+        },
+        correct: "B",
+        explanation: "Pha hoàng thể luôn cố định 14 ngày. Với chu kỳ 35 ngày, thời điểm rụng trứng là ngày thứ 21 (muộn hơn 7 ngày so với chu kỳ chuẩn 28 ngày). Quy tắc Naegele hiệu chỉnh: Ngày dự sinh chuẩn + 7 ngày = 08/10 + 7 ngày = 15/10/2026. Tuổi thai thực tế tại thời điểm khám là 7 tuần 5 ngày, hoàn toàn trùng khớp với CRL = 14 mm. Thai phát triển hoàn toàn bình thường. Loại trừ A, C, D vì chẩn đoán chậm phát triển là sai lầm do không hiệu chỉnh ngày rụng trứng ở chu kỳ dài."
+      },
+      {
+        id: 4,
+        title: "CA LÂM SÀNG 04: HIỆU CHỈNH NGÀY DỰ SINH QUÝ 1 KHI CHÊNH LỆCH VƯỢT NGƯỠNG 7 NGÀY",
+        level: "Mức 3 - Vận dụng",
+        tags: ["us"],
+        vignette: "Sản phụ 25 tuổi, con so, nhớ rõ ngày kinh cuối là 05/01/2026 (chu kỳ đều 28 ngày). Ngày dự sinh tính theo Naegele là 12/10/2026. Khám thai vào ngày 30/03/2026, tính theo ngày kinh tuổi thai là 12 tuần 0 ngày (84 ngày). Siêu âm đường bụng đúng chuẩn ISUOG: 01 thai sống, đo CRL = 72 mm, tương đương tuổi thai 13 tuần 2 ngày (93 ngày), ngày dự sinh theo siêu âm là 03/10/2026 (chênh lệch 9 ngày so với ngày kinh).",
+        question: "Theo hướng dẫn thực hành của ACOG, quyết định xác lập ngày dự sinh chính thức là gì?",
+        options: {
+          A: "Giữ nguyên ngày dự sinh theo ngày kinh là ngày 12/10/2026.",
+          B: "Đổi ngày dự sinh chính thức sang ngày 03/10/2026 theo siêu âm.",
+          C: "Lấy trung bình cộng hai mốc ngày dự sinh là ngày 07/10/2026.",
+          D: "Chờ siêu âm đo đường kính lưỡng đỉnh ở tuần 16 quyết định."
+        },
+        correct: "B",
+        explanation: "Theo Bảng 3.1 của ACOG: Ở tuổi thai từ 9 tuần 0 ngày đến 13 tuần 6 ngày, nếu độ chênh lệch giữa tuổi thai theo siêu âm và ngày kinh > 7 ngày thì bắt buộc phải hiệu chỉnh ngày dự sinh theo siêu âm. Ở đây độ lệch là 9 ngày (> 7 ngày), do đó đổi ngày dự sinh chính thức theo siêu âm sang ngày 03/10/2026. Loại trừ A vì độ lệch vượt ngưỡng cho phép. Loại trừ C và D vì không có khuyến cáo lấy trung bình cộng hoặc trì hoãn."
+      },
+      {
+        id: 5,
+        title: "CA LÂM SÀNG 05: TIÊU CHUẨN SIÊU ÂM CHẨN ĐOÁN THẤT BẠI THAI KỲ SỚM DẠNG TÚI THAI TRỐNG",
+        level: "Mức 3 - Phân tích",
+        tags: ["us"],
+        vignette: "Sản phụ 30 tuổi, PARA 1001, đến khám vì trễ kinh 3 tuần kèm ra ít dịch nhầy nâu ở âm đạo. Khám lâm sàng: Thân tử cung mềm, kích thước tương đương thai 6-7 tuần, cổ tử cung đóng kín, không đau hạ vị. Siêu âm qua đầu dò âm đạo (TVS) được thực hiện cẩn thận: Quan sát thấy một túi thai bờ tròn đều trong buồng tử cung, đo đường kính túi thai trung bình MSD = 27 mm. Hoàn toàn không quan sát thấy túi noãn hoàng và không thấy âm vang phôi thai.",
+        question: "Dựa trên tiêu chuẩn siêu âm chuẩn quốc tế, kết luận chẩn đoán xác định phù hợp nhất là gì?",
+        options: {
+          A: "Dọa sẩy thai sớm, cần kê đơn thuốc nội tiết dưỡng thai.",
+          B: "Thai ngừng tiến triển trong buồng tử cung dạng túi thai trống.",
+          C: "Thai chưa xác định vị trí, cần làm thêm xét nghiệm beta-hCG.",
+          D: "Thai trong tử cung bình thường nhưng phát triển chậm hơn tuổi."
+        },
+        correct: "B",
+        explanation: "Tiêu chuẩn vàng của ACOG và Hội đồng Siêu âm Sản phụ khoa quốc tế chẩn đoán chắc chắn thất bại thai kỳ sớm (Early Pregnancy Loss) bao gồm: Đường kính túi thai trung bình (MSD) >= 25 mm qua đầu dò âm đạo mà không có phôi thai (túi thai trống/trứng trống). Trường hợp này MSD = 27 mm và không có phôi thai, đủ tiêu chuẩn chẩn đoán xác định mà không cần theo dõi thêm. Loại trừ A và D vì chẩn đoán dọa sẩy hay thai bình thường là sai lầm nghiêm trọng. Loại trừ C vì túi thai đã nằm rõ trong lòng tử cung."
+      },
+      {
+        id: 6,
+        title: "CA LÂM SÀNG 06: XÁC ĐỊNH TUỔI THAI VÀ NGÀY DỰ SINH TRONG SONG THAI TỰ NHIÊN",
+        level: "Mức 3 - Vận dụng",
+        tags: ["us"],
+        vignette: "Sản phụ 28 tuổi, mang thai tự nhiên lần 2 (PARA 1001), kinh nguyệt không đều (chu kỳ dao động từ 32 đến 45 ngày), không nhớ kỳ kinh cuối. Khám thực thể: Tử cung lớn hơn bình thường, đáy tử cung vượt trên bờ trên khớp vệ khoảng 4 cm. Siêu âm quý 1 qua ngả âm đạo ghi nhận trong buồng tử cung có hai thai sống đang phát triển: Thai A đo được CRL = 58 mm (tương đương 12 tuần 2 ngày); Thai B đo được CRL = 50 mm (tương đương 11 tuần 5 ngày). Hai thai có hoạt động tim thai tốt, hai bánh nhau riêng biệt.",
+        question: "Theo đồng thuận quốc tế ISUOG và ACOG, ngày dự sinh của thai kỳ song thai này được xác lập dựa vào đâu?",
+        options: {
+          A: "Dựa vào số đo chiều dài đầu mông (CRL) của thai có kích thước lớn hơn.",
+          B: "Dựa vào số đo chiều dài đầu mông (CRL) của thai có kích thước nhỏ hơn.",
+          C: "Dựa vào trung bình cộng chiều dài đầu mông (CRL) của cả hai thai nhi.",
+          D: "Trì hoãn xác định ngày dự sinh và chờ đo chu vi vòng đầu ở tuần 20."
+        },
+        correct: "A",
+        explanation: "Theo khuyến cáo của ISUOG và ACOG: Trong song thai tự nhiên, khi có sự chênh lệch kích thước giữa hai thai trong quý 1, tuổi thai và ngày dự sinh phải được tính toán dựa trên số đo của thai nhi lớn hơn (thai có CRL lớn hơn). Thai lớn hơn phản ánh đúng nhất tiềm năng tăng trưởng sinh lý bình thường từ ngày thụ thai; thai nhỏ hơn có thể bắt đầu chậm tăng trưởng sớm. Loại trừ B, C, D vì không lấy theo thai nhỏ, không lấy trung bình cộng và không chờ đến quý 2."
+      },
+      {
+        id: 7,
+        title: "CA LÂM SÀNG 07: NHẬN DIỆN DẤU HIỆU LAMBDA TRÊN SIÊU ÂM SONG THAI VÀ TIÊN LƯỢNG NGUY CƠ",
+        level: "Mức 3 - Phân tích",
+        tags: ["us"],
+        vignette: "Sản phụ 29 tuổi, mang song thai tự nhiên 12 tuần. Đi siêu âm khảo sát màng đệm và màng ối. Hình ảnh siêu âm cho thấy hai thai nằm trong hai buồng ối riêng biệt. Tại vị trí màng ngăn cách buồng ối bám vào bánh nhau, bác sĩ quan sát thấy một vùng mô nhau hình chêm chui vào giữa hai lá màng ối tạo thành dấu hiệu Lambda (Twin-peak sign). Quan sát thấy hai vị trí bánh nhau riêng biệt ở thành trước và thành sau tử cung.",
+        question: "Nhận định nào sau đây về cấu trúc phần phụ và tiên lượng biến chứng thai kỳ là chính xác nhất?",
+        options: {
+          A: "Song thai một bánh nhau hai buồng ối, có nguy cơ cao bị truyền máu song thai.",
+          B: "Song thai hai bánh nhau hai buồng ối, không có nguy cơ bị truyền máu song thai.",
+          C: "Song thai một bánh nhau một buồng ối, có nguy cơ bị xoắn dây rốn vào nhau.",
+          D: "Song thai dính nhau thể ngực - bụng, cần phải chỉ định chụp cộng hưởng từ."
+        },
+        correct: "B",
+        explanation: "Sự hiện diện của dấu hiệu Lambda (Twin-peak sign) tại chân màng ối khẳng định chắc chắn 100% đây là song thai hai bánh nhau - hai buồng ối (Dichorionic - Diamniotic). Hội chứng truyền máu song thai (TTTS) chỉ xảy ra khi có sự thông nối mạch máu trên bánh nhau dùng chung ở song thai một bánh nhau (Monochorionic). Thai kỳ 2 nhau riêng biệt không có nguy cơ mắc TTTS. Loại trừ A vì nhầm với dấu hiệu chữ T (T-sign). Loại trừ C và D vì màng ngăn rõ, không phải 1 ối hay dính nhau."
+      },
+      {
+        id: 8,
+        title: "CA LÂM SÀNG 08: DẤU HIỆU LÂM SÀNG SỚM CỦA TỬ CUNG: DẤU HIỆU NOBLE VÀ DẤU HIỆU HEGAR",
+        level: "Mức 3 - Phân tích",
+        tags: [],
+        vignette: "Phụ nữ 29 tuổi, PARA 0000, trễ kinh 7 tuần, có triệu chứng buồn nôn vào buổi sáng và mệt mỏi nhiều. Bệnh nhân đi khám phụ khoa. Đặt mỏ vịt: Niêm mạc âm hộ, âm đạo có màu tím thẫm, cổ tử cung mềm mại, lỗ ngoài đóng kín. Khám bằng hai tay kết hợp thành bụng và âm đạo: Thân tử cung to tròn bằng quả cam, mật độ mềm đều; hai túi cùng bên đầy do bờ dưới đáy tử cung phát triển bè ngang. Đoạn eo tử cung mềm nhũn đến mức hai ngón tay thăm khám trong âm đạo và bàn tay trên thành bụng có cảm giác chạm sát vào nhau.",
+        question: "Các triệu chứng thực thể khám được ở sản phụ này tương ứng với những dấu hiệu kinh điển nào?",
+        options: {
+          A: "Dấu hiệu Noble, dấu hiệu Hegar và dấu hiệu Jacquemier.",
+          B: "Dấu hiệu Bandl, dấu hiệu Frommel và dấu hiệu Stallworthy.",
+          C: "Dấu hiệu Budin, dấu hiệu Tarnier và dấu hiệu Couvelaire.",
+          D: "Dấu hiệu Chadwick, dấu hiệu Piskacek và dấu hiệu Braxton Hicks."
+        },
+        correct: "A",
+        explanation: "Dấu hiệu Noble: Tử cung to tròn làm đầy các túi cùng bên âm đạo. Dấu hiệu Hegar: Đoạn eo tử cung mềm nhũn trong quý 1 khiến có cảm giác thân và cổ tử cung tách rời nhau. Dấu hiệu Jacquemier (Chadwick): Niêm mạc âm hộ, âm đạo sung huyết tím sẫm do tác động tăng tưới máu của Estrogen. Loại trừ B vì Bandl - Frommel là dọa vỡ tử cung; Stallworthy là nhau tiền đạo. Loại trừ C vì Couvelaire là nhau bong non. Loại trừ D vì Piskacek là gồ góc sừng."
+      },
+      {
+        id: 9,
+        title: "CA LÂM SÀNG 09: CƠ CHẾ SINH BỆNH CỦA DẤU HIỆU JACQUEMIER / CHADWICK TRONG THAI KỲ SỚM",
+        level: "Mức 3 - Phân tích cơ chế",
+        tags: [],
+        vignette: "Sản phụ 22 tuổi, mang thai con so 8 tuần. Khám phụ khoa định kỳ ghi nhận niêm mạc tiền đình âm hộ, thành âm đạo và phần ngoài cổ tử cung chuyển từ màu hồng nhạt sang màu đỏ tím sẫm (tím hoa cà), mô âm đạo mềm mại và tiết nhiều chất dịch nhầy trắng đục sinh lý, không hôi, không ngứa, pH âm đạo axit (3.8 - 4.2).",
+        question: "Cơ chế sinh lý học trực tiếp dẫn đến hiện tượng biến đổi màu sắc niêm mạc âm đạo (dấu hiệu Jacquemier) là gì?",
+        options: {
+          A: "Do nồng độ Progesterone giảm thấp làm giãn các tiểu động mạch niêm mạc.",
+          B: "Do Estrogen làm tăng sinh mạch máu và sung huyết tuần hoàn tĩnh mạch vùng chậu.",
+          C: "Do vi khuẩn yếm khí phát triển mạnh gây viêm sung huyết bề mặt biểu mô.",
+          D: "Do lắng đọng sắc tố Melanin dưới tác dụng của hormone vỏ thượng thận mẹ."
+        },
+        correct: "B",
+        explanation: "Dấu hiệu Jacquemier (hay Chadwick): Niêm mạc âm hộ, âm đạo và cổ tử cung chuyển sang màu tím thẫm do tác dụng của nồng độ cao Estrogen gây tăng sinh hệ thống mạch máu, giãn mạch và ứ trệ tuần hoàn tĩnh mạch cục bộ ở vùng tiểu khung. Loại trừ A vì Progesterone tăng cao chứ không giảm. Loại trừ C vì đây là biến đổi sinh lý, không có nhiễm khuẩn. Loại trừ D vì melanin chỉ tăng ở da chứ không ở niêm mạc âm đạo."
+      },
+      {
+        id: 10,
+        title: "CA LÂM SÀNG 10: CHẨN ĐOÁN PHÂN BIỆT DẤU HIỆU HEGAR VỚI KHỐI U VÙNG TIỂU KHUNG",
+        level: "Mức 4 - Đánh giá & Chẩn đoán phân biệt",
+        tags: ["level4"],
+        vignette: "Bệnh nhân 31 tuổi, trễ kinh 6 tuần, thử que 2 vạch. Bác sĩ khám lâm sàng nhận thấy eo tử cung mềm nhũn rõ rệt (dấu hiệu Hegar). Cảm giác thân tử cung to mềm nằm gập trước, trong khi cổ tử cung chắc nằm tách biệt bên dưới. Bác sĩ thiếu kinh nghiệm nghi ngờ bệnh nhân có một khối u buồng trứng hoặc u xơ tử cung có cuống nằm đè lên tử cung.",
+        question: "Cạm bẫy lâm sàng kinh điển nhất khi phát hiện dấu hiệu Hegar rất rõ là gì?",
+        options: {
+          A: "Dễ nhầm thân tử cung có thai thành khối u xơ có cuống hoặc u buồng trứng.",
+          B: "Dễ nhầm cổ tử cung mềm thành tình trạng hở eo tử cung bệnh lý bẩm sinh của mẹ.",
+          C: "Dễ bỏ sót biến chứng vỡ vòi tử cung trong thể thai ngoài tử cung tràn ngập ổ bụng.",
+          D: "Dễ chẩn đoán nhầm thai trứng toàn phần thành hiện tượng sẩy thai tự nhiên hoàn toàn."
+        },
+        correct: "A",
+        explanation: "Khi eo tử cung mềm quá mức (dấu hiệu Hegar), bác sĩ khám lâm sàng rất dễ lầm tưởng cổ tử cung là một tử cung nhỏ độc lập, còn phần thân tử cung mang thai to mềm bên trên lại bị chẩn đoán nhầm là một khối u xơ dưới thanh mạc có cuống hoặc khối u nang buồng trứng nằm sát cạnh tử cung. Loại trừ B, C, D vì không phản ánh đúng cạm bẫy khám thực thể thân và cổ tử cung qua dấu hiệu Hegar."
+      },
+      {
+        id: 11,
+        title: "CA LÂM SÀNG 11: HIỆU CHỈNH QUY TẮC NAEGELE Ở PHỤ NỮ CÓ CHU KỲ KINH NGẮN 21 NGÀY",
+        level: "Mức 3 - Vận dụng",
+        tags: [],
+        vignette: "Sản phụ 26 tuổi, con so, tiền sử kinh nguyệt rất đều đặn nhưng chu kỳ ngắn chỉ 21 ngày. Ngày đầu của kỳ kinh cuối cùng là ngày 10/02/2026. Nếu tính ngày dự sinh theo quy tắc Naegele thông thường (ngày + 7, tháng - 3) sẽ cho ra ngày 17/11/2026.",
+        question: "Dựa trên nguyên lý pha hoàng thể cố định 14 ngày, ngày rụng trứng và ngày dự sinh Naegele hiệu chỉnh đúng là gì?",
+        options: {
+          A: "Rụng trứng ngày thứ 7 của chu kỳ, ngày dự sinh hiệu chỉnh là 10/11/2026.",
+          B: "Rụng trứng ngày thứ 14 của chu kỳ, ngày dự sinh hiệu chỉnh là 17/11/2026.",
+          C: "Rụng trứng ngày thứ 10 của chu kỳ, ngày dự sinh hiệu chỉnh là 13/11/2026.",
+          D: "Rụng trứng ngày thứ 5 của chu kỳ, ngày dự sinh hiệu chỉnh là 08/11/2026."
+        },
+        correct: "A",
+        explanation: "Pha hoàng thể luôn cố định 14 ngày. Với chu kỳ 21 ngày, thời điểm rụng trứng xảy ra vào: 21 - 14 = ngày thứ 7 của chu kỳ (sớm hơn 7 ngày so với chu kỳ chuẩn ngày 14). Do đó, ngày dự sinh Naegele hiệu chỉnh phải trừ đi 7 ngày so với ngày dự sinh kinh điển: 17/11 - 7 ngày = 10/11/2026. Loại trừ B vì lấy chu kỳ 28 ngày chuẩn. Loại trừ C và D vì tính sai ngày rụng trứng."
+      },
+      {
+        id: 12,
+        title: "CA LÂM SÀNG 12: ĐỘNG HỌC BETA-HCG TRONG THAI NGHÉN CHƯA XÁC ĐỊNH VỊ TRÍ (PUL)",
+        level: "Mức 3 - Phân tích",
+        tags: ["us"],
+        vignette: "Bệnh nhân nữ 24 tuổi, chậm kinh 5 ngày, thử que 2 vạch mờ, xuất hiện ra máu âm đạo ít màu nâu sẫm, không đau bụng. Khám phụ khoa: Tử cung kích thước bình thường, hai phần phụ mềm. Xét nghiệm ban đầu: beta-hCG = 420 mIU/mL. Siêu âm TVS: Nội mạc tử cung dày 11 mm, không thấy túi thai trong và ngoài tử cung, túi cùng sau không có dịch. Bệnh nhân được hẹn xét nghiệm lại beta-hCG sau 48 giờ, kết quả là 510 mIU/mL (mức tăng 21%).",
+        question: "Dựa trên động học beta-hCG tăng 21% sau 48 giờ, nhận định lâm sàng nào sau đây là chính xác nhất?",
+        options: {
+          A: "Đây là động học bình thường của thai trong buồng tử cung phát triển khỏe mạnh.",
+          B: "Đây là động học bất thường, cảnh báo thai ngừng phát triển hoặc thai lạc chỗ.",
+          C: "Mức tăng này đủ tiêu chuẩn khẳng định bệnh nhân bị bệnh nguyên bào nuôi ác tính.",
+          D: "Nồng độ beta-hCG tăng chậm chứng tỏ bệnh nhân đang mang song thai khác trứng."
+        },
+        correct: "B",
+        explanation: "Trong thai kỳ bình thường giai đoạn sớm, beta-hCG tăng ít nhất 53 - 66% sau 48 giờ. Mức tăng chỉ 21% là bất thường, gợi ý thai ngừng phát triển sớm hoặc thai ngoài tử cung. Loại trừ A vì thai sống bình thường phải tăng > 53%. Loại trừ C vì thai trứng có nồng độ beta-hCG tăng vọt rất cao. Loại trừ D vì song thai thường có beta-hCG tăng cao hơn đơn thai."
+      },
+      {
+        id: 13,
+        title: "CA LÂM SÀNG 13: ĐO CRL VƯỢT NGƯỠNG 84 MM VÀ CHUYỂN ĐỔI THÔNG SỐ SINH TRẮC HỌC",
+        level: "Mức 3 - Vận dụng",
+        tags: ["us"],
+        vignette: "Sản phụ 34 tuổi, con rạ (PARA 1001), không nhớ chính xác ngày kinh cuối do cho con bú và có kinh lại không đều. Sản phụ đi siêu âm lần đầu tiên. Bác sĩ siêu âm khảo sát thai nhi thấy cử động tốt, tim thai đều 155 lần/phút. Thực hiện đo chiều dài đầu mông trên mặt cắt dọc giữa chuẩn, kết quả đo được CRL = 88 mm (vượt ngưỡng 84 mm).",
+        question: "Khi chiều dài đầu mông CRL vượt quá 84 mm (tương đương thai > 14 tuần), khuyến cáo của ISUOG về đo đạc tuổi thai là gì?",
+        options: {
+          A: "Tiếp tục sử dụng thông số CRL vì vẫn có độ tin cậy vượt trội so với các chỉ số khác.",
+          B: "Chuyển sang đo chu vi đầu (HC) hoặc đường kính lưỡng đỉnh (BPD) để tính tuổi thai.",
+          C: "Chỉ sử dụng duy nhất số đo chiều dài xương đùi (FL) để xác lập ngày sinh dự đoán.",
+          D: "Ngưng đo sinh trắc học và chờ đến khi thai đủ 20 tuần để siêu âm hình thái học."
+        },
+        correct: "B",
+        explanation: "Theo hướng dẫn thực hành của ISUOG và Bảng 3.1: Chiều dài đầu mông (CRL) chỉ có giá trị tối ưu khi CRL từ 10 mm đến 84 mm (7 tuần 0 ngày đến 13 tuần 6 ngày). Khi CRL > 84 mm (bắt đầu từ 14 tuần), thai nhi uốn cong làm CRL không còn chính xác, bắt buộc chuyển sang sử dụng chu vi đầu (HC) hoặc đường kính lưỡng đỉnh (BPD). Loại trừ A vì thai uốn cong gây sai số lớn. Loại trừ C và D vì FL dao động sinh học cao hơn HC/BPD và không nên trì hoãn."
+      },
+      {
+        id: 14,
+        title: "CA LÂM SÀNG 14: SAI SỐ ĐO CRL DO THAI NHI Ở TƯ THẾ GẬP CẰM VÀO NGỰC",
+        level: "Mức 4 - Phân tích & Đánh giá",
+        tags: ["us", "level4"],
+        vignette: "Bác sĩ nội trú thực hiện siêu âm thai quý 1 cho sản phụ 26 tuổi, thai khoảng 12 tuần theo kinh cuối. Trên màn hình siêu âm, phôi thai nằm rất gập cong, cằm gập sát vào vùng xương ức, không quan sát thấy khoang ối ngăn giữa cằm và ngực. Bác sĩ đặt con trỏ đo từ đỉnh đầu đến chỏm mông thu được kết quả CRL = 48 mm (tương đương 11 tuần 4 ngày). Bác sĩ giám sát yêu cầu kiên nhẫn đợi thai cử động hoặc bảo thai phụ ho nhẹ để thai chuyển sang tư thế trung tính rồi đo lại, kết quả đo mới đạt CRL = 55 mm (tương đương 12 tuần 1 ngày).",
+        question: "Hậu quả lâm sàng trực tiếp nếu bác sĩ sử dụng số đo CRL khi thai đang ở tư thế gập quá mức là gì?",
+        options: {
+          A: "Đoản đoạn chiều dài phôi làm tính tuổi thai non hơn tuổi thực tế sinh lý.",
+          B: "Kéo dài giả tạo chiều dài phôi làm tính tuổi thai già hơn tuổi thực tế sinh lý.",
+          C: "Làm tăng giả tạo số đo khoảng mờ da gáy khi làm xét nghiệm sàng lọc dị tật.",
+          D: "Gây mất hoàn toàn tín hiệu Doppler của dòng máu chảy qua ống tĩnh mạch thai."
+        },
+        correct: "A",
+        explanation: "Khi thai gập cằm vào ngực, trục đầu - mông bị rút ngắn cơ học, dẫn đến số đo CRL bị nhỏ đi (48 mm thay vì 55 mm), hậu quả là tính tuổi thai non hơn thực tế, làm ngày dự sinh bị lùi muộn lại và sai lệch toàn bộ lịch khám thai sau này. Loại trừ B vì gập cằm làm ngắn chứ không kéo dài. Loại trừ C và D vì không liên quan trực tiếp đến cơ chế rút ngắn trục xương sống."
+      },
+      {
+        id: 15,
+        title: "CA LÂM SÀNG 15: SAI SỐ ĐO CRL DO THAI NHI Ở TƯ THẾ ƯỠN NGỬA QUÁ MỨC",
+        level: "Mức 4 - Phân tích cơ chế",
+        tags: ["us", "level4"],
+        vignette: "Trong một buổi siêu âm sàng lọc quý 1 lúc thai 12 tuần, thai nhi nằm ở tư thế ưỡn cột sống tối đa, đầu ngửa ra sau làm góc giữa cằm và ngực mở rộng, khoang ối vùng trước ngực rất rộng. Bác sĩ đo chiều dài từ đỉnh đầu đến chỏm mông thu được kết quả CRL = 65 mm (tương đương 12 tuần 6 ngày). Sau 10 phút thai trở về tư thế trung tính chuẩn mực, đo lại CRL chỉ còn 58 mm (tương đương 12 tuần 2 ngày).",
+        question: "Nhận định nào sau đây giải thích đúng nhất cơ chế sai số khi đo CRL ở tư thế thai ưỡn ngửa?",
+        options: {
+          A: "Tư thế ưỡn ngửa làm kéo dài giả tạo trục đầu mông khiến tính tuổi thai già hơn.",
+          B: "Tư thế ưỡn ngửa làm ép dẹp hộp sọ thai nhi khiến tính tuổi thai non hơn thực tế.",
+          C: "Tư thế ưỡn ngửa làm biến dạng túi noãn hoàng gây cản trở chùm tia siêu âm.",
+          D: "Tư thế ưỡn ngửa làm tăng áp lực trong buồng ối dẫn đến sai số phần mềm máy."
+        },
+        correct: "A",
+        explanation: "Khi thai ưỡn ngửa cột sống ra sau, khoảng cách đường thẳng giữa cực đầu và cực mông bị kéo dài ra so với tư thế trung tính sinh lý, khiến kết quả đo CRL lớn hơn thực tế (65 mm thay vì 58 mm), dẫn đến tính tuổi thai bị già hơn tuổi thực tế sinh lý. Loại trừ B vì làm già hơn chứ không non hơn. Loại trừ C và D vì không liên quan đến túi noãn hoàng hay áp lực buồng ối."
+      },
+      {
+        id: 16,
+        title: "CA LÂM SÀNG 16: HIỆU CHỈNH NGÀY DỰ SINH THEO ACOG Ở PHỤ NỮ KHÁM THAI MUỘN TUẦN 18",
+        level: "Mức 3 - Vận dụng",
+        tags: ["us"],
+        vignette: "Sản phụ 22 tuổi, khám thai lần đầu tiên ở quý 2. Sản phụ nhớ mang máng ngày kinh khoảng hơn 4 tháng trước, tính theo ngày kinh ước lượng là 18 tuần 2 ngày (ngày dự sinh là 20/09/2026). Khám sản khoa: Bề cao tử cung đo được 16 cm. Siêu âm 2D khảo sát sinh trắc học thai: BPD = 44 mm, HC = 162 mm, FL = 28 mm, máy siêu âm tính tuổi thai trung bình là 19 tuần 5 ngày (ngày dự sinh theo siêu âm là 09/09/2026, lệch 11 ngày so với ngày kinh).",
+        question: "Theo Bảng 3.1 của ACOG, quyết định lâm sàng chuẩn xác nhất đối với hồ sơ quản lý thai của sản phụ này là gì?",
+        options: {
+          A: "Giữ nguyên ngày dự sinh theo ngày kinh ước lượng ban đầu của sản phụ.",
+          B: "Đổi ngày dự sinh sang ngày 09/09/2026 và cố định mốc này suốt thai kỳ.",
+          C: "Hẹn khám lại ở tuần thứ hai mươi tám để siêu âm lại rồi mới quyết định.",
+          D: "Lấy trung bình cộng giữa ngày dự sinh theo kinh và ngày dự sinh siêu âm."
+        },
+        correct: "B",
+        explanation: "Theo Bảng 3.1 của ACOG: Ở tuổi thai từ 16 tuần 0 ngày đến 21 tuần 6 ngày, ngưỡng chênh lệch để hiệu chỉnh ngày dự sinh là > 10 ngày. Ở đây ngày kinh không chắc chắn và độ lệch là 11 ngày (> 10 ngày), do đó đổi ngày dự sinh chính thức theo siêu âm sang 09/09/2026 và cố định mốc này suốt thai kỳ. Loại trừ A, C, D vì vi phạm nguyên tắc của ACOG/ISUOG."
+      },
+      {
+        id: 17,
+        title: "CA LÂM SÀNG 17: BIẾN ĐỔI TUYẾN VÚ SỚM: HẠT MONTGOMERY VÀ HIỆN TƯỢNG TIẾT SỮA NON",
+        level: "Mức 3 - Phân tích",
+        tags: [],
+        vignette: "Sản phụ 23 tuổi, con so (PARA 0000), trễ kinh 8 tuần. Sản phụ đến khám vì lo lắng thấy hai vú cương to nhanh, quầng vú sẫm màu, xuất hiện các nốt sần nhỏ nổi gồ xung quanh quầng vú và các tĩnh mạch dưới da nổi rõ. Đặc biệt, ở tuần thứ 12, sản phụ thấy nặn nhẹ núm vú có tiết một ít giọt dịch sánh màu vàng nhạt, không đau, không sốt.",
+        question: "Các hạt sần nổi gồ quanh quầng vú và chất dịch màu vàng nhạt xuất hiện sớm ở tuần 12 được gọi tên chính xác là gì?",
+        options: {
+          A: "Hạt Montgomery và hiện tượng tiết sữa non sinh lý.",
+          B: "Nang bã nhờn bội nhiễm và dịch viêm tuyến vú cấp tính.",
+          C: "U nhú nội ống tuyến vú và dịch tiết máu bệnh lý.",
+          D: "Tổ chức tuyến Montgomery và dịch ứ đọng nang sữa."
+        },
+        correct: "A",
+        explanation: "Hạt Montgomery là các tuyến bã phì đại ở quầng vú khi mang thai. Hiện tượng tiết sữa non (colostrum) có thể xuất hiện từ tuần thứ 12 của thai kỳ dưới tác động của Prolactin và Estrogen/Progesterone. Loại trừ B vì không có viêm nhiễm hay đau nhức. Loại trừ C và D vì đây là biến đổi sinh lý thai nghén hoàn toàn bình thường."
+      },
+      {
+        id: 18,
+        title: "CA LÂM SÀNG 18: TĂNG SẮC TỐ ĐƯỜNG TRẮNG GIỮA BỤNG (LINEA NIGRA) VÀ MẶT NẠ THAI KỲ",
+        level: "Mức 4 - Phân tích cơ chế",
+        tags: ["level4"],
+        vignette: "Sản phụ 25 tuổi, mang thai con so 14 tuần. Sản phụ đi khám vì thấy trên da mặt xuất hiện các mảng sẫm màu đối xứng hai bên gò má (nám mặt), đồng thời đường giữa thành bụng từ khớp mu chạy thẳng lên rốn sẫm màu nâu đen rõ rệt. Sản phụ lo lắng bị bệnh lý rối loạn nội tiết hoặc tổn thương gan mật.",
+        question: "Cơ chế sinh học nào giải thích hiện tượng tăng sắc tố ở đường giữa thành bụng và mặt nạ thai kỳ?",
+        options: {
+          A: "Do lắng đọng các tinh thể canxi và muối photphat dưới lớp trung bì da.",
+          B: "Do tăng estrogen kích thích tế bào hắc tố kết hợp phản ứng chéo của hCG.",
+          C: "Do ứ trệ tuần hoàn tĩnh mạch ngoại vi làm thiếu oxy mô bề mặt da mẹ.",
+          D: "Do suy giảm hoạt động tổng hợp hormon tuyến vỏ thượng thận ở quý một."
+        },
+        correct: "B",
+        explanation: "Nồng độ cao của Estrogen và Progesterone kích thích hormone kích thích tế bào hắc tố (MSH), đồng thời cấu trúc phân tử của hCG có sự tương đồng gây tăng sinh và lắng đọng Melanin tạo đường sọc nâu (linea nigra) và sạm da mặt nạ thai kỳ (chloasma/melasma). Loại trừ A, C, D vì không đúng cơ chế sinh lý học nội tiết thai kỳ."
+      },
+      {
+        id: 19,
+        title: "CA LÂM SÀNG 19: U XƠ TỬ CUNG KÈM THEO LÀM SAI LỆCH ĐO BỀ CAO TỬ CUNG",
+        level: "Mức 3 - Phân tích",
+        tags: ["us"],
+        vignette: "Sản phụ 36 tuổi, mang thai lần 2 (PARA 1001), trễ kinh 10 tuần, nhớ rõ ngày kinh cuối. Khám lâm sàng bằng tay ghi nhận: Đáy tử cung đã vượt lên trên khớp vệ khoảng 6 cm (tương đương kích thước tử cung ở thai 14 - 15 tuần). Nắn thấy tử cung to không đều, có một khối chắc d = 5 cm gồ lên ở thành sau bên phải. Siêu âm TVS: Buồng tử cung có 01 thai sống, CRL = 33 mm (tương đương 10 tuần 1 ngày), tim thai 168 lần/phút. Thành sau cơ tử cung có khối u xơ kích thước 52 x 48 mm không xâm lấn nội mạc.",
+        question: "Nguyên nhân chính khiến bề cao tử cung khám qua thành bụng lớn hơn đáng kể so với tuổi thai thực tế là gì?",
+        options: {
+          A: "Do khối u xơ tử cung làm biến dạng kích thước tử cung.",
+          B: "Do thai nhi phát triển vượt trội sớm ngay trong ba tháng đầu tiên của thai kỳ.",
+          C: "Do tình trạng ứ dịch màng đệm lượng lớn xuất hiện quanh buồng ối thai nhi.",
+          D: "Do đa ối cấp tính xuất hiện sớm ngay từ giai đoạn phôi thai mới hình thành."
+        },
+        correct: "A",
+        explanation: "Bề cao tử cung trên lâm sàng đo toàn bộ thể tích tử cung. Khối u xơ tử cung to (5 cm) cộng hưởng làm tử cung lớn hơn nhiều so với tuổi thai thực tế (10 tuần nhưng tử cung to tương đương 14 – 15 tuần). Loại trừ B vì thai 10 tuần không thể to như thai 15 tuần. Loại trừ C và D vì siêu âm không có ứ dịch hay đa ối."
+      },
+      {
+        id: 20,
+        title: "CA LÂM SÀNG 20: THỜI GIAN THOÁI TRIỂN VÀ BÁN THẢI CỦA BETA-HCG SAU HÚT THAI LƯU",
+        level: "Mức 3 - Phân tích",
+        tags: [],
+        vignette: "Bệnh nhân 25 tuổi, được hút thai lưu ở tuần thứ 7 cách đây 21 ngày (3 tuần). Quá trình sau hút diễn tiến tốt, ra máu âm đạo giảm dần và hết hẳn sau 7 ngày, không đau bụng, không sốt. Hôm qua bệnh nhân dùng que thử thai thấy vẫn xuất hiện 2 vạch rõ nên rất hoang mang vì sợ còn sót nhau hoặc mắc bệnh nguyên bào nuôi. Khám phụ khoa: Cổ tử cung đóng kín, tử cung co hồi kích thước bình thường, hai phần phụ mềm. Định lượng beta-hCG huyết thanh: 35 mIU/mL. Siêu âm TVS: Buồng tử cung sạch, nội mạc 6 mm, không có tổ chức tăng âm.",
+        question: "Theo quy luật thoái triển sinh lý của nguyên bào nuôi, beta-hCG có thể tồn tại trong huyết thanh mẹ bao lâu sau chấm dứt thai kỳ?",
+        options: {
+          A: "Chỉ tồn tại tối đa trong vòng 24 đến 48 giờ sau khi tống xuất thai.",
+          B: "Có thể tiếp tục phát hiện trong huyết thanh trong khoảng từ 2 đến 4 tuần.",
+          C: "Bắt buộc phải biến mất hoàn toàn ngay sau 7 ngày đầu tiên sau thủ thuật.",
+          D: "Luôn tồn tại kéo dài ít nhất 6 tháng dù không còn tế bào nuôi hoạt động."
+        },
+        correct: "B",
+        explanation: "Sau sẩy thai hoặc nạo hút thai trong 3 tháng đầu, hCG có thể tiếp tục được phát hiện trong huyết thanh hoặc nước tiểu của người mẹ trong khoảng thời gian từ 2 đến 4 tuần do thời gian bán thải và thoái hóa chậm của phân tử hCG. Loại trừ A và C vì bán thải hCG cần nhiều tuần mới về âm tính. Loại trừ D vì 6 tháng là bất thường (nghi u nguyên bào nuôi)."
+      },
+      {
+        id: 21,
+        title: "CA LÂM SÀNG 21: THAI KỲ IVF CHUYỂN PHÔI NGÀY 3 VÀ CÔNG THỨC TÍNH NGÀY DỰ SINH",
+        level: "Mức 4 - Tính toán & Vận dụng",
+        tags: ["ivf", "level4"],
+        vignette: "Sản phụ 35 tuổi, tiền sử vô sinh do giảm dự trữ buồng trứng, thực hiện IVF và được chuyển 02 phôi ngày 3 (cleavage stage) vào ngày 15/02/2026. Siêu âm lúc 12 tuần ghi nhận song thai hai bánh nhau hai buồng ối. Thai A đo được CRL = 54 mm (tương đương 12 tuần 0 ngày), Thai B đo được CRL = 47 mm (tương đương 11 tuần 3 ngày). Cả hai thai đều có tim thai bình thường.",
+        question: "Ngày đầu kỳ kinh cuối quy ước (LMP) đối với trường hợp chuyển phôi ngày 3 vào ngày 15/02/2026 được tính là ngày nào?",
+        options: {
+          A: "Lấy ngày chuyển phôi trừ 14 ngày, tức ngày 01/02/2026.",
+          B: "Lấy ngày chuyển phôi trừ 17 ngày, tức ngày 29/01/2026.",
+          C: "Lấy ngày chuyển phôi trừ 19 ngày, tức ngày 27/01/2026.",
+          D: "Lấy ngày chuyển phôi trừ 21 ngày, tức ngày 25/01/2026."
+        },
+        correct: "B",
+        explanation: "Phôi ngày 3 tương ứng ngày thụ thai là ngày chuyển phôi trừ 3 ngày. Ngày kinh quy ước luôn trước thụ thai 14 ngày. Do đó: LMP = Ngày chuyển phôi - 17 ngày = 15/02 - 17 ngày = 29/01/2026. Loại trừ A vì trừ 14 ngày áp dụng cho bơm tinh trùng IUI. Loại trừ C vì trừ 19 ngày áp dụng cho phôi ngày 5. Loại trừ D vì tính sai số ngày."
+      },
+      {
+        id: 22,
+        title: "CA LÂM SÀNG 22: THỤ TINH NHÂN TẠO (IUI) VÀ NGUYÊN TẮC XÁC ĐỊNH NGÀY KINH QUY ƯỚC",
+        level: "Mức 3 - Vận dụng",
+        tags: ["ivf"],
+        vignette: "Sản phụ 28 tuổi, hiếm muộn 2 năm, thực hiện bơm tinh trùng vào buồng tử cung (IUI) có kích thích buồng trứng nhẹ. Thủ thuật bơm tinh trùng được thực hiện vào đúng 36 giờ sau tiêm rụng trứng hCG, tức ngày 20/03/2026. Sản phụ có thai và đi khám thai định kỳ ở quý 1.",
+        question: "Ngày đầu kỳ kinh cuối quy ước (LMP) của thai kỳ IUI này được tính chuẩn xác như thế nào?",
+        options: {
+          A: "Lấy ngày thực hiện thủ thuật IUI trừ đi 14 ngày, tức ngày 06/03/2026.",
+          B: "Lấy ngày thực hiện thủ thuật IUI trừ đi 17 ngày, tức ngày 03/03/2026.",
+          C: "Lấy ngày thực hiện thủ thuật IUI trừ đi 19 ngày, tức ngày 01/03/2026.",
+          D: "Lấy ngày que thử thai bắt đầu xuất hiện hai vạch trừ đi hai mươi mốt ngày."
+        },
+        correct: "A",
+        explanation: "Trong kỹ thuật IUI, thời điểm bơm tinh trùng trùng với thời điểm rụng trứng sinh lý (ngày thứ 14 của chu kỳ chuẩn). Do đó, ngày đầu kỳ kinh cuối quy ước (LMP) được tính bằng cách lấy ngày bơm IUI trừ đi đúng 14 ngày (20/03 - 14 ngày = 06/03/2026). Loại trừ B vì trừ 17 ngày dùng cho phôi ngày 3. Loại trừ C vì trừ 19 ngày dùng cho phôi ngày 5. Loại trừ D vì không có cơ sở khoa học."
+      },
+      {
+        id: 23,
+        title: "CA LÂM SÀNG 23: PHÔI THAI CRL < 7 MM CHƯA CÓ TIM THAI VÀ THÁI ĐỘ XỬ TRÍ",
+        level: "Mức 3 - Phân tích",
+        tags: ["us"],
+        vignette: "Sản phụ 28 tuổi, PARA 0000, trễ kinh 2 tuần, kinh nguyệt không hoàn toàn đều đặn. Sản phụ đi khám thai vì muốn kiểm tra tim thai. Khám lâm sàng: Thể trạng bình thường, không đau bụng, không ra máu âm đạo. Cổ tử cung đóng kín. Siêu âm TVS: Buồng tử cung có 01 túi thai, có túi noãn hoàng đường kính 4 mm, quan sát thấy âm vang phôi thai nhỏ, đo chiều dài đầu mông CRL = 4,2 mm. Khảo sát cẩn thận bằng B-mode và M-mode chưa ghi nhận được hoạt động co bóp của tim thai.",
+        question: "Dựa trên các hướng dẫn thực hành siêu âm sản khoa hiện hành, nhận định nào sau đây là chính xác nhất?",
+        options: {
+          A: "Khẳng định thai đã chết lưu trong tử cung và cần tư vấn hút thai ngoại khoa ngay lập tức.",
+          B: "Chưa đủ tiêu chuẩn thai ngừng tiến triển, hẹn siêu âm lại sau 7-10 ngày.",
+          C: "Đây là dấu hiệu chắc chắn của thai trứng bán phần cần định lượng nồng độ beta-hCG khẩn cấp.",
+          D: "Chỉ định tiêm bắp thuốc nội tiết liều cao vì thai đang trong tình trạng dọa sẩy rất nặng nề."
+        },
+        correct: "B",
+        explanation: "Tiêu chuẩn vàng chẩn đoán thai ngừng tiến triển là CRL >= 7 mm mà không có tim thai. Ở đây CRL mới 4,2 mm (< 7 mm), vẫn có tỷ lệ phôi nhỏ chưa quan sát thấy tim thai sinh lý. Cần hẹn siêu âm lại sau 7 – 10 ngày. Loại trừ A vì vội vã nạo hút sẽ phá nhầm thai sống. Loại trừ C và D vì không có hình ảnh thai trứng hay chỉ định dùng nội tiết bừa bãi."
+      },
+      {
+        id: 24,
+        title: "CA LÂM SÀNG 24: MỤC ĐÍCH TỐI THƯỢNG CỦA NGƯỠNG AN TOÀN CRL >= 7 MM",
+        level: "Mức 4 - Đánh giá chuyên môn",
+        tags: ["us", "level4"],
+        vignette: "Hội thảo Sản phụ khoa thảo luận về các tiêu chuẩn siêu âm thai sớm. Trước đây, ngưỡng chẩn đoán thai lưu khi không có tim thai là CRL >= 5 mm. Tuy nhiên, các đồng thuận quốc tế gần đây (ACOG, SMFM, ISUOG) đã nâng ngưỡng cắt này lên CRL >= 7 mm.",
+        question: "Mục đích y học cốt lõi của việc nâng ngưỡng chẩn đoán tim thai lên CRL >= 7 mm là gì?",
+        options: {
+          A: "Đạt độ đặc hiệu 100% nhằm tuyệt đối tránh chấm dứt nhầm một thai kỳ còn sống.",
+          B: "Tăng tối đa độ nhạy để phát hiện sớm các trường hợp thai ngừng phát triển.",
+          C: "Tạo điều kiện thuận lợi cho việc đo khoảng sáng sau gáy sàng lọc dị tật thai.",
+          D: "Giúp phân biệt chính xác giữa song thai một bánh nhau và hai bánh nhau."
+        },
+        correct: "A",
+        explanation: "Trong chẩn đoán thai ngừng tiến triển, mục tiêu tối thượng là đạt độ đặc hiệu 100% (không có dương tính giả), nghĩa là không bao giờ được phép can thiệp nhầm vào một thai nhi sống bình thường chỉ vì sai số đo đạc hay phôi thai phát triển chậm sinh lý. Loại trừ B vì nâng ngưỡng cắt làm giảm độ nhạy nhưng tăng độ đặc hiệu. Loại trừ C và D vì không liên quan đến NT hay màng nhau."
+      },
+      {
+        id: 25,
+        title: "CA LÂM SÀNG 25: TIỂU RẮT CƠ NĂNG SINH LÝ QUÝ 1 VÀ PHÂN BIỆT NHIỄM KHUẨN TIẾT NIỆU",
+        level: "Mức 3 - Phân tích cơ chế",
+        tags: [],
+        vignette: "Sản phụ 24 tuổi, mang thai lần đầu, thai 9 tuần theo siêu âm quý 1. Sản phụ đến phòng khám vì than phiền đi tiểu nhiều lần trong ngày (khoảng 10 - 12 lần/ngày) và phải thức dậy đi tiểu 2 lần ban đêm. Sản phụ không có cảm giác tiểu buốt, không tiểu rát, nước tiểu trong, không sốt, không đau thắt lưng. Khám bụng mềm, chạm thận âm tính.",
+        question: "Cơ chế sinh lý học nào giải thích hiện tượng tiểu nhiều lần ở thai phụ trong ba tháng đầu thai kỳ?",
+        options: {
+          A: "Do tử cung to chèn ép bàng quang kết hợp sung huyết mạch máu vùng chậu.",
+          B: "Do suy giảm đột ngột mức lọc cầu thận làm bàng quang tích tụ nước tiểu.",
+          C: "Do vi khuẩn E. coli xâm nhập làm tổn thương biểu mô niêm mạc bàng quang.",
+          D: "Do nồng độ Progesterone giảm thấp làm tăng trương lực co bóp cơ bàng quang."
+        },
+        correct: "A",
+        explanation: "Trong 3 tháng đầu, tử cung lớn dần nằm trong tiểu khung chèn ép trực tiếp bàng quang, kết hợp sung huyết vùng chậu và thay đổi ngưỡng thẩm thấu gây tiểu rắt cơ năng sinh lý. Triệu chứng sẽ tự giảm sau tuần 12 khi tử cung vượt lên ổ bụng. Loại trừ B vì mức lọc cầu thận tăng chứ không giảm. Loại trừ C vì nước tiểu trong, không có nhiễm khuẩn. Loại trừ D vì Progesterone tăng làm giãn cơ trơn bàng quang."
+      },
+      {
+        id: 26,
+        title: "CA LÂM SÀNG 26: THAI PHỤ KHÁM MUỘN Ở QUÝ 3 VÀ ĐỘ TIN CẬY CỦA SIÊU ÂM ƯỚC TÍNH TUỔI THAI",
+        level: "Mức 3 - Vận dụng",
+        tags: ["us"],
+        vignette: "Sản phụ 31 tuổi, không nhớ ngày kinh cuối, chưa từng đi khám thai lần nào trong suốt thai kỳ. Đến khi bụng to nhiều mới đến bệnh viện khám lần đầu tiên. Khám sản khoa: Bề cao tử cung 28 cm. Siêu âm đo các thông số sinh trắc: BPD = 78 mm, HC = 285 mm, AC = 260 mm, FL = 58 mm. Máy siêu âm ước tính tuổi thai trung bình là 30 tuần 2 ngày.",
+        question: "Theo khuyến cáo của ACOG và ISUOG, sai số sinh học của siêu âm ước tính tuổi thai ở quý 3 (từ tuần 28 trở đi) là bao nhiêu?",
+        options: {
+          A: "Dao động trong khoảng sai số khoảng cộng trừ năm đến bảy ngày.",
+          B: "Dao động trong khoảng sai số khoảng cộng trừ mười bốn ngày.",
+          C: "Dao động trong khoảng sai số khoảng cộng trừ hai mươi mốt ngày.",
+          D: "Hoàn toàn không có sai số nếu máy siêu âm sử dụng phần mềm 4D."
+        },
+        correct: "C",
+        explanation: "Theo Bảng 3.1 của ACOG: Ở tuổi thai >= 28 tuần, độ sai lệch giữa tuổi thai siêu âm và tuổi thai thực tế có thể lên đến ± 21 ngày (3 tuần) do sự phân tán sinh học về cân nặng và thể tạng thai nhi là rất lớn. Loại trừ A vì sai số 5-7 ngày chỉ có ở quý 1. Loại trừ B vì sai số 14 ngày là ở quý 2 muộn (22-27 tuần). Loại trừ D vì phần mềm 4D không giảm được biến thiên sinh học."
+      },
+      {
+        id: 27,
+        title: "CA LÂM SÀNG 27: HIỆN TƯỢNG MÁU BÁO LÀM TỔ (HARTMAN SIGN) VÀ BẪY TÍNH TUỔI THAI",
+        level: "Mức 3 - Phân tích",
+        tags: [],
+        vignette: "Sản phụ 28 tuổi, con so, chu kỳ kinh nguyệt bình thường 28 ngày. Sản phụ khai ngày hành kinh gần nhất bắt đầu vào ngày 14/02/2026 nhưng chỉ ra một ít máu hồng nhạt trong 1,5 ngày rồi sạch hẳn (khác hẳn tính chất kinh nguyệt hàng tháng là ra máu đỏ sẫm 4 ngày). Kỳ kinh trước đó diễn ra hoàn toàn bình thường vào ngày 17/01/2026. Bác sĩ siêu âm ngày 30/03/2026 đo CRL = 35 mm (tương đương 10 tuần 2 ngày).",
+        question: "Hiện tượng ra máu ít ngày 14/02/2026 (ngày thứ 28 của chu kỳ tính từ 17/01) thực chất là hiện tượng sinh lý gì?",
+        options: {
+          A: "Một chu kỳ kinh nguyệt bình thường nhưng lượng máu kinh ít hơn.",
+          B: "Chảy máu làm tổ do phôi nang xâm nhập làm tổn thương hồ huyết.",
+          C: "Dấu hiệu của sẩy thai sớm đã tự cầm máu mà không cần can thiệp.",
+          D: "Tình trạng rong huyết do suy hoàng thể thai kỳ giai đoạn bắt đầu."
+        },
+        correct: "B",
+        explanation: "Vào khoảng ngày 12 – 14 sau thụ tinh (trùng thời điểm dự kiến có kinh), khi phôi nang làm tổ sâu và hợp bào nuôi phá hủy các mao mạch xoắn màng rụng, có thể gây chảy máu làm tổ (Hartman sign), dễ làm sản phụ nhầm lẫn là một kỳ kinh mới. Loại trừ A vì lượng ít và máu hồng nhạt không phải kinh nguyệt thật. Loại trừ C và D vì đây là hiện tượng làm tổ sinh lý hoàn toàn lành tính."
+      },
+      {
+        id: 28,
+        title: "CA LÂM SÀNG 28: THỜI ĐIỂM NGHE ĐƯỢC TIM THAI QUA DOPPLER CẦM TAY VÀ ỐNG NGHE GỖ PINARD",
+        level: "Mức 3 - Vận dụng",
+        tags: [],
+        vignette: "Tại trạm y tế xã, một sản phụ 22 tuổi mang thai lần đầu, nhớ ngày kinh cuối tính được tuổi thai hiện tại là 11 tuần 3 ngày. Nữ hộ sinh sử dụng ống nghe gỗ Pinard để đặt lên bụng tìm tim thai nhưng hoàn toàn không nghe được âm sắc tim thai. Bác sĩ phụ trách sử dụng máy Doppler tim thai cầm tay thì bắt được nhịp tim thai rõ ràng ở vùng trên xương vệ với tần số 152 lần/phút.",
+        question: "Theo giáo trình Sản khoa, thời điểm sớm nhất có thể nghe được tim thai qua Doppler cầm tay và ống nghe gỗ là khi nào?",
+        options: {
+          A: "Doppler cầm tay từ tuần thứ 10 - 12, ống nghe gỗ từ tuần thứ 20 - 22.",
+          B: "Doppler cầm tay từ tuần thứ 6 - 8, ống nghe gỗ từ tuần thứ 12 - 14.",
+          C: "Doppler cầm tay từ tuần thứ 16 - 18, ống nghe gỗ từ tuần thứ 24 - 26.",
+          D: "Doppler cầm tay từ tuần thứ 14 - 16, ống nghe gỗ từ tuần thứ 28 - 30."
+        },
+        correct: "A",
+        explanation: "Bằng máy Doppler cầm tay, có thể nghe được tim thai từ tuần thứ 10 – 12 trở đi. Với ống nghe gỗ Pinard, chỉ có thể nghe được tim thai rõ ràng từ tuần thứ 20 – 22 của thai kỳ. Loại trừ B vì tuần 6-8 chỉ thấy tim thai trên siêu âm TVS. Loại trừ C và D vì muộn hơn nhiều so với khả năng phát hiện của các thiết bị."
+      },
+      {
+        id: 29,
+        title: "CA LÂM SÀNG 29: KỸ NĂNG LÂM SÀNG PHÂN BIỆT NHỊP TIM THAI VỚI MẠCH MẸ",
+        level: "Mức 4 - Kỹ năng lâm sàng",
+        tags: ["level4"],
+        vignette: "Bác sĩ nội trú thực tập tại phòng khám thai đang dùng ống nghe Pinard để nghe tim thai ở một sản phụ 32 tuần. Bác sĩ nghe thấy một âm thổi trầm, êm dịu, đập nhịp nhàng với tần số khoảng 82 lần/phút. Bác sĩ ghi nhận vào bệnh án là nhịp tim thai chậm bất thường (82 ck/p) và báo cáo bác sĩ phụ trách.",
+        question: "Thao tác lâm sàng chuẩn mực bắt buộc phải thực hiện đồng thời khi nghe tim thai để tránh nhầm lẫn là gì?",
+        options: {
+          A: "Vừa nghe tim thai vừa dùng tay bắt mạch quay của người mẹ để phân biệt.",
+          B: "Yêu cầu sản phụ nín thở hoàn toàn trong suốt quá trình đếm nhịp tim thai.",
+          C: "Đo huyết áp động mạch cánh tay của mẹ trước và sau khi đặt ống nghe gỗ.",
+          D: "Tiến hành xoa bóp đáy tử cung để kích thích thai cử động phát ra tiếng tim."
+        },
+        correct: "A",
+        explanation: "Khi nghe tim thai trên lâm sàng, bắt buộc phải vừa nghe vừa bắt mạch quay của mẹ để phân biệt với tiếng thổi động mạch tử cung hoặc động mạch chủ bụng của mẹ (tiếng mạch mẹ trùng với mạch quay khoảng 70-85 ck/p, trong khi tim thai đập nhanh 120 – 160 ck/p, gấp đôi mạch mẹ). Loại trừ B, C, D vì không giúp phân định nhịp đập giữa thai nhi và mạch máu mẹ."
+      },
+      {
+        id: 30,
+        title: "CA LÂM SÀNG 30: ĐIỀU KIỆN CHIỀU DÀI ĐẦU MÔNG (CRL) ĐỂ ĐO ĐỘ MỜ DA GÁY (NT)",
+        level: "Mức 3 - Vận dụng",
+        tags: ["us"],
+        vignette: "Sản phụ 33 tuổi, mang thai lần đầu, đi khám để làm xét nghiệm sàng lọc dị tật quý 1 (Combined test). Bác sĩ siêu âm khảo sát hình thái sớm và chuẩn bị đo khoảng mờ da gáy (Nuchal Translucency - NT). Bác sĩ đo chiều dài đầu mông thai nhi để xác định xem thai đã đủ điều kiện chuẩn hóa đo NT hay chưa.",
+        question: "Theo khuyến cáo của Fetal Medicine Foundation (FMF) và ISUOG, khoảng kích thước CRL hợp lệ để đo NT là bao nhiêu?",
+        options: {
+          A: "Chiều dài đầu mông nằm trong khoảng từ 30 mm đến 60 mm.",
+          B: "Chiều dài đầu mông nằm trong khoảng từ 45 mm đến 84 mm.",
+          C: "Chiều dài đầu mông nằm trong khoảng từ 50 mm đến 95 mm.",
+          D: "Chiều dài đầu mông nằm trong khoảng từ 60 mm đến 100 mm."
+        },
+        correct: "B",
+        explanation: "Thời điểm chuẩn để đo khoảng mờ da gáy (NT) tầm soát lệch bội là từ 11 tuần 0 ngày đến 13 tuần 6 ngày, tương ứng kích thước CRL từ 45 mm đến 84 mm. Loại trừ A vì < 45 mm độ ly giải chưa chuẩn. Loại trừ C và D vì > 84 mm hệ bạch huyết vùng cổ đã biến đổi, da gáy thoái triển làm NT mất độ tin cậy."
+      },
+      {
+        id: 31,
+        title: "CA LÂM SÀNG 31: XỬ TRÍ KHI ĐO ĐỘ MỜ DA GÁY Ở THỜI ĐIỂM CRL CHƯA ĐẠT CHUẨN",
+        level: "Mức 4 - Đánh giá & Ra quyết định",
+        tags: ["us", "level4"],
+        vignette: "Sản phụ 29 tuổi đi khám thai ở tuần thứ 10. Siêu âm đo CRL = 40 mm (tương đương 10 tuần 5 ngày). Bác sĩ siêu âm vẫn cố gắng phóng to và đo được NT = 1,8 mm, sau đó chuyển sản phụ đi làm xét nghiệm Double test. Bác sĩ trưởng khoa sàng lọc trước sinh khi duyệt hồ sơ phát hiện quy trình chưa đạt chuẩn.",
+        question: "Sai sót về mặt quy trình của bác sĩ siêu âm trên ca bệnh này cần được khắc phục như thế nào?",
+        options: {
+          A: "Chấp nhận kết quả đo vì kích thước CRL 40 mm sai lệch không đáng kể so với ngưỡng chuẩn.",
+          B: "Hủy kết quả đo NT, hẹn siêu âm lại khi CRL đạt 45 đến 84 mm.",
+          C: "Chỉ định chọc ối xét nghiệm bộ nhiễm sắc thể ngay do thai có nguy cơ rất cao bị lệch bội.",
+          D: "Chuyển sang đo chu vi vòng bụng để tính nguy cơ dị tật ống thần kinh của thai nhi thay thế."
+        },
+        correct: "B",
+        explanation: "Khi CRL = 40 mm (< 45 mm), thuật toán chuẩn hóa của FMF chưa áp dụng được. Bác sĩ phải hủy số đo NT này và hẹn sản phụ siêu âm lại sau 5 – 7 ngày khi thai đạt CRL >= 45 mm. Loại trừ A vì kết quả không hợp lệ sẽ gây sai lệch tính toán nguy cơ Double test. Loại trừ C vì chưa có chỉ định chọc ối xâm lấn. Loại trừ D vì không liên quan."
+      },
+      {
+        id: 32,
+        title: "CA LÂM SÀNG 32: BETA-HCG VƯỢT NGƯỠNG PHÂN ĐỊNH VÀ HÌNH ẢNH BUỒNG TỬ CUNG TRỐNG",
+        level: "Mức 3 - Phân tích",
+        tags: ["us"],
+        vignette: "Bệnh nhân nữ 28 tuổi, chậm kinh 18 ngày, tiền sử viêm phần phụ mạn tính. Bệnh nhân có ra ít máu nâu ở âm đạo kèm đau nhói vùng hố chậu trái. Khám: Bụng mềm, ấn đau chói hố chậu trái. Xét nghiệm định lượng: beta-hCG = 2.450 mIU/mL. Siêu âm qua đầu dò âm đạo (TVS): Nội mạc tử cung dày 12 mm, lòng tử cung hoàn toàn trống rỗng, không có túi thai. Vùng cạnh buồng trứng trái quan sát thấy một khối phản âm hỗn hợp kích thước 25 x 20 mm có hình ảnh vòng nhẫn tăng âm.",
+        question: "Khi nồng độ beta-hCG vượt ngưỡng 2.000 mIU/mL mà siêu âm TVS buồng tử cung trống, chẩn đoán xác định là gì?",
+        options: {
+          A: "Sẩy thai hoàn toàn trong buồng tử cung mà sản phụ không hề nhận biết.",
+          B: "Thai lạc chỗ ở tai vòi (bên trái) chưa có biến chứng vỡ ngập máu.",
+          C: "Thai nghén chưa xác định vị trí làm tổ cần tiếp tục theo dõi ngoại trú.",
+          D: "Nhiễm khuẩn buồng tử cung cấp tính do biến chứng viêm nội mạc."
+        },
+        correct: "B",
+        explanation: "Khi beta-hCG đạt 2.450 mIU/mL (vượt ngưỡng phân định 1.500 – 2.000 mIU/mL) mà lòng tử cung trống, kèm khối bất thường ở phần phụ trái và đau bụng, chẩn đoán xác định là Thai lạc chỗ ở vòi tử cung trái. Loại trừ A vì sẩy thai hoàn toàn thì beta-hCG phải giảm thấp và không có khối cạnh tử cung. Loại trừ C vì đã xác định được khối thai ngoài tử cung. Loại trừ D vì không có sốt hay viêm."
+      },
+      {
+        id: 33,
+        title: "CA LÂM SÀNG 33: QUY TẮC AN TOÀN TRONG QUẢN LÝ THAI NGOÀI TỬ CUNG",
+        level: "Mức 4 - Đánh giá an toàn",
+        tags: ["level4"],
+        vignette: "Một bác sĩ trẻ tại phòng khám tư nhân tiếp nhận bệnh nhân nghi ngờ thai ngoài tử cung bên phải: trễ kinh 2 tuần, đau âm ỉ hạ vị, định lượng beta-hCG là 2.800 mIU/mL, siêu âm TVS không thấy túi thai trong tử cung, thấy khối echo hỗn hợp 22 mm ở cạnh buồng trứng phải. Bệnh nhân xin về nhà uống thuốc giảm đau và hẹn tuần sau quay lại.",
+        question: "Chống chỉ định can thiệp nào sau đây cần tuyệt đối tuân thủ ở bệnh nhân này?",
+        options: {
+          A: "Tuyệt đối không được cho bệnh nhân về theo dõi ngoại trú mà không can thiệp.",
+          B: "Tuyệt đối không được làm xét nghiệm công thức máu và đông máu toàn bộ.",
+          C: "Không được cho bệnh nhân nhập viện theo dõi tại khoa Cấp cứu Sản phụ khoa.",
+          D: "Không được thực hiện phẫu thuật nội soi ổ bụng khi có chỉ định ngoại khoa."
+        },
+        correct: "A",
+        explanation: "Thai ngoài tử cung đã chẩn đoán xác định và beta-hCG > 2.000 mIU/mL tuyệt đối không được cho về theo dõi ngoại trú vì nguy cơ vỡ vòi trứng gây choáng mất máu tử vong bất cứ lúc nào. Loại trừ B vì công thức máu và đông máu là bắt buộc. Loại trừ C và D vì nhập viện và mổ nội soi là các chỉ định đúng đắn."
+      },
+      {
+        id: 34,
+        title: "CA LÂM SÀNG 34: ĐỘNG HỌC ĐỈNH CỦA BETA-HCG VÀ HIỆN TƯỢNG SỤT GIẢM BÌNH THƯỜNG Ở QUÝ 2",
+        level: "Mức 3 - Phân tích cơ chế",
+        tags: [],
+        vignette: "Sản phụ 27 tuổi, mang thai lần đầu, đi khám thai định kỳ ở tuần thứ 9 được làm xét nghiệm beta-hCG cho kết quả là 85.000 mIU/mL. Đến tuần thứ 16, sản phụ đi làm xét nghiệm sàng lọc Triple test, kết quả định lượng beta-hCG huyết thanh trả về là 22.000 mIU/mL. Sản phụ vô cùng hoảng sợ vì thấy nồng độ beta-hCG sụt giảm mạnh (giảm gần 4 lần) và nghĩ rằng thai nhi đã bị chết lưu.",
+        question: "Đặc điểm sinh lý học nào của đường cong nồng độ hCG trong thai kỳ giải thích hiện tượng sụt giảm này?",
+        options: {
+          A: "hCG đạt đỉnh ở tuần 8-10 (60.000 - 90.000 mIU/mL) rồi giảm dần về bình nguyên ở quý 2.",
+          B: "hCG tăng liên tục đạt đỉnh ở tuần 20 rồi mới bắt đầu giảm nhẹ vào cuối thai kỳ.",
+          C: "hCG luôn giữ nồng độ cố định không thay đổi kể từ tuần thứ 8 cho đến khi sinh.",
+          D: "hCG bị phân hủy hoàn toàn bởi các enzym của thai nhi ngay từ đầu tháng thứ ba."
+        },
+        correct: "A",
+        explanation: "Nồng độ hCG tăng nhanh và đạt nồng độ đỉnh ở khoảng tuần 8 – 10 (trung bình 60.000 – 90.000 mIU/mL), sau đó giảm dần xuống mức bình nguyên khoảng 12.000 – 20.000 mIU/mL ở quý 2 và duy trì ổn định đến cuối thai kỳ. Loại trừ B vì không đạt đỉnh ở tuần 20. Loại trừ C và D vì hCG biến thiên theo hình parabol lệch trái sinh lý."
+      },
+      {
+        id: 35,
+        title: "CA LÂM SÀNG 35: THẤT BẠI CỦA THUỐC TRÁNH THAI KHẨN CẤP VÀ GIÁ TRỊ CỦA SIÊU ÂM QUÝ 1",
+        level: "Mức 3 - Vận dụng",
+        tags: ["us"],
+        vignette: "Phụ nữ 21 tuổi, sinh viên, có quan hệ tình dục không an toàn và đã uống 01 viên thuốc tránh thai khẩn cấp Levonorgestrel 1,5 mg. Sau uống thuốc 5 ngày, bệnh nhân có ra máu âm đạo ít kéo dài 3 ngày. Sau đó kinh nguyệt hoàn toàn rối loạn, không nhớ ngày nào là kinh thật. Hai tháng sau thấy mệt mỏi và bụng to, bệnh nhân thử que 2 vạch đậm. Đi siêu âm đường bụng đo được CRL = 58 mm, tim thai 160 lần/phút.",
+        question: "Trong tình huống kinh nguyệt rối loạn do dùng thuốc tránh thai khẩn cấp, phương pháp xác định ngày dự sinh chuẩn xác nhất là gì?",
+        options: {
+          A: "Dựa vào ngày uống viên thuốc tránh thai khẩn cấp cộng thêm hai trăm tám mươi ngày.",
+          B: "Dựa vào kết quả đo chiều dài đầu mông CRL trên siêu âm trong quý đầu thai kỳ.",
+          C: "Dựa vào ngày ra máu âm đạo bất thường sau khi uống thuốc để tính quy tắc Naegele.",
+          D: "Chờ đến khi cảm nhận thấy cử động thai máy đầu tiên rồi cộng thêm hai mươi tuần."
+        },
+        correct: "B",
+        explanation: "Khi kinh nguyệt rối loạn hoặc mang thai do thất bại của thuốc tránh thai nội tiết, ngày kinh cuối hoàn toàn không còn giá trị. Siêu âm đo chiều dài đầu mông (CRL) trong 3 tháng đầu là tiêu chuẩn vàng duy nhất để định tuổi thai và ngày dự sinh. Loại trừ A, C, D vì không có cơ sở khoa học để tính ngày dự sinh."
+      },
+      {
+        id: 36,
+        title: "CA LÂM SÀNG 36: THỜI ĐIỂM CẢM NHẬN THAI MÁY SINH LÝ Ở SẢN PHỤ CON SO SO VỚI CON RẠ",
+        level: "Mức 3 - Phân tích",
+        tags: [],
+        vignette: "Sản phụ 26 tuổi, con so (PARA 0000), thai 19 tuần theo ngày kinh và siêu âm quý 1 chuẩn mực. Sản phụ đến khám định kỳ và chia sẻ rằng khoảng 1 tuần nay thỉnh thoảng cảm thấy những cử động lục bục nhẹ ở bụng dưới (thai máy). Mẹ chồng sản phụ (đã sinh 3 con) cho rằng sản phụ cảm nhận thai máy quá muộn vì ngày xưa bà đã thấy con đạp từ tuần thứ 16.",
+        question: "Thời điểm người mang thai con so bắt đầu cảm nhận được thai máy sinh lý thường rơi vào khoảng tuần thai nào?",
+        options: {
+          A: "Thường bắt đầu cảm nhận được từ tuần thứ mười hai đến tuần thứ mười bốn.",
+          B: "Thường bắt đầu cảm nhận được từ tuần thứ mười tám đến tuần thứ hai mươi.",
+          C: "Thường bắt đầu cảm nhận được từ tuần thứ hai mươi tư đến tuần thứ hai mươi sáu.",
+          D: "Thường bắt đầu cảm nhận được từ tuần thứ hai mươi tám đến tuần thứ ba mươi."
+        },
+        correct: "B",
+        explanation: "Người mang thai con so thường cảm nhận được thai máy từ tuần thứ 18 – 20; trong khi người con rạ thường cảm nhận sớm hơn, khoảng từ tuần thứ 16 – 18 của thai kỳ. Loại trừ A vì tuần 12-14 thai còn quá nhỏ để mẹ cảm nhận qua thành bụng. Loại trừ C và D vì quá muộn so với sinh lý bình thường."
+      },
+      {
+        id: 37,
+        title: "CA LÂM SÀNG 37: ĐẶC ĐIỂM PHÂN BIỆT CƠN CO BRAXTON HICKS VỚI CƠN CO CHUYỂN DẠ",
+        level: "Mức 4 - Đánh giá & Chẩn đoán phân biệt",
+        tags: ["level4"],
+        vignette: "Sản phụ 28 tuổi, mang thai con so 22 tuần. Thỉnh thoảng trong ngày sản phụ sờ thấy bụng dưới căng cứng lên trong khoảng 30 - 45 giây nhưng hoàn toàn không đau đớn, không có chu kỳ rõ rệt (khoảng vài tiếng mới xuất hiện 1 cơn), sau đó bụng tự mềm mại trở lại bình thường. Khám trong: Cổ tử cung đóng kín, dài 38 mm trên siêu âm qua ngả âm đạo.",
+        question: "Đặc điểm nào sau đây giúp phân biệt chắc chắn cơn co Braxton Hicks sinh lý với cơn co chuyển dạ thực sự?",
+        options: {
+          A: "Cơn co cường độ nhẹ, không đau, không chu kỳ và không xóa mở cổ tử cung.",
+          B: "Cơn co Braxton Hicks xuất hiện dồn dập với tần số trên năm cơn co đều đặn trong mười phút.",
+          C: "Cơn co Braxton Hicks luôn luôn đi kèm với hiện tượng ra nhầy hồng tống xuất từ lỗ cổ tử cung.",
+          D: "Cơn co Braxton Hicks làm cổ tử cung người mẹ xóa mở tiến triển nhanh chóng trên hai centimet."
+        },
+        correct: "A",
+        explanation: "Cơn co Braxton Hicks là cơn co sinh lý: cường độ nhẹ, thưa thớt, không chu kỳ, không đau buốt và không gây ra bất kỳ biến đổi nào ở cổ tử cung (không xóa, không mở). Loại trừ B, C, D vì đó là các đặc điểm của cơn co chuyển dạ thực sự hoặc dọa sẩy thai/sinh non."
+      },
+      {
+        id: 38,
+        title: "CA LÂM SÀNG 38: HIỆU ỨNG HOOK EFFECT (HIGH-DOSE HOOK EFFECT) GÂY ÂM TÍNH GIẢ THỬ THAI",
+        level: "Mức 4 - Phân tích cơ chế",
+        tags: ["level4"],
+        vignette: "Bệnh nhân nữ 35 tuổi, trễ kinh 2 tháng, bụng dưới to nhanh rõ rệt, nôn ói dữ dội, mệt lả. Bệnh nhân dùng que thử thai tại nhà 3 lần đều cho kết quả 1 vạch (âm tính). Khi vào viện cấp cứu vì kiệt sức, khám thấy tử cung to tương đương thai 16 tuần. Bác sĩ chỉ định pha loãng nước tiểu 1:100 rồi thử lại que thử thai thì xuất hiện 2 vạch đỏ đậm ngay lập tức. Siêu âm tử cung thấy hình ảnh bão tuyết (chùm nho) điển hình của thai trứng toàn phần.",
+        question: "Cơ chế hóa sinh nào giải thích hiện tượng thử que âm tính giả ban đầu ở bệnh nhân này?",
+        options: {
+          A: "Nồng độ beta-hCG quá cao gây bão hòa kháng thể (hiệu ứng Hook effect).",
+          B: "Nước tiểu bệnh nhân có nồng độ axit uric quá cao phá hủy các phân tử kháng thể trên que thử.",
+          C: "Các tế bào nuôi của thai trứng thoái hóa không thể bài tiết hormone hCG vào trong nước tiểu.",
+          D: "Hormone Progesterone nồng độ cao ức chế phản ứng gắn kết giữa kháng nguyên và kháng thể trên que."
+        },
+        correct: "A",
+        explanation: "Hiện tượng Hook effect (high-dose hook effect): Khi nồng độ hCG trong mẫu thử cực kỳ cao (như trong thai trứng toàn phần, thường > 500.000 - 1.000.000 mIU/mL), lượng kháng nguyên hCG tự do quá lớn sẽ bão hòa cả kháng thể bắt giữ (cố định) và kháng thể phát hiện (đánh dấu) một cách độc lập, ngăn cản sự hình thành phức hợp kẹp 'sandwich' kháng thể - kháng nguyên - kháng thể, dẫn đến kết quả âm tính giả trên que thử. Loại trừ B, C, D vì không phản ánh đúng cơ chế miễn dịch học kẹp sandwich."
+      },
+      {
+        id: 39,
+        title: "CA LÂM SÀNG 39: DƯƠNG TÍNH GIẢ CỦA XÉT NGHIỆM THỬ THAI DO KHÁNG THỂ DỊ ÁI",
+        level: "Mức 4 - Phân tích chuyên môn",
+        tags: ["level4"],
+        vignette: "Bệnh nhân nữ 24 tuổi, chưa từng quan hệ tình dục, chu kỳ kinh nguyệt đều đặn. Gần đây đi khám kiểm tra sức khỏe xét nghiệm máu thấy beta-hCG huyết thanh = 65 mIU/mL. Bệnh nhân khẳng định chưa từng quan hệ tình dục. Bác sĩ cho xét nghiệm beta-hCG trong nước tiểu thì kết quả hoàn toàn âm tính. Siêu âm phụ khoa và chụp MRI tiểu khung bình thường.",
+        question: "Nguyên nhân nào sau đây giải thích phù hợp nhất cho hiện tượng beta-hCG máu dương tính giả ở bệnh nhân này?",
+        options: {
+          A: "Sự hiện diện của kháng thể dị ái (heterophile antibodies) gây phản ứng chéo trong xét nghiệm miễn dịch.",
+          B: "Bệnh nhân có khối u quái buồng trứng tiết ra một lượng lớn hormone steroid sinh dục.",
+          C: "Tuyến yên người bệnh tăng tiết đột biến hormone LH có cấu trúc giống hệt chuỗi beta của hCG.",
+          D: "Bệnh nhân mắc bệnh tự miễn suy thận mạn làm chậm đào thải hoàn toàn các hormone peptide."
+        },
+        correct: "A",
+        explanation: "Kháng thể dị ái (heterophile antibodies hoặc HAMA - Human anti-mouse antibodies) trong máu người bệnh có thể liên kết chéo trực tiếp với các kháng thể động vật dùng trong kit xét nghiệm miễn dịch huyết thanh, tạo ra kết quả dương tính giả (phantom hCG). Vì các kháng thể dị ái này có kích thước lớn không lọc qua cầu thận nên xét nghiệm nước tiểu sẽ âm tính. Loại trừ B vì u quái không tiết hCG đơn độc gây dương tính giả máu mà âm tính nước tiểu. Loại trừ C vì chuỗi beta đặc hiệu cho hCG, không giống LH (chỉ giống chuỗi alpha). Loại trừ D vì không giải thích được âm tính nước tiểu."
+      },
+      {
+        id: 40,
+        title: "CA LÂM SÀNG 40: MỐC GIẢI PHẪU ĐÁY TỬ CUNG TRÊN THÀNH BỤNG Ở THAI 16 TUẦN",
+        level: "Mức 3 - Vận dụng",
+        tags: [],
+        vignette: "Sản phụ 28 tuổi, con so, thai 16 tuần theo ngày kinh cuối và siêu âm quý 1. Bác sĩ thực hiện khám đo bề cao tử cung trên thành bụng. Sản phụ nằm ngửa, hai chân duỗi thẳng, đã đi tiểu sạch trước khi khám. Bác sĩ dùng bờ trụ bàn tay nắn nhẹ nhàng từ trên mũi ức đi xuống để xác định đáy tử cung.",
+        question: "Vị trí giải phẫu chuẩn của đáy tử cung trên thành bụng ở tuổi thai 16 tuần là ở đâu?",
+        options: {
+          A: "Đáy tử cung nằm mấp mé ngay bờ trên khớp mu của người mẹ.",
+          B: "Đáy tử cung nằm ở điểm giữa đường nối khớp mu và rốn.",
+          C: "Đáy tử cung nằm ngang mức với bờ dưới của rốn người mẹ.",
+          D: "Đáy tử cung nằm ở vị trí cao hơn rốn khoảng hai khoát ngón tay."
+        },
+        correct: "B",
+        explanation: "Theo các mốc giải phẫu khám đáy tử cung trên thành bụng trong thai kỳ: - 12 tuần: đáy tử cung mấp mé bờ trên khớp mu. - 16 tuần: đáy tử cung nằm ở điểm giữa đường nối bờ trên khớp mu và rốn. - 20 tuần: đáy tử cung nằm ngang rốn (hoặc dưới rốn 1-2 khoát ngón tay). Loại trừ A (12 tuần), C (20 tuần), D (24 tuần)."
+      },
+      {
+        id: 41,
+        title: "CA LÂM SÀNG 41: MỐC GIẢI PHẪU ĐÁY TỬ CUNG TRÊN THÀNH BỤNG Ở THAI 20 TUẦN",
+        level: "Mức 3 - Vận dụng",
+        tags: [],
+        vignette: "Sản phụ 24 tuổi, mang thai lần đầu, đi khám thai định kỳ ở tuần thứ 20. Bác sĩ đặt thước dây đo bề cao tử cung từ bờ trên khớp vệ đến đáy tử cung đo được 18 cm. Khám nắn xác định vị trí đáy tử cung trên thành bụng.",
+        question: "Vị trí giải phẫu thông thường của đáy tử cung trên thành bụng ở tuổi thai 20 tuần là ở đâu?",
+        options: {
+          A: "Nằm ngang mức rốn hoặc cách dưới rốn khoảng một đến hai khoát ngón tay.",
+          B: "Nằm ở điểm giữa đường nối bờ trên khớp mu và rốn của sản phụ.",
+          C: "Nằm mấp mé ngay phía trên bờ trên khớp mu khoảng một centimet.",
+          D: "Nằm ở điểm giữa đường nối từ rốn lên đến mũi ức của người mẹ."
+        },
+        correct: "A",
+        explanation: "Ở tuổi thai 20 tuần, đáy tử cung thông thường nằm ngang mức rốn hoặc ngay dưới rốn khoảng 1 - 2 khoát ngón tay (tương đương bề cao tử cung khoảng 16 - 20 cm). Loại trừ B (16 tuần). Loại trừ C (12-13 tuần). Loại trừ D (32 tuần)."
+      },
+      {
+        id: 42,
+        title: "CA LÂM SÀNG 42: ẢNH HƯỞNG CỦA BÀNG QUANG CĂNG ĐẦY LÊN KẾT QUẢ ĐO BỀ CAO TỬ CUNG",
+        level: "Mức 4 - Phân tích & Đánh giá",
+        tags: ["level4"],
+        vignette: "Sản phụ 30 tuổi, thai 12 tuần. Trước khi vào phòng khám sản khoa, sản phụ uống nhiều nước và nhịn tiểu để chờ siêu âm. Bác sĩ khám lâm sàng nắn bụng thấy đáy tử cung nằm cao cách bờ trên khớp mu tới 8 cm (tương đương thai 16 tuần). Sau đó bác sĩ yêu cầu sản phụ đi tiểu sạch hoàn toàn rồi vào khám lại, lúc này đáy tử cung chỉ còn sờ thấy mấp mé ngay trên bờ trên khớp mu.",
+        question: "Nguyên tắc lâm sàng cốt lõi nào cần tuân thủ trước khi đo bề cao tử cung để tránh sai số?",
+        options: {
+          A: "Bắt buộc sản phụ phải đi tiểu sạch hoàn toàn để làm rỗng bàng quang.",
+          B: "Yêu cầu sản phụ phải nhịn tiểu căng tối đa để đẩy tử cung lên cao.",
+          C: "Cho sản phụ nằm nghiêng trái hoàn toàn trong suốt quá trình thăm khám.",
+          D: "Thực hiện đo bề cao tử cung sau khi sản phụ vừa ăn no ba mươi phút."
+        },
+        correct: "A",
+        explanation: "Bàng quang căng đầy nước tiểu nằm ở phía trước - dưới tử cung sẽ đẩy toàn bộ thân tử cung lên cao vào ổ bụng, làm sai lệch số đo bề cao tử cung lớn hơn nhiều so với tuổi thai thực tế. Quy tắc khám sản khoa bắt buộc là sản phụ phải đi tiểu hết trước khi khám nắn và đo bề cao tử cung. Loại trừ B vì nhịn tiểu là sai lầm gây sai số. Loại trừ C và D vì không phải quy chuẩn tư thế và thời điểm đo."
+      },
+      {
+        id: 43,
+        title: "CA LÂM SÀNG 43: TỬ CUNG GẬP SAU VÀ SAI SỐ ƯỚC LƯỢNG TUỔI THAI TRÊN LÂM SÀNG",
+        level: "Mức 4 - Phân tích cơ chế",
+        tags: ["us", "level4"],
+        vignette: "Sản phụ 27 tuổi, con so, thai 11 tuần theo ngày kinh cuối chắc chắn. Khám lâm sàng nắn bụng: Bác sĩ hoàn toàn không sờ thấy đáy tử cung trên khớp mu. Thăm khám phối hợp âm đạo - thành bụng: Thân tử cung to mềm nhưng nằm đổ gập hoàn toàn ra sau vào hõm xương cùng (tử cung gập sau). Bác sĩ siêu âm TVS xác nhận thai phát triển bình thường, CRL = 44 mm.",
+        question: "Tư thế tử cung gập sau ảnh hưởng như thế nào đến việc thăm dò lâm sàng kích thước tử cung trong 3 tháng đầu?",
+        options: {
+          A: "Làm đáy tử cung chậm vượt lên khớp mu khiến khám bụng thấy thai nhỏ hơn.",
+          B: "Làm tử cung to nhanh bất thường khiến bác sĩ chẩn đoán nhầm thành bệnh lý thai trứng toàn phần.",
+          C: "Gây giãn rộng hai túi cùng bên âm đạo làm xuất hiện dấu hiệu Noble giả tạo từ rất sớm.",
+          D: "Làm tăng áp lực buồng tử cung dẫn đến hiện tượng sẩy thai tự nhiên sớm không thể tránh khỏi."
+        },
+        correct: "A",
+        explanation: "Khi tử cung gập sau (retroverted/retroflexed uterus), thân tử cung chúc vào khoang xương cùng nên ở tuần 11-12 đáy tử cung chưa nhô lên trên bờ trên khớp mu, khám nắn qua thành bụng dễ lầm tưởng tử cung nhỏ hơn tuổi thai hoặc không có thai. Loại trừ B, C, D vì không đúng với hậu quả hình học giải phẫu của tử cung gập sau."
+      },
+      {
+        id: 44,
+        title: "CA LÂM SÀNG 44: THAI KỲ CHUYỂN PHÔI ĐÔNG LẠNH (FET) THEO PHÁC ĐỒ HRT",
+        level: "Mức 3 - Vận dụng",
+        tags: ["ivf"],
+        vignette: "Sản phụ 33 tuổi thực hiện chuyển phôi đông lạnh (FET) 01 phôi nang ngày 5 vào ngày 05/04/2026. Sản phụ được chuẩn bị niêm mạc bằng phác đồ nội tiết thay thế (HRT với Estrogen và Progesterone), buồng trứng bị ức chế hoàn toàn không có sự phát triển nang noãn và không có hiện tượng rụng trứng tự nhiên. Khám thai quý 1 đo CRL xác định sự phát triển của thai.",
+        question: "Ngày đầu kỳ kinh cuối quy ước (LMP) của thai kỳ chuyển phôi đông lạnh phác đồ HRT này là ngày nào?",
+        options: {
+          A: "Ngày 17/03/2026, tính bằng cách lấy ngày chuyển phôi trừ đi mười chín ngày.",
+          B: "Ngày 22/03/2026, tính bằng cách lấy ngày chuyển phôi trừ đi mười bốn ngày.",
+          C: "Ngày 19/03/2026, tính bằng cách lấy ngày chuyển phôi trừ đi mười bảy ngày.",
+          D: "Ngày bắt đầu uống viên thuốc nội tiết Estrogen đầu tiên của chu kỳ chuẩn bị."
+        },
+        correct: "A",
+        explanation: "Trong phác đồ HRT chuyển phôi đông lạnh ngày 5, không có rụng trứng tự nhiên. Ngày kinh quy ước luôn được tính theo công thức: LMP = Ngày chuyển phôi - (Tuổi phôi + 14 ngày) = Ngày chuyển phôi - 19 ngày = 05/04 - 19 ngày = 17/03/2026. Loại trừ B (dành cho IUI/rụng trứng). Loại trừ C (dành cho phôi ngày 3). Loại trừ D vì ngày uống thuốc thay đổi tùy phác đồ, không dùng làm mốc sinh lý."
+      },
+      {
+        id: 45,
+        title: "CA LÂM SÀNG 45: THAI KỲ CHUYỂN PHÔI ĐÔNG LẠNH (FET) THEO CHU KỲ TỰ NHIÊN",
+        level: "Mức 3 - Vận dụng",
+        tags: ["ivf"],
+        vignette: "Sản phụ 29 tuổi, kinh nguyệt rất đều 28 ngày, thực hiện chuyển phôi đông lạnh theo chu kỳ tự nhiên (Natural cycle FET). Theo dõi siêu âm nang noãn ghi nhận hiện tượng rụng trứng tự nhiên xảy ra vào ngày 12/03/2026. Bác sĩ chỉ định chuyển 01 phôi nang ngày 5 vào đúng 5 ngày sau rụng trứng, tức ngày 17/03/2026.",
+        question: "Mốc thời gian sinh lý chuẩn mực nhất tương ứng với ngày rụng trứng để tính ngày kinh quy ước là gì?",
+        options: {
+          A: "Lấy ngày rụng trứng trừ đi mười bốn ngày, tức ngày 26/02/2026.",
+          B: "Lấy ngày chuyển phôi trừ đi mười bốn ngày, tức ngày 03/03/2026.",
+          C: "Lấy ngày chuyển phôi trừ đi hai mươi mốt ngày, tức ngày 24/02/2026.",
+          D: "Lấy ngày bắt đầu có hiện tượng làm tổ của phôi thai trong lòng tử cung."
+        },
+        correct: "A",
+        explanation: "Trong chu kỳ tự nhiên theo dõi rụng trứng, ngày rụng trứng tương ứng với ngày thứ 14 của chu kỳ kinh quy ước. Do đó: LMP = Ngày rụng trứng - 14 ngày = 12/03 - 14 ngày = 26/02/2026 (hoặc lấy ngày chuyển phôi 17/03 - 19 ngày = 26/02/2026, kết quả hoàn toàn đồng nhất). Loại trừ B, C, D vì tính sai quy tắc ngày rụng trứng và tuổi phôi."
+      },
+      {
+        id: 46,
+        title: "CA LÂM SÀNG 46: HIỆU CHỈNH TUỔI THAI THEO ACOG Ở MỐC 8 TUẦN VỚI ĐỘ LỆCH NHỎ",
+        level: "Mức 4 - Đánh giá & Ra quyết định",
+        tags: ["us", "level4"],
+        vignette: "Sản phụ 24 tuổi, mang thai lần đầu, nhớ chính xác ngày kinh cuối (chu kỳ đều 28 ngày), tính tuổi thai theo kinh là 8 tuần 2 ngày (58 ngày). Đi siêu âm quý 1 được bác sĩ đo CRL = 19 mm, máy siêu âm tính tương đương 8 tuần 5 ngày (61 ngày). Độ chênh lệch giữa siêu âm và ngày kinh là 3 ngày. Bác sĩ siêu âm đề xuất thay đổi ngày dự sinh theo máy siêu âm.",
+        question: "Theo Bảng 3.1 của ACOG, quyết định chuyên môn nào sau đây là chuẩn xác nhất?",
+        options: {
+          A: "Giữ nguyên ngày dự sinh theo ngày kinh cuối vì độ chênh lệch không vượt quá năm ngày.",
+          B: "Đổi ngày dự sinh theo siêu âm vì siêu âm luôn luôn ưu tiên hơn ngày kinh ở mọi tuần thai.",
+          C: "Lấy trung bình cộng giữa hai mốc ngày dự sinh để ghi vào sổ khám thai định kỳ.",
+          D: "Hủy bỏ ngày kinh cuối và chờ siêu âm đo đường kính lưỡng đỉnh ở tuần thứ hai mươi."
+        },
+        correct: "A",
+        explanation: "Theo Bảng 3.1 của ACOG: Ở tuổi thai <= 8 tuần 6 ngày, ngưỡng chênh lệch để hiệu chỉnh ngày dự sinh là > 5 ngày. Nếu độ chênh lệch <= 5 ngày (ở đây chỉ lệch 3 ngày) thì bắt buộc giữ nguyên ngày dự sinh theo ngày đầu kỳ kinh cuối. Loại trừ B vì sai lầm thường gặp là tự ý đổi ngày dự sinh dù độ lệch chưa vượt ngưỡng. Loại trừ C và D vì không đúng khuyến cáo."
+      },
+      {
+        id: 47,
+        title: "CA LÂM SÀNG 47: TIÊU CHUẨN ĐƯỜNG KÍNH TÚI THAI TRUNG BÌNH (MSD) < 25 MM CHƯA CÓ PHÔI THAI",
+        level: "Mức 3 - Phân tích & Xử trí",
+        tags: ["us"],
+        vignette: "Sản phụ 26 tuổi, trễ kinh 10 ngày, không đau bụng, không ra máu. Siêu âm TVS: Buồng tử cung có 01 túi thai bờ căng tròn đều, đo đường kính trung bình MSD = 18 mm. Bên trong túi thai quan sát thấy túi noãn hoàng d = 3.5 mm, nhưng chưa thấy rõ âm vang phôi thai. Bác sĩ siêu âm giải thích sản phụ cần được theo dõi tiếp.",
+        question: "Thái độ xử trí chuẩn mực và an toàn nhất cho sản phụ này là gì?",
+        options: {
+          A: "Hẹn sản phụ siêu âm lại sau 7 đến 14 ngày để đánh giá phôi thai.",
+          B: "Chẩn đoán xác định là thai ngừng phát triển dạng túi thai trống và chỉ định hút thai.",
+          C: "Chỉ định tiêm Methotrexate ngay để dự phòng nguy cơ thai trứng thoái hóa nước ác tính.",
+          D: "Yêu cầu sản phụ nhập viện cấp cứu nằm bất động tuyệt đối trên giường bệnh phòng ngừa sẩy."
+        },
+        correct: "A",
+        explanation: "Tiêu chuẩn chẩn đoán thai ngừng tiến triển dạng túi thai trống đòi hỏi MSD >= 25 mm mà không có phôi. Ở đây MSD = 18 mm (< 25 mm) và đã có túi noãn hoàng, do đó chưa đủ tiêu chuẩn chẩn đoán thai lưu. Xử trí chuẩn là hẹn siêu âm lại sau 7 - 14 ngày (khi túi thai có yolk sac, thường sau >= 11 ngày sẽ thấy phôi và tim thai). Loại trừ B vì can thiệp sớm sẽ phá nhầm thai sống. Loại trừ C và D vì không có chỉ định."
+      },
+      {
+        id: 48,
+        title: "CA LÂM SÀNG 48: Ý NGHĨA TIÊN LƯỢNG CỦA TÚI NOÃN HOÀNG (YOLK SAC) BẤT THƯỜNG",
+        level: "Mức 4 - Đánh giá & Tiên lượng",
+        tags: ["us", "level4"],
+        vignette: "Sản phụ 29 tuổi, thai 7 tuần theo ngày kinh. Siêu âm qua đầu dò âm đạo ghi nhận: Buồng tử cung có túi thai, phôi thai đo CRL = 5 mm có tim thai yếu 95 lần/phút. Túi noãn hoàng (yolk sac) có hình dạng méo mó, thành tăng âm dày bất thường và đo đường kính d = 7.5 mm (lớn hơn bình thường).",
+        question: "Nhận định nào sau đây về túi noãn hoàng d = 7.5 mm là chính xác nhất?",
+        options: {
+          A: "Túi noãn hoàng lớn trên 7 mm và biến dạng là dấu hiệu tiên lượng xấu.",
+          B: "Túi noãn hoàng càng lớn chứng tỏ thai nhi được cung cấp dinh dưỡng vô cùng dồi dào và khỏe mạnh.",
+          C: "Túi noãn hoàng lớn là tiêu chuẩn vàng khẳng định thai nhi bị dị tật ống thần kinh sớm nghiêm trọng.",
+          D: "Túi noãn hoàng lớn là bằng chứng chắc chắn của một thai kỳ mang song thai cùng trứng tự nhiên."
+        },
+        correct: "A",
+        explanation: "Bình thường đường kính túi noãn hoàng (yolk sac) tăng dần và không vượt quá 5 - 6 mm ở thai dưới 10 tuần. Khi túi noãn hoàng có kích thước > 7 mm, vách dày, vôi hóa hoặc hình dạng méo mó, đây là dấu hiệu cảnh báo nguy cơ cao thai ngừng tiến triển hoặc bất thường nhiễm sắc thể. Loại trừ B vì yolk sac to là thoái hóa ứ dịch chứ không phải dinh dưỡng tốt. Loại trừ C và D vì không phải tiêu chuẩn chẩn đoán dị tật ống thần kinh hay song thai."
+      },
+      {
+        id: 49,
+        title: "CA LÂM SÀNG 49: DẤU HIỆU PISKACEK TRONG THAI KỲ SỚM VÀ CƠ CHẾ LÂM SÀNG",
+        level: "Mức 3 - Phân tích",
+        tags: [],
+        vignette: "Phụ nữ 28 tuổi, trễ kinh 6 tuần. Khám phụ khoa bằng hai tay: Thân tử cung to hơn bình thường nhưng phát triển không đều, vùng góc sừng bên phải tử cung nhô gồ lên hẳn một khối mềm, trong khi sừng bên trái vẫn thon nhỏ bình thường. Hai phần phụ không sờ thấy u cục. Bác sĩ phân vân giữa thai làm tổ lệch góc sừng tử cung với một khối u xơ tử cung thể kẽ.",
+        question: "Dấu hiệu tử cung to gồ không đối xứng do phôi thai làm tổ ở một góc sừng tử cung được gọi tên là gì?",
+        options: {
+          A: "Dấu hiệu Piskacek.",
+          B: "Dấu hiệu Noble.",
+          C: "Dấu hiệu Hegar.",
+          D: "Dấu hiệu Tarnier."
+        },
+        correct: "A",
+        explanation: "Dấu hiệu Piskacek: Hiện tượng thân tử cung phát triển to không đối xứng, gồ lên ở một bên sừng tử cung trong giai đoạn sớm (khoảng tuần 6 - 8), do phôi nang làm tổ lệch về một góc sừng tử cung. Khi thai lớn lên (sau tuần 10 - 12), buồng tử cung sẽ tròn đều trở lại. Loại trừ B (Noble - to tròn bè ngang). Loại trừ C (Hegar - eo mềm). Loại trừ D (Tarnier - nghiệm pháp ối vỡ)."
+      },
+      {
+        id: 50,
+        title: "CA LÂM SÀNG 50: THAI PHỤ CHO CON BÚ VÔ KINH (LAM) VÀ TIÊU CHUẨN XÁC LẬP TUỔI THAI",
+        level: "Mức 3 - Vận dụng",
+        tags: ["us"],
+        vignette: "Sản phụ 25 tuổi, sinh con đầu lòng được 6 tháng, đang nuôi con hoàn toàn bằng sữa mẹ và chưa hề có kinh nguyệt trở lại (vô kinh sau sinh). Gần đây sản phụ thấy buồn nôn, mệt mỏi và bụng dưới hơi to nên đi khám. Siêu âm thai đường bụng: Một thai sống phát triển trong buồng tử cung, cử động thai tốt, tim thai 156 lần/phút. Bác sĩ đo chiều dài đầu mông trên mặt cắt dọc giữa chuẩn đạt CRL = 52 mm.",
+        question: "Trong tình huống hoàn toàn không có ngày kinh cuối do cho con bú vô kinh, ngày dự sinh được xác lập chuẩn xác nhất dựa vào đâu?",
+        options: {
+          A: "Dựa vào số đo chiều dài đầu mông CRL trên siêu âm quý 1.",
+          B: "Dựa vào ngày sinh của đứa con đầu lòng cộng thêm đúng chín tháng mười ngày.",
+          C: "Chờ đến khi thai cử động máy rõ ràng rồi cộng thêm hai mươi tuần lễ tiếp theo.",
+          D: "Dựa vào bề cao tử cung đo được trên thành bụng chia cho bốn rồi cộng thêm một."
+        },
+        correct: "A",
+        explanation: "Khi sản phụ hoàn toàn không có ngày kinh cuối (như có thai trong thời kỳ cho con bú vô kinh LAM, kinh nguyệt không đều nặng, hoặc không nhớ ngày kinh), siêu âm đo chiều dài đầu mông (CRL) ở quý 1 (từ 7 tuần đến 13 tuần 6 ngày) là tiêu chuẩn vàng duy nhất có độ chính xác cao nhất (sai số ± 5 đến 7 ngày) để xác định tuổi thai và ngày dự sinh chính thức cho thai kỳ. Loại trừ B, C, D vì hoàn toàn không có cơ sở khoa học chính xác."
+      }
+    ];
+
+    // DYNAMIC UNIQUE KEY PER HTML FILE (Tránh xung đột bộ nhớ giữa 50 file trên GitHub Pages)
+    const PAGE_FILENAME = window.location.pathname.split('/').pop().replace('.html', '').toLowerCase() || 'bai-03';
+    const DB_STORAGE_KEY = `NT_QUIZ_DATA_${PAGE_FILENAME}`;
+    const DB_SETTINGS_KEY = `NT_QUIZ_CFG_${PAGE_FILENAME}`;
+
+    // App State
+    let quizState = {
+      answers: {},        // { qId: 'A' | 'B' | 'C' | 'D' }
+      bookmarked: {},     // { qId: true/false }
+      notes: {},          // { qId: "text" }
+      lastIndex: 0
+    };
+
+    let currentIndex = 0;
+    let currentFilter = 'all';
+    let isExamMode = false;
+    let activeRightTab = 'explanation';
+    let noteDebounceTimer = null;
+
+    // Load LocalStorage
+    function loadAppState() {
+      try {
+        const saved = localStorage.getItem(DB_STORAGE_KEY);
+        if (saved) {
+          quizState = { ...quizState, ...JSON.parse(saved) };
+          if (typeof quizState.lastIndex === 'number' && quizState.lastIndex >= 0 && quizState.lastIndex < rawQuestions.length) {
+            currentIndex = quizState.lastIndex;
+          }
+        }
+
+        const savedCfg = localStorage.getItem(DB_SETTINGS_KEY);
+        if (savedCfg) {
+          const cfg = JSON.parse(savedCfg);
+          isExamMode = !!cfg.isExamMode;
+          if (cfg.darkMode) {
+            document.documentElement.classList.add('dark');
+            updateThemeIcon(true);
+          }
+        }
+      } catch (e) {
+        console.error("Lỗi đọc LocalStorage:", e);
+      }
+    }
+
+    function saveAppState() {
+      try {
+        quizState.lastIndex = currentIndex;
+        localStorage.setItem(DB_STORAGE_KEY, JSON.stringify(quizState));
+      } catch (e) {
+        console.error("Lỗi ghi LocalStorage:", e);
+      }
+    }
+
+    function saveSettings() {
+      try {
+        localStorage.setItem(DB_SETTINGS_KEY, JSON.stringify({
+          isExamMode: isExamMode,
+          darkMode: document.documentElement.classList.contains('dark')
+        }));
+      } catch (e) {
+        console.error("Lỗi ghi Settings:", e);
+      }
+    }
+
+    // Theme Switch
+    function toggleDarkMode() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      updateThemeIcon(isDark);
+      saveSettings();
+    }
+
+    function updateThemeIcon(isDark) {
+      const icon = document.getElementById('theme-icon');
+      if (icon) {
+        icon.className = isDark ? "fa-solid fa-sun text-amber-400 text-xs sm:text-sm" : "fa-solid fa-moon text-slate-600 text-xs sm:text-sm";
+      }
+    }
+
+    // Toggle Exam / Study Mode
+    function toggleExamMode() {
+      isExamMode = !isExamMode;
+      const label = document.getElementById('mode-label');
+      const btn = document.getElementById('mode-btn');
+      if (isExamMode) {
+        label.innerText = "Thi thử";
+        btn.classList.add('border-teal-500', 'bg-teal-50', 'dark:bg-teal-950/40');
+      } else {
+        label.innerText = "Luyện tập";
+        btn.classList.remove('border-teal-500', 'bg-teal-50', 'dark:bg-teal-950/40');
+      }
+      saveSettings();
+      renderQuestion();
+    }
+
+    // Filter Navigation
+    function setFilter(filterType) {
+      currentFilter = filterType;
+      document.querySelectorAll('.filter-pill').forEach(btn => {
+        if (btn.dataset.f === filterType) {
+          btn.className = "filter-pill shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-medium transition bg-teal-600 text-white shadow-xs";
+        } else {
+          btn.className = "filter-pill shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-medium transition bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200";
+        }
+      });
+
+      const filtered = getFilteredIndices();
+      if (filtered.length > 0 && !filtered.includes(currentIndex)) {
+        currentIndex = filtered[0];
+      }
+      renderQuestion();
+      renderAllMatrices();
+      updateStats();
+    }
+
+    function getFilteredIndices() {
+      return rawQuestions.map((q, idx) => {
+        const qId = q.id;
+        const ans = quizState.answers[qId];
+        const isAnswered = !!ans;
+        const isCorrect = isAnswered && ans === q.correct;
+        const isStarred = !!quizState.bookmarked[qId];
+
+        if (currentFilter === 'all') return idx;
+        if (currentFilter === 'starred') return isStarred ? idx : null;
+        if (currentFilter === 'wrong') return (isAnswered && !isCorrect) ? idx : null;
+        if (currentFilter === 'unanswered') return !isAnswered ? idx : null;
+        if (currentFilter === 'ivf') return (q.tags && q.tags.includes('ivf')) ? idx : null;
+        if (currentFilter === 'us') return (q.tags && q.tags.includes('us')) ? idx : null;
+        if (currentFilter === 'level4') return (q.tags && q.tags.includes('level4')) ? idx : null;
+        return idx;
+      }).filter(idx => idx !== null);
+    }
+
+    // Prev / Next Navigation
+    function prevQuestion() {
+      const filtered = getFilteredIndices();
+      if (filtered.length === 0) return;
+      const pos = filtered.indexOf(currentIndex);
+      if (pos > 0) {
+        currentIndex = filtered[pos - 1];
+      } else {
+        currentIndex = filtered[filtered.length - 1];
+      }
+      resetScrollPosition();
+      renderQuestion();
+      renderAllMatrices();
+      saveAppState();
+    }
+
+    function nextQuestion() {
+      const filtered = getFilteredIndices();
+      if (filtered.length === 0) return;
+      const pos = filtered.indexOf(currentIndex);
+      if (pos < filtered.length - 1) {
+        currentIndex = filtered[pos + 1];
+      } else {
+        currentIndex = filtered[0];
+      }
+      resetScrollPosition();
+      renderQuestion();
+      renderAllMatrices();
+      saveAppState();
+    }
+
+    function jumpToQuestion(idx) {
+      currentIndex = idx;
+      closeMatrixDrawer();
+      resetScrollPosition();
+      renderQuestion();
+      renderAllMatrices();
+      saveAppState();
+    }
+
+    function resetScrollPosition() {
+      const scrollPane = document.getElementById('question-scroll-pane');
+      if (scrollPane) scrollPane.scrollTop = 0;
+    }
+
+    // Bookmark Toggle
+    function toggleBookmarkCurrent() {
+      const q = rawQuestions[currentIndex];
+      if (!q) return;
+      quizState.bookmarked[q.id] = !quizState.bookmarked[q.id];
+      saveAppState();
+      syncBookmarkUI();
+      renderAllMatrices();
+      updateStats();
+    }
+
+    function syncBookmarkUI() {
+      const q = rawQuestions[currentIndex];
+      const isStarred = !!quizState.bookmarked[q.id];
+      
+      const starIcon = document.getElementById('star-icon');
+      const starText = document.getElementById('star-text');
+      const headerStarBtn = document.getElementById('header-star-btn');
+      const panelStarBtn = document.getElementById('panel-star-btn');
+
+      if (isStarred) {
+        if (starIcon) starIcon.className = "fa-solid fa-star text-amber-500";
+        if (starText) starText.innerText = "Đã nhớ";
+        if (panelStarBtn) panelStarBtn.classList.add('bg-amber-50', 'dark:bg-amber-950/40', 'border-amber-300', 'dark:border-amber-700', 'text-amber-600');
+        if (headerStarBtn) headerStarBtn.innerHTML = '<i class="fa-solid fa-star text-amber-500 text-sm"></i>';
+      } else {
+        if (starIcon) starIcon.className = "fa-regular fa-star text-amber-500";
+        if (starText) starText.innerText = "Ghi nhớ";
+        if (panelStarBtn) panelStarBtn.classList.remove('bg-amber-50', 'dark:bg-amber-950/40', 'border-amber-300', 'dark:border-amber-700', 'text-amber-600');
+        if (headerStarBtn) headerStarBtn.innerHTML = '<i class="fa-regular fa-star text-slate-400 text-sm"></i>';
+      }
+    }
+
+    // Select Option
+    function selectOption(chosen) {
+      const q = rawQuestions[currentIndex];
+      quizState.answers[q.id] = chosen;
+      saveAppState();
+      renderQuestion();
+      renderAllMatrices();
+      updateStats();
+
+      // On desktop, auto switch to explanation tab
+      if (!isExamMode && window.innerWidth >= 768) {
+        switchRightTab('explanation');
+      }
+    }
+
+    // Note saving with multi-device sync
+    function saveCurrentNote(val, source) {
+      const q = rawQuestions[currentIndex];
+      if (!q) return;
+      quizState.notes[q.id] = val;
+      saveAppState();
+
+      // Sync across both desktop and mobile textareas
+      if (source === 'mobile') {
+        const desk = document.getElementById('desktop-note-input');
+        if (desk) desk.value = val;
+      } else {
+        const mob = document.getElementById('mobile-note-input');
+        if (mob) mob.value = val;
+      }
+
+      // Flash indicator
+      const ind = source === 'mobile' ? document.getElementById('mobile-note-saved') : document.getElementById('desktop-note-indicator');
+      if (ind) {
+        ind.style.opacity = '1';
+        clearTimeout(noteDebounceTimer);
+        noteDebounceTimer = setTimeout(() => {
+          ind.style.opacity = '0';
+        }, 1200);
+      }
+    }
+
+    // Tab Switcher for Desktop Aside
+    function switchRightTab(tab) {
+      activeRightTab = tab;
+      const expBtn = document.getElementById('tab-btn-exp');
+      const noteBtn = document.getElementById('tab-btn-note');
+      const expPane = document.getElementById('tab-pane-explanation');
+      const notePane = document.getElementById('tab-pane-notes');
+
+      if (tab === 'explanation') {
+        if (expBtn) expBtn.className = "text-xs font-bold pb-1 text-teal-600 dark:text-teal-400 border-b-2 border-teal-600 flex items-center gap-1.5 transition";
+        if (noteBtn) noteBtn.className = "text-xs font-bold pb-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center gap-1.5 transition";
+        if (expPane) { expPane.classList.remove('hidden'); expPane.classList.add('block'); }
+        if (notePane) { notePane.classList.add('hidden'); notePane.classList.remove('flex'); }
+      } else {
+        if (noteBtn) noteBtn.className = "text-xs font-bold pb-1 text-teal-600 dark:text-teal-400 border-b-2 border-teal-600 flex items-center gap-1.5 transition";
+        if (expBtn) expBtn.className = "text-xs font-bold pb-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center gap-1.5 transition";
+        if (expPane) { expPane.classList.add('hidden'); expPane.classList.remove('block'); }
+        if (notePane) { notePane.classList.remove('hidden'); notePane.classList.add('flex'); }
+      }
+    }
+
+    // Render Question & Options
+    function renderQuestion() {
+      const q = rawQuestions[currentIndex];
+      if (!q) return;
+
+      // Header labels
+      document.getElementById('case-badge').innerText = `CA ${q.id < 10 ? '0' + q.id : q.id}/50`;
+      document.getElementById('level-badge').innerText = q.level;
+      document.getElementById('mobile-footer-counter').innerText = `Ca ${q.id} / 50`;
+
+      const userAns = quizState.answers[q.id];
+      const isAnswered = !!userAns;
+      const isCorrect = userAns === q.correct;
+      const statusPill = document.getElementById('status-pill');
+
+      if (isAnswered) {
+        statusPill.classList.remove('hidden');
+        if (isCorrect) {
+          statusPill.className = "text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300";
+          statusPill.innerHTML = '<i class="fa-solid fa-check mr-0.5"></i>Đúng';
+        } else {
+          statusPill.className = "text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300";
+          statusPill.innerHTML = '<i class="fa-solid fa-xmark mr-0.5"></i>Sai';
+        }
+      } else {
+        statusPill.classList.add('hidden');
+      }
+
+      // Title & Text
+      document.getElementById('q-title').innerText = q.title;
+      document.getElementById('q-vignette').innerText = q.vignette;
+      document.getElementById('q-question').innerHTML = `<i class="fa-solid fa-circle-question text-teal-600 mr-1.5"></i>${q.question}`;
+
+      // Render Options with Mobile-Optimized Min Height (>= 48px touch targets)
+      const container = document.getElementById('options-container');
+      const letters = ['A', 'B', 'C', 'D'];
+      let html = '';
+
+      letters.forEach(letter => {
+        const text = q.options[letter];
+        let btnCls = "w-full text-left p-3 sm:p-3.5 min-h-[48px] rounded-xl border text-xs sm:text-sm font-medium transition flex items-center gap-2.5 sm:gap-3 relative select-none active:scale-[0.99] ";
+        let badgeCls = "w-7 h-7 sm:w-6 sm:h-6 rounded-lg font-bold flex items-center justify-center shrink-0 text-xs font-mono ";
+
+        if (!isAnswered) {
+          btnCls += "border-slate-200 dark:border-slate-800 hover:border-teal-500 hover:bg-teal-50/50 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900";
+          badgeCls += "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300";
+        } else {
+          if (!isExamMode) {
+            // Luyện tập: Thấy đúng/sai tức thì
+            if (letter === q.correct) {
+              btnCls += "border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 font-semibold ring-1 ring-emerald-500/50";
+              badgeCls += "bg-emerald-600 text-white shadow-xs";
+            } else if (letter === userAns) {
+              btnCls += "border-rose-400 bg-rose-50 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200 font-semibold ring-1 ring-rose-500/50";
+              badgeCls += "bg-rose-600 text-white shadow-xs";
+            } else {
+              btnCls += "border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 opacity-60 bg-white dark:bg-slate-900";
+              badgeCls += "bg-slate-100 dark:bg-slate-800 text-slate-400";
+            }
+          } else {
+            // Thi thử: Chỉ đánh dấu phương án người dùng đã bấm
+            if (letter === userAns) {
+              btnCls += "border-teal-600 bg-teal-50 dark:bg-teal-950/50 text-teal-900 dark:text-teal-200 font-semibold ring-1 ring-teal-600";
+              badgeCls += "bg-teal-600 text-white";
+            } else {
+              btnCls += "border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900";
+              badgeCls += "bg-slate-100 dark:bg-slate-800 text-slate-500";
+            }
+          }
+        }
+
+        html += `
+          <button onclick="selectOption('${letter}')" class="${btnCls}">
+            <span class="${badgeCls}">${letter}</span>
+            <span class="flex-1 py-0.5 leading-snug">${text}</span>
+            ${(!isExamMode && isAnswered && letter === q.correct) ? '<i class="fa-solid fa-circle-check text-emerald-600 dark:text-emerald-400 text-base sm:text-lg ml-1 shrink-0"></i>' : ''}
+            ${(!isExamMode && isAnswered && letter === userAns && letter !== q.correct) ? '<i class="fa-solid fa-circle-xmark text-rose-500 text-base sm:text-lg ml-1 shrink-0"></i>' : ''}
+          </button>
+        `;
+      });
+
+      container.innerHTML = html;
+
+      // Sync bookmark and notes content
+      syncBookmarkUI();
+      syncNotesInputs(q.id);
+      renderExplanationViews(q, isAnswered, userAns);
+    }
+
+    function syncNotesInputs(qId) {
+      const savedNote = quizState.notes[qId] || '';
+      const mobNote = document.getElementById('mobile-note-input');
+      const deskNote = document.getElementById('desktop-note-input');
+      if (mobNote) mobNote.value = savedNote;
+      if (deskNote) deskNote.value = savedNote;
+    }
+
+    function renderExplanationViews(q, isAnswered, userAns) {
+      const mobBox = document.getElementById('mobile-explanation-box');
+      const deskBox = document.getElementById('desktop-explanation-box');
+
+      let contentHtml = '';
+
+      if (!isAnswered) {
+        contentHtml = `
+          <div class="p-3.5 sm:p-5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 text-center text-slate-400 text-xs flex flex-col items-center justify-center gap-1.5">
+            <i class="fa-solid fa-lightbulb text-teal-500 text-base"></i>
+            <p class="font-medium text-slate-600 dark:text-slate-300">Chưa chọn câu trả lời</p>
+            <p class="text-[11px]">Bấm chọn 1 phương án A, B, C hoặc D để xem đáp án đối chiếu và phân tích bẫy.</p>
+          </div>
+        `;
+      } else if (isExamMode) {
+        contentHtml = `
+          <div class="p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/40 text-center">
+            <p class="text-xs font-bold text-amber-800 dark:text-amber-400 flex items-center justify-center gap-1">
+              <i class="fa-solid fa-lock"></i> Đang ở Chế Độ Thi Thử
+            </p>
+            <p class="text-[11px] text-slate-500 mt-1">Lời giải đã được ẩn để bạn tự lượng giá. Chuyển sang "Luyện tập" để mở khóa.</p>
+          </div>
+        `;
+      } else {
+        contentHtml = `
+          <div class="space-y-2 select-text">
+            <div class="p-2.5 sm:p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/40 text-emerald-950 dark:text-emerald-200 font-semibold text-xs flex items-start gap-2">
+              <i class="fa-solid fa-circle-check text-emerald-600 text-sm mt-0.5 shrink-0"></i>
+              <span>Đáp án chuẩn: <strong class="underline">${q.correct}</strong> - ${q.options[q.correct]}</span>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60 text-xs text-slate-700 dark:text-slate-300 leading-relaxed text-justify space-y-1.5">
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-teal-700 dark:text-teal-400 flex items-center gap-1">
+                <i class="fa-solid fa-microscope"></i> Biện luận y khoa & Phân tích bẫy
+              </div>
+              <p>${q.explanation}</p>
+            </div>
+          </div>
+        `;
+      }
+
+      if (mobBox) mobBox.innerHTML = contentHtml;
+      if (deskBox) deskBox.innerHTML = contentHtml;
+    }
+
+    // Render Matrix grids (both for desktop panel & mobile bottom sheet drawer)
+    function renderAllMatrices() {
+      const deskGrid = document.getElementById('desktop-matrix-grid');
+      const mobGrid = document.getElementById('mobile-matrix-grid');
+
+      let deskHtml = '';
+      let mobHtml = '';
+
+      rawQuestions.forEach((q, idx) => {
+        const qId = q.id;
+        const ans = quizState.answers[qId];
+        const isCurrent = idx === currentIndex;
+        const isStarred = !!quizState.bookmarked[qId];
+
+        let baseBg = "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700";
+
+        if (ans) {
+          if (ans === q.correct) {
+            baseBg = "bg-emerald-500 text-white border-emerald-600 font-semibold";
+          } else {
+            baseBg = "bg-rose-500 text-white border-rose-600 font-semibold";
+          }
+        }
+
+        const currentStyle = isCurrent ? " ring-2 ring-teal-500 ring-offset-1 dark:ring-offset-slate-900 font-extrabold scale-105 z-10" : "";
+
+        // Desktop item
+        deskHtml += `
+          <button onclick="jumpToQuestion(${idx})" class="h-6 rounded text-[10px] font-mono border relative flex items-center justify-center transition hover:opacity-80 ${baseBg} ${currentStyle}" title="Ca ${qId}">
+            ${qId}
+            ${isStarred ? '<span class="absolute -top-1 -right-0.5 text-[7px] text-amber-400 drop-shadow"><i class="fa-solid fa-star"></i></span>' : ''}
+          </button>
+        `;
+
+        // Mobile drawer item (Larger tap target)
+        mobHtml += `
+          <button onclick="jumpToQuestion(${idx})" class="h-10 rounded-xl text-xs font-mono font-bold border relative flex items-center justify-center transition active:scale-95 ${baseBg} ${currentStyle}">
+            <span>${qId < 10 ? '0' + qId : qId}</span>
+            ${isStarred ? '<span class="absolute top-1 right-1 text-[9px] text-amber-400 drop-shadow"><i class="fa-solid fa-star"></i></span>' : ''}
+          </button>
+        `;
+      });
+
+      if (deskGrid) deskGrid.innerHTML = deskHtml;
+      if (mobGrid) mobGrid.innerHTML = mobHtml;
+    }
+
+    // Update Statistics & Counts
+    function updateStats() {
+      let answered = 0;
+      let correct = 0;
+      let wrong = 0;
+      let starred = 0;
+
+      rawQuestions.forEach(q => {
+        const ans = quizState.answers[q.id];
+        if (ans) {
+          answered++;
+          if (ans === q.correct) correct++;
+          else wrong++;
+        }
+        if (quizState.bookmarked[q.id]) starred++;
+      });
+
+      const total = rawQuestions.length;
+      const pct = Math.round((answered / total) * 100);
+
+      const pPct = document.getElementById('progress-percent');
+      const pBar = document.getElementById('progress-bar');
+      const cRatio = document.getElementById('correct-ratio');
+
+      if (pPct) pPct.innerText = `${pct}%`;
+      if (pBar) pBar.style.width = `${pct}%`;
+      if (cRatio) cRatio.innerText = `${correct}/${total}`;
+
+      document.getElementById('count-starred').innerText = starred;
+      document.getElementById('count-wrong').innerText = wrong;
+      document.getElementById('count-unanswered').innerText = total - answered;
+
+      const filtered = getFilteredIndices();
+      const deskFiltered = document.getElementById('desktop-filtered-label');
+      if (deskFiltered) deskFiltered.innerText = `${filtered.length}/50 Ca`;
+    }
+
+    // Mobile Matrix Drawer Handlers
+    function openMatrixDrawer() {
+      const drawer = document.getElementById('matrix-drawer');
+      const backdrop = document.getElementById('matrix-drawer-backdrop');
+      backdrop.classList.remove('hidden');
+      setTimeout(() => {
+        drawer.classList.remove('translate-y-full');
+      }, 10);
+    }
+
+    function closeMatrixDrawer() {
+      const drawer = document.getElementById('matrix-drawer');
+      const backdrop = document.getElementById('matrix-drawer-backdrop');
+      drawer.classList.add('translate-y-full');
+      setTimeout(() => {
+        backdrop.classList.add('hidden');
+      }, 250);
+    }
+
+    // Reset Progress Modal
+    function promptResetProgress() {
+      const modal = document.getElementById('reset-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeResetModal() {
+      const modal = document.getElementById('reset-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function confirmResetProgress() {
+      quizState.answers = {};
+      quizState.bookmarked = {};
+      currentIndex = 0;
+      saveAppState();
+      closeResetModal();
+      renderQuestion();
+      renderAllMatrices();
+      updateStats();
+    }
+
+    // Touch Swipe Gesture Support (Vuốt trái = Sau, Vuốt phải = Trước)
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+
+    const swipeEl = document.getElementById('swipe-area');
+
+    swipeEl.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    swipeEl.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      touchEndY = e.changedTouches[0].screenY;
+      handleGesture();
+    }, { passive: true });
+
+    function handleGesture() {
+      const diffX = touchEndX - touchStartX;
+      const diffY = touchEndY - touchStartY;
+      // Chỉ kích hoạt swipe nếu vuốt ngang nhiều hơn vuốt dọc và độ dài > 50px
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+        if (diffX < 0) {
+          nextQuestion(); // Vuốt sang trái -> Câu kế
+        } else {
+          prevQuestion(); // Vuốt sang phải -> Câu trước
+        }
+      }
+    }
+
+    // Keyboard Shortcuts (Desktop)
+    window.addEventListener('keydown', (e) => {
+      if (document.activeElement && document.activeElement.tagName === 'TEXTAREA') {
+        return;
+      }
+      if (e.key === 'ArrowLeft') {
+        prevQuestion();
+      } else if (e.key === 'ArrowRight') {
+        nextQuestion();
+      } else if (['1', 'a', 'A'].includes(e.key)) {
+        selectOption('A');
+      } else if (['2', 'b', 'B'].includes(e.key)) {
+        selectOption('B');
+      } else if (['3', 'c', 'C'].includes(e.key)) {
+        selectOption('C');
+      } else if (['4', 'd', 'D'].includes(e.key)) {
+        selectOption('D');
+      } else if (['s', 'S'].includes(e.key)) {
+        toggleBookmarkCurrent();
+      }
+    });
+
+    // Boot on Load
+    window.onload = function () {
+      loadAppState();
+      renderQuestion();
+      renderAllMatrices();
+      updateStats();
+
+      const label = document.getElementById('mode-label');
+      const btn = document.getElementById('mode-btn');
+      if (isExamMode && label && btn) {
+        label.innerText = "Thi thử";
+        btn.classList.add('border-teal-500', 'bg-teal-50', 'dark:bg-teal-950/40');
+      }
+    };
+  </script>
+</body>
+</html>
