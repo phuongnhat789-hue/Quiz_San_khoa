@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Sản Khoa Quiz - Bài 08 (V4.1)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    #main-content {
+      touch-action: pan-y pinch-zoom;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 h-full flex flex-col antialiased selection:bg-teal-100 selection:text-teal-900 overflow-hidden">
+
+  <!-- TOP MINIMAL BAR -->
+  <header class="shrink-0 h-12 bg-white border-b border-slate-200 px-3.5 flex items-center justify-between z-20 shadow-xs">
+    <div class="flex items-center gap-2">
+      <span id="case-counter" class="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200/80 px-2 py-0.5 rounded-md font-mono">
+        Ca 01/50
+      </span>
+      <select id="filter-select" onchange="changeFilter(this.value)" class="text-xs font-medium bg-slate-100 border border-slate-200 rounded-md px-2 py-1 text-slate-700 outline-none focus:border-teal-500">
+        <option value="all">Tất cả (50)</option>
+        <option value="starred">Đã nhớ (Sao)</option>
+        <option value="unanswered">Chưa làm</option>
+        <option value="wrong">Làm sai</option>
+      </select>
+    </div>
+
+    <div class="flex items-center gap-1.5">
+      <button onclick="toggleStarCurrent()" id="star-btn" class="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:text-amber-500 transition" title="Ghi nhớ ca này">
+        <svg id="star-icon" class="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+      </button>
+      <button onclick="promptReset()" class="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:text-rose-500 transition" title="Làm lại bài thi">
+        <svg class="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+          <path d="M3 3v5h5"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- PROGRESS LINE -->
+  <div class="w-full bg-slate-100 h-0.5 shrink-0">
+    <div id="progress-line" class="h-0.5 bg-teal-600 transition-all duration-200" style="width: 0%;"></div>
+  </div>
+
+  <!-- MAIN SCROLLABLE CONTENT (VERTICAL MOBILE FIRST) -->
+  <main id="main-content" class="flex-1 overflow-y-auto custom-scroll p-3.5 pb-20 max-w-xl w-full mx-auto space-y-3">
+    
+    <!-- Header: CHỈ DUY NHẤT SỐ THỨ TỰ (Ca XX) & Mức độ -->
+    <div class="flex items-center justify-between border-b border-slate-200/60 pb-2">
+      <h1 id="case-title" class="text-sm font-bold text-slate-900 tracking-tight font-mono">
+        Ca 01
+      </h1>
+      <span id="case-level" class="text-[10px] font-semibold text-teal-700 bg-teal-50 border border-teal-200/70 px-2 py-0.5 rounded-full shrink-0">
+        Nội trú BSNT | Vận dụng cao
+      </span>
+    </div>
+
+    <!-- Vignette Box -->
+    <div class="bg-amber-50/80 border border-amber-200/70 rounded-xl p-3 text-slate-800">
+      <div class="text-[10px] font-bold uppercase tracking-wider text-amber-800 mb-1 flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+        </svg>
+        Tình huống lâm sàng
+      </div>
+      <p id="case-vignette" class="text-xs sm:text-[13px] leading-relaxed text-justify">
+        ...
+      </p>
+    </div>
+
+    <!-- 5 Options (A, B, C, D, E) -->
+    <div id="options-box" class="space-y-2 pt-1">
+      <!-- Injected dynamically -->
+    </div>
+
+    <!-- Explanation Box (Hiện sau khi chọn) -->
+    <div id="explanation-container" class="hidden space-y-3 pt-1 transition-all">
+      <div id="status-badge" class="p-2.5 rounded-lg text-xs font-semibold flex items-center gap-2"></div>
+      
+      <!-- Biện luận y khoa & Nguồn -->
+      <div class="bg-white border border-slate-200 rounded-xl p-3 text-xs leading-relaxed text-slate-700 space-y-1.5 shadow-xs">
+        <div class="text-[10px] font-bold uppercase tracking-wider text-teal-700 flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+            <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
+            <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
+          </svg>
+          Biện luận y khoa & nguồn trích dẫn
+        </div>
+        <p id="explanation-text" class="text-justify text-slate-600 leading-relaxed"></p>
+        <p id="explanation-source" class="text-[11px] font-medium text-slate-400 italic pt-1 border-t border-slate-100"></p>
+      </div>
+
+      <!-- Bảng gán mã bẫy lâm sàng -->
+      <div class="bg-white border border-rose-100 rounded-xl p-3 text-xs leading-relaxed text-slate-700 space-y-1.5 shadow-xs">
+        <div class="text-[10px] font-bold uppercase tracking-wider text-rose-700 flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          Phân tích cạm bẫy lâm sàng (Phương án nhiễu)
+        </div>
+        <div id="traps-table" class="space-y-1.5 pt-1 text-[11px]"></div>
+      </div>
+
+      <!-- Chốt quyết định & Tự kiểm -->
+      <div class="bg-teal-50/70 border border-teal-200/80 rounded-xl p-3 text-xs leading-relaxed text-teal-900 space-y-1 shadow-xs">
+        <div class="text-[10px] font-bold uppercase tracking-wider text-teal-800 flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Chốt quyết định & Tự kiểm tra
+        </div>
+        <div id="decision-text" class="text-[11px] text-teal-950 font-medium whitespace-pre-line leading-relaxed"></div>
+      </div>
+    </div>
+
+    <!-- Personal Notes Box -->
+    <div class="pt-1">
+      <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+        <span class="flex items-center gap-1">
+          <svg class="w-3 h-3 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+          </svg>
+          Ghi chú ca này
+        </span>
+        <span id="note-saved-hint" class="text-teal-600 font-semibold opacity-0 transition-opacity text-[10px]">Đã lưu</span>
+      </div>
+      <textarea id="note-input" oninput="saveNote(this.value)" placeholder="Ghi nhớ điểm then chốt hoặc bẫy cần tránh cho ca này..." class="w-full h-14 p-2 text-xs rounded-xl border border-slate-200 bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-teal-500 resize-none font-sans"></textarea>
+    </div>
+
+  </main>
+
+  <!-- BOTTOM FLOATING NAV BAR -->
+  <footer class="fixed bottom-0 inset-x-0 h-13 bg-white/95 backdrop-blur border-t border-slate-200 px-3 flex items-center justify-between max-w-xl mx-auto z-20">
+    <button onclick="prevCase()" class="h-9 px-3 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700 active:scale-95 transition flex items-center gap-1">
+      <svg class="w-3 h-3 fill-none stroke-current stroke-2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg> Trước
+    </button>
+
+    <button onclick="openJumpModal()" class="h-9 px-3.5 rounded-lg bg-teal-50 border border-teal-200 text-teal-800 text-xs font-bold active:scale-95 transition flex items-center gap-1.5 font-mono">
+      <svg class="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+        <line x1="8" y1="6" x2="21" y2="6"></line>
+        <line x1="8" y1="12" x2="21" y2="12"></line>
+        <line x1="8" y1="18" x2="21" y2="18"></line>
+        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+      </svg>
+      <span id="bottom-counter">1 / 50</span>
+    </button>
+
+    <button onclick="nextCase()" class="h-9 px-3 rounded-lg bg-teal-600 text-white text-xs font-semibold active:scale-95 transition flex items-center gap-1 shadow-xs shadow-teal-600/30">
+      Tiếp <svg class="w-3 h-3 fill-none stroke-current stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+  </footer>
+
+  <!-- MODAL JUMP GRID -->
+  <div id="jump-modal" class="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs hidden items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-2xl sm:rounded-2xl max-w-md w-full max-h-[75vh] flex flex-col border border-slate-200 shadow-xl overflow-hidden">
+      <div class="p-3 border-b border-slate-200 flex items-center justify-between">
+        <span class="text-xs font-bold text-slate-800">Chọn nhanh ca bệnh (1 - 50)</span>
+        <button onclick="closeJumpModal()" class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-xs">
+          <svg class="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="p-3 overflow-y-auto custom-scroll flex-1">
+        <div id="grid-container" class="grid grid-cols-5 sm:grid-cols-6 gap-1.5">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <div class="p-2 border-t border-slate-200 bg-slate-50 text-[10px] flex items-center justify-around text-slate-500 font-medium">
+        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Đúng</span>
+        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-rose-500"></span> Sai</span>
+        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-slate-200"></span> Chưa làm</span>
+        <span class="flex items-center gap-1"><span class="text-amber-500 font-bold">★</span> Đã nhớ</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT DATA & APP LOGIC -->
+  <script>
+    // 50 Clinical Cases Data Bài 08 V4.1 (Không có dòng chủ đề sau Ca XX, 5 lựa chọn A-E)
+    const cases = [
+      {
+        id: 1,
+        title: "Ca 01",
+        level: "Nội trú BSNT | Vận dụng cao",
+        vignette: "Sản phụ 28 tuổi, con so, mang thai 8 tuần 4 ngày theo siêu âm quý 1. Bệnh nhân vào viện vì xuất hiện ra máu âm đạo rỉ rả màu nâu nhạt 2 ngày nay kèm đau tức nhẹ vùng hạ vị. Tiền sử chưa ghi nhận bệnh lý nội ngoại khoa, không dùng thuốc tránh thai trước mang thai. Thăm khám lâm sàng: Huyết động ổn định, HA 115/70 mmHg, mạch 76 lần/phút. Khám mỏ vịt: Cổ tử cung đóng kín, màu tím nhẹ, có ít dịch máu nâu ở cùng đồ sau. Khám hai tay: Tử cung to tương đương tuổi thai, mềm, ấn không đau chói, hai phần phụ mềm. Siêu âm TVS: Buồng tử cung có 01 thai sống, CRL = 20 mm, tim thai 165 lần/phút. Cạnh bờ dưới túi thai có vùng trống âm hình lưỡi liềm kích thước 12 x 5 mm, bóc tách màng đệm chiếm 15% diện tích túi thai. Kế hoạch quản lý và can thiệp sản khoa nào sau đây là phù hợp nhất cho sản phụ này?",
+        options: {
+          A: "Nằm nghỉ ngơi tương đối, bổ sung Progesterone tự nhiên đường âm đạo, theo dõi triệu chứng chảy máu.",
+          B: "Tiêm tĩnh mạch Oxytocin duy trì co hồi tử cung, cho nằm nghỉ ngơi tuyệt đối, hẹn siêu âm sau hai tuần.",
+          C: "Nạo hút buồng tử cung bằng máy hút chân không MVA cấp cứu, cho dùng kháng sinh phổ rộng đường uống.",
+          D: "Nằm nghỉ ngơi tuyệt đối tại giường, tiêm bắp Methotrexate liều đơn, xét nghiệm lại beta-hCG sau 48 giờ.",
+          E: "Cho nhập viện nằm nghỉ ngơi hoàn toàn, đặt vòng nâng cổ tử cung Pessary, cho dùng thuốc giảm co Salbutamol."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_bao_ton", desc: "Dùng Oxytocin trong dọa sẩy thai là chống chỉ định vì làm co bóp tử cung gây tống xuất thai." },
+          { opt: "C", code: "qua_xam_lan", desc: "Nạo hút thai khi thai vẫn đang sống và bóc tách nhẹ là hành động xâm lấn phá thai nhầm nghiêm trọng." },
+          { opt: "D", code: "sai_tang", desc: "Tiêm Methotrexate chỉ dùng cho thai ngoài tử cung, hoàn toàn sai chỉ định cho thai trong tử cung sống." },
+          { opt: "E", code: "qua_xam_lan", desc: "Đặt Pessary và Salbutamol không có chỉ định cho dọa sẩy thai quý 1 bóc tách nhỏ." }
+        ],
+        decision: "• Thai 8w4d sống + bóc tách màng đệm 15% (< 20%) + CTC đóng -> Dọa sẩy thai nhẹ -> Bắt buộc điều trị bảo tồn với Progesterone + nghỉ ngơi.\n• Thai trong tử cung sống -> Loại trừ Nạo hút MVA (C), loại trừ Methotrexate (D).\n• Chưa có cơn co tử cung chuyển dạ -> Chống chỉ định Oxytocin (B).",
+        explanation: "Bệnh nhân được chẩn đoán Dọa sẩy thai quý 1 mức độ nhẹ (bóc tách màng đệm 15% < 20%, thai sống, CTC đóng kín). Phác đồ xử trí chuẩn mực theo Giáo trình Sản khoa Huế (Bài 08): Điều trị bảo tồn bao gồm nằm nghỉ ngơi, bổ sung Progesterone (dạng vi hạt đặt âm đạo hoặc uống) để hỗ trợ hoàng thể và theo dõi diễn tiến lâm sàng. Không dùng Oxytocin (gây co bóp tử cung tống thai), không nạo hút thai hay tiêm MTX.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (Mục 4.3)."
+      },
+      {
+        id: 2,
+        title: "Ca 02",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Sản phụ 26 tuổi, mang thai lần đầu, thai 9 tuần 2 ngày theo siêu âm quý 1. Bệnh nhân nhập viện vì ra máu âm đạo tươi lượng ít kèm đau trằn nhẹ bụng dưới. Khám lâm sàng: HA 110/70 mmHg, mạch 78 lần/phút. Mỏ vịt ghi nhận có ít máu tươi từ lỗ cổ tử cung chảy ra, cổ tử cung dài đóng kín. Siêu âm TVS: Buồng tử cung có 01 thai sống, CRL = 25 mm, tim thai 170 lần/phút, không thấy tụ máu dưới màng đệm. Xét nghiệm nhóm máu của sản phụ: Nhóm máu O, Rhesus âm. Xét nghiệm nhóm máu của người chồng: Nhóm máu A, Rhesus dương. Xét nghiệm Coombs gián tiếp ở sản phụ cho kết quả Âm tính. Bên cạnh việc dùng thuốc hỗ trợ hoàng thể, can thiệp dự phòng bắt buộc nào cần thực hiện cho sản phụ?",
+        options: {
+          A: "Tiêm bắp Anti-D Immunoglobulin cho sản phụ trong vòng 72 giờ kể từ khi xuất hiện chảy máu âm đạo.",
+          B: "Truyền khối hồng cầu Rhesus âm cùng nhóm máu ngay để dự phòng tình trạng thiếu máu cấp tính.",
+          C: "Tiêm tĩnh mạch Dexamethasone liều cao để ức chế phản ứng miễn dịch đồng chủng giữa mẹ và thai.",
+          D: "Cho sản phụ uống Aspirin liều thấp phối hợp Heparin trọng lượng phân tử thấp tiêm dưới da hàng ngày.",
+          E: "Tiêm vắc xin uốn ván mũi đầu tiên ngay tại thời điểm nhập viện để dự phòng nhiễm trùng uốn ván."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "bat_tu_khoa", desc: "Bắt từ khóa RhD âm rồi vội vàng chọn truyền máu dù sản phụ không thiếu máu." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "Corticoid Dexamethasone không có vai trò ngăn ngừa mẫn cảm RhD và chống chỉ định liều cao." },
+          { opt: "D", code: "nham_dan_so", desc: "Aspirin + LMWH là phác đồ cho Hội chứng Kháng Phospholipid (APS), không phải dự phòng RhD." },
+          { opt: "E", code: "sai_thu_tu", desc: "Tiêm vắc xin uốn ván thực hiện ở quý 2 (tuần 20 trở đi), không tiêm ở tuần 9 cấp cứu." }
+        ],
+        decision: "• Mẹ RhD(-) + Bố RhD(+) + Coombs gián tiếp (-) + Đang chảy máu âm đạo -> Bắt buộc tiêm dự phòng Anti-D Immunoglobulin trong 72h.\n• HA 110/70 mmHg, không thiếu máu -> Loại truyền khối hồng cầu (B).\n• Chưa chẩn đoán APS -> Loại Aspirin + LMWH (D).",
+        explanation: "Theo Giáo trình Sản khoa Huế (Bài 06 & Bài 08): Mọi sản phụ có nhóm máu RhD(-) chưa bị mẫn cảm (Coombs gián tiếp âm tính) khi có biến cố xuất huyết thai kỳ (dọa sẩy thai, sẩy thai, thai ngoài tử cung, chấn thương) đều bắt buộc phải tiêm dự phòng Anti-D Immunoglobulin (liều 125 mcg hoặc 300 mcg) trong vòng 72 giờ để ngăn ngừa cơ thể mẹ tạo kháng thể kháng RhD chống lại thai nhi.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 06 (tr. 78) & Bài 08: Thất bại thai kỳ."
+      },
+      {
+        id: 3,
+        title: "Ca 03",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Sản phụ 24 tuổi, PARA 0000, thai 10 tuần 2 ngày theo ngày kinh cuối. Bệnh nhân đến khoa Cấp cứu vì đau quặn dữ dội vùng hạ vị từng cơn dồn dập, kèm ra máu âm đạo nhiều đỏ tươi lẫn máu cục tràn gạc. Thăm khám lâm sàng: Sản phụ vã mồ hôi, da nhợt. Sinh hiệu: Mạch 102 lần/phút, HA 95/60 mmHg. Khám mỏ vịt: Âm đạo có nhiều máu cục, cổ tử cung xóa 80%, mở 2 cm, đoạn dưới tử cung phình toàn bộ hình con quay, sờ thấy khối tổ chức thai và nhau bám lấp đầy lỗ trong cổ tử cung đang chảy máu liên tục. Siêu âm tại giường: Khối thai đã tụt xuống nằm hoàn toàn ở kênh cổ tử cung, không còn nằm trong lòng tử cung. Chẩn đoán xác định và bước xử trí cấp cứu ưu tiên hàng đầu cho sản phụ là gì?",
+        options: {
+          A: "Sẩy thai khó tránh; gắp tổ chức thai kẹt ở cổ tử cung, sau đó hút chân không MVA kiểm soát buồng tử cung.",
+          B: "Dọa sẩy thai nặng; tiêm bắp ngay Progesterone liều cao, cho sản phụ nằm nghỉ ngơi tuyệt đối tại giường.",
+          C: "Sẩy thai hoàn toàn; thực hiện soi cổ tử cung kiểm tra, cho đơn thuốc kháng sinh đường uống về nhà.",
+          D: "Thai ngoài tử cung đoạn kẽ vỡ; chuyển phẫu thuật mổ mở cấp cứu cắt góc tử cung và hồi sức truyền máu.",
+          E: "Sẩy thai không hoàn toàn; cho ngậm dưới lưỡi Misoprostol liều 800 mcg, hẹn tái khám kiểm tra sau một tuần."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_bao_ton", desc: "CTC đã mở 2cm, thai tụt xuống kênh CTC là sẩy thai khó tránh/đang sẩy, dưỡng thai hoàn toàn thất bại." },
+          { opt: "C", code: "sai_tang", desc: "Khối thai còn kẹt ở CTC và đang chảy máu nhiều, không phải sẩy thai hoàn toàn." },
+          { opt: "D", code: "nham_dan_so", desc: "Khối thai nằm ở kênh CTC chứ không phải đoạn kẽ vòi trứng vỡ." },
+          { opt: "E", code: "qua_bao_ton", desc: "Dùng thuốc Misoprostol hẹn về nhà khi bệnh nhân đang chảy máu nhiều HA 95/60 mmHg là chậm trễ nguy hiểm." }
+        ],
+        decision: "• Đau bụng dữ dội + Ra máu nhiều + CTC mở 2cm + Thai tụt xuống kênh CTC -> Sẩy thai khó tránh / Đang sẩy thai.\n• Máu chảy nhiều, thai kẹt lỗ CTC -> Bắt buộc gắp thai kẹt + Hút chân không MVA cấp cứu để cầm máu tức thì.",
+        explanation: "Bệnh nhân có triệu chứng kinh điển của Sẩy thai khó tránh / Đang sẩy thai: đau bụng dữ dội, máu chảy nhiều, cổ tử cung xóa mở và khối thai đã tụt xuống kẹt ở kênh cổ tử cung. Hướng xử trí cấp cứu ưu tiên: Dùng kẹp hình tim gắp bỏ tổ chức thai đang kẹt ở lỗ cổ tử cung (giúp tử cung co hồi cầm máu nhanh), sau đó tiến hành hút chân không (MVA) kiểm soát toàn bộ buồng tử cung để cầm máu triệt để và phòng sót nhau.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 124)."
+      },
+      {
+        id: 4,
+        title: "Ca 04",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Sản phụ 29 tuổi, PARA 1001, thai 9 tuần theo ngày kinh cuối. Cách đây 3 ngày sản phụ bị đau bụng nhiều và ra một khối tổ chức thịt ở nhà, sau đó đau bụng giảm nhưng máu âm đạo vẫn tiếp tục chảy rỉ rả màu đỏ sẫm liên tục. Thăm khám lâm sàng: Sản phụ tỉnh táo, da hơi nhợt, HA 110/70 mmHg, Mạch 82 lần/phút, không sốt. Khám mỏ vịt: Cổ tử cung hé mở, có máu đỏ sẫm đang chảy ra từ lỗ trong cổ tử cung. Khám hai tay: Tử cung to hơn bình thường, mật độ mềm, ấn tức nhẹ, hai phần phụ mềm. Siêu âm TVS: Buồng tử cung có khối hồi âm hỗn hợp không đều kích thước 28 x 16 mm, phổ Doppler có dòng mạch máu nuôi bám vào thành trước tử cung, không còn thấy túi thai tròn. Chẩn đoán xác định và phương pháp can thiệp tối ưu nhất cho sản phụ là gì?",
+        options: {
+          A: "Sẩy thai không hoàn toàn; tiến hành thủ thuật hút chân không MVA buồng tử cung, phối hợp dùng thuốc co hồi tử cung.",
+          B: "Sẩy thai hoàn toàn; kê đơn thuốc Transamin cầm máu đường uống, hẹn tái khám siêu âm lại sau một tháng.",
+          C: "Dọa sẩy thai; cho nhập viện dùng thuốc tiêm Progesterone phối hợp thuốc giảm co Spasfon đường tĩnh mạch.",
+          D: "Thai trứng bán phần; chỉ định mổ cắt tử cung bán phần ngay lập tức để phòng ngừa biến chứng ung thư nguyên bào nuôi.",
+          E: "Viêm nội mạc tử cung cấp; chỉ định tiêm tĩnh mạch kháng sinh phổ rộng liều cao 14 ngày không can thiệp buồng tử cung."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "sai_tang", desc: "Siêu âm còn khối hỗn hợp 28mm có mạch máu nuôi là sót nhau, không phải sẩy thai hoàn toàn." },
+          { opt: "C", code: "bat_tu_khoa", desc: "Bắt từ khóa ra máu âm đạo rồi chọn dưỡng thai dù thai đã ra một phần và buồng tử cung mất túi thai." },
+          { opt: "D", code: "qua_xam_lan", desc: "Bệnh nhân mới 29 tuổi sẩy thai không hoàn toàn, mổ cắt tử cung là xâm lấn thô bạo tàn phế." },
+          { opt: "E", code: "qua_bao_ton", desc: "Khối sót nhau chảy máu cần nạo hút tống xuất, chỉ dùng kháng sinh không hút sót nhau sẽ gây băng huyết." }
+        ],
+        decision: "• Đã ra 1 phần tổ chức thai + Máu âm đạo chảy rỉ rả 3 ngày + CTC hé mở + Siêu âm còn khối hỗn hợp 28mm -> Sẩy thai không hoàn toàn (Sót nhau).\n• Chẩn đoán Sót nhau -> Bắt buộc hút chân không MVA lấy hết mô nhau + Thuốc co hồi tử cung.",
+        explanation: "Bệnh nhân có bệnh sử ra một phần tổ chức thai, ra máu dai dẳng, cổ tử cung hé mở và siêu âm còn khối hồi âm hỗn hợp 28 mm có phổ mạch máu bám thành tử cung -> Chẩn đoán xác định Sẩy thai không hoàn toàn (Sót nhau). Phác đồ điều trị chuẩn mực: Hút chân không (MVA) buồng tử cung để lấy sạch mô nhau sót, kết hợp dùng thuốc co hồi tử cung (Oxytocin / Ergometrine) và kháng sinh dự phòng.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 125)."
+      },
+      {
+        id: 5,
+        title: "Ca 05",
+        level: "Nội trú BSNT | Vận dụng",
+        vignette: "Sản phụ 27 tuổi, PARA 1001, thai 8 tuần theo ngày kinh cuối. Cách đây 2 ngày sản phụ bị đau quặn bụng dưới và ra một khối tròn trọn màu trắng xám lẫn máu cục tại nhà. Sau khi khối tổ chức ra ngoài, đau bụng giảm biến mất hoàn toàn, máu âm đạo giảm nhanh chóng chỉ còn ra ít dịch hồng rỉ rả. Thăm khám lâm sàng: Toàn thân ổn định, niêm mạc hồng, HA 115/70 mmHg, không sốt. Khám mỏ vịt: Cổ tử cung đã trơn thon, lỗ ngoài đóng kín, không còn máu tươi chảy ra từ lòng tử cung. Khám hai tay: Tử cung đã co hồi nhỏ gần về kích thước bình thường, không đau, hai phần phụ mềm. Siêu âm TVS: Buồng tử cung sạch, đường nội mạc tử cung đều mỏng 5 mm, không có khối hồi âm bất thường. Thái độ xử trí chuyên môn đúng đắn nhất đối với sản phụ này là gì?",
+        options: {
+          A: "Tư vấn giải thích tình trạng sẩy thai hoàn toàn, điều trị bảo tồn, không cần can thiệp thủ thuật nạo hút buồng tử cung.",
+          B: "Chỉ định hút chân không MVA buồng tử cung ngay để dự phòng tuyệt đối nguy cơ sót màng thai nhiễm trùng.",
+          C: "Kê đơn ngậm dưới lưỡi Misoprostol liều 800 mcg để tống xuất triệt để các lớp màng rụng còn lại.",
+          D: "Tiêm tĩnh mạch Oxytocin liều cao liên tục 24 giờ kết hợp tiêm bắp Ergometrine để làm sạch buồng tử cung.",
+          E: "Chuyển phẫu thuật mổ nội soi thám sát khung chậu để tìm kiếm nguy cơ thai ngoài tử cung kết hợp."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_xam_lan", desc: "Buồng tử cung đã sạch mỏng 5mm và CTC đóng, nạo hút MVA là can thiệp xâm lấn không cần thiết gây tổn thương nội mạc." },
+          { opt: "C", code: "qua_muc", desc: "Dùng Misoprostol khi buồng tử cung đã sạch hoàn toàn gây đau bụng co bóp thừa thãi." },
+          { opt: "D", code: "qua_muc", desc: "Dùng Oxytocin/Ergometrine liều cao khi tử cung đã co hồi tốt và không chảy máu là lãng phí và nguy cơ tác dụng phụ." },
+          { opt: "E", code: "qua_xam_lan", desc: "Mổ nội soi không có chỉ định khi triệu chứng lâm sàng và siêu âm hoàn toàn bình thường." }
+        ],
+        decision: "• Đã ra trọn khối thai + Đau bụng hết + Ra máu giảm hẳn + CTC đóng kín + Siêu âm buồng tử cung sạch (nội mạc 5mm) -> Sẩy thai hoàn toàn.\n• Sẩy thai hoàn toàn -> Bắt buộc điều trị bảo tồn, tuyệt đối không nạo hút can thiệp.",
+        explanation: "Sản phụ hội tụ đầy đủ tiêu chuẩn chẩn đoán Sẩy thai hoàn toàn: Bệnh sử đã tống xuất trọn khối thai, triệu chứng lâm sàng biến mất nhanh chóng, cổ tử cung đóng kín và siêu âm TVS xác nhận buồng tử cung sạch, nội mạc mỏng đều 5 mm. Thái độ xử trí chuẩn mực: Điều trị bảo tồn, tư vấn động viên tâm lý, không chỉ định nạo hút can thiệp hay dùng thuốc tống xuất.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 125)."
+      },
+      {
+        id: 6,
+        title: "Ca 06",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Sản phụ 31 tuổi, PARA 2002, thai 11 tuần theo ngày kinh. Bệnh nhân được đưa vào khoa Cấp cứu trong tình trạng lơ mơ, da xanh tái, đầu chi lạnh, vã mồ hôi hột. Người nhà khai bệnh nhân bị đau bụng dữ dội và ồ ạt ra máu đỏ tươi ngập quần áo cách đây 1 giờ. Thăm khám sinh hiệu: Mạch 122 lần/phút, nhỏ khó bắt; HA 75/45 mmHg; nhịp thở 26 lần/phút; SpO2 93%. Khám âm đạo: Máu đỏ tươi kèm máu cục tràn ra liên tục, cổ tử cung mở 3 cm, có khối tổ chức thai lớn đang mắc kẹt ở lỗ cổ tử cung và chảy máu xối xả. Xét nghiệm máu cấp cứu: Hb 62 g/L, Hematocrit 19%, Tiểu cầu 145.000/mm³. Quy trình hồi sức và can thiệp sản khoa nào sau đây cần được triển khai khẩn cấp nhất?",
+        options: {
+          A: "Hồi sức chống sốc bù thể tích truyền máu khối hồng cầu song song với gắp thai kẹt và hút MVA buồng tử cung cầm máu.",
+          B: "Truyền dung dịch Glucose 5% nhỏ giọt, tiêm bắp ngay Progesterone dưỡng thai, chờ bệnh nhân tỉnh mới xử trí.",
+          C: "Cho bệnh nhân ngậm Misoprostol 800 mcg, chờ tống xuất thai tự nhiên hoàn toàn rồi mới tiến hành truyền máu bù.",
+          D: "Chuyển ngay phẫu thuật mổ mở cấp cứu cắt tử cung bán phần, không thực hiện can thiệp qua đường âm đạo.",
+          E: "Cho tiêm tĩnh mạch thuốc giảm co Spasfon, đặt ống thông bàng quang theo dõi nước tiểu, hẹn siêu âm lại sau 24 giờ."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_bao_ton", desc: "Choáng mất máu HA 75/45 mmHg do sẩy thai băng huyết mà đi dưỡng thai là sai lầm chết người." },
+          { opt: "C", code: "qua_bao_ton", desc: "Dùng Misoprostol chờ tống thai tự nhiên khi bệnh nhân đang choáng mất máu cấp tính gây tử vong." },
+          { opt: "D", code: "qua_xam_lan", desc: "Mổ cắt tử cung ngay khi chưa gắp thai kẹt đường âm đạo cầm máu là xâm lấn thô bạo lãng phí." },
+          { opt: "E", code: "qua_bao_ton", desc: "Dùng Spasfon chờ 24h ở bệnh nhân choáng mất máu cấp là chậm trễ tử vong." }
+        ],
+        decision: "• Choáng mất máu (HA 75/45, M 122, Hb 62g/L) + Sẩy thai băng huyết (thai kẹt CTC chảy máu xối xả) -> Tình huống tối cấp cứu.\n• Bắt buộc Hồi sức chống sốc (truyền dịch, truyền máu O/cùng nhóm) SONG SONG với Gắp thai kẹt + Hút MVA cầm máu ngay lập tức.",
+        explanation: "Bệnh nhân bị Choáng mất máu cấp tính do Sẩy thai băng huyết (HA 75/45 mmHg, Hb 62 g/L, thai kẹt cổ tử cung chảy máu xối xả). Đây là tình huống tối cấp cứu đe dọa tính mạng. Quy trình xử trí: Tiến hành HỒI SỨC CHỐNG SỐC (thở oxy, lập 2 đường truyền tĩnh mạch lớn, bù nhanh dịch tinh thể và truyền khối hồng cầu) SONG SONG với CAN THIỆP CẦM MÁU NGAY LẬP TỨC bằng cách dùng kẹp gắp bỏ khối thai kẹt ở cổ tử cung và hút chân không (MVA) buồng tử cung.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08 & Bài 38: Choáng sản khoa."
+      },
+      {
+        id: 7,
+        title: "Ca 07",
+        level: "Nội trú BSNT | Đánh giá",
+        vignette: "Sản phụ 23 tuổi, tự ý dùng cây thảo mộc chọc vào buồng tử cung để phá thai tại nhà cách đây 3 ngày. Hiện tại bệnh nhân nhập viện vì sốt cao 39,5°C, rét run liên tục, đau quặn hạ vị dữ dội, âm đạo ra nhiều dịch hôi thối nồng nặc lẫn máu sẫm màu. Thăm khám lâm sàng: Vẻ mặt nhiễm trùng, môi khô lưỡi bẩn. HA 100/60 mmHg, Mạch 110 lần/phút, Thân nhiệt 39,5°C. Khám bụng: Bụng mềm, ấn đau chói vùng hạ vị, phản ứng cơ nhẹ. Khám mỏ vịt: Cổ tử cung hé mở, dịch mủ hôi thối chảy ra từ lòng tử cung. Khám hai tay: Tử cung to mềm, ấn đau chói. Xét nghiệm: Bạch cầu vọt lên 21.000/mm³ (Neutrophil 89%), CRP = 92 mg/L. Nguyên tắc xử trí sản khoa an toàn nhất để ngăn ngừa nguy cơ sốc nhiễm trùng huyết cho sản phụ là gì?",
+        options: {
+          A: "Điều trị kháng sinh phổ rộng tĩnh mạch liều cao trước, sau khi hạ sốt 24 đến 48 giờ mới hút buồng tử cung nhẹ nhàng.",
+          B: "Nạo hút buồng tử cung cấp cứu ngay lập tức bất chấp tình trạng sốt cao để loại bỏ hoàn toàn ổ nhiễm trùng.",
+          C: "Chỉ điều trị kháng sinh đơn thuần 14 ngày mà tuyệt đối không được thực hiện can thiệp thủ thuật vào buồng tử cung.",
+          D: "Cho bệnh nhân uống thuốc hạ sốt Paracetamol phối hợp Misoprostol ngậm dưới lưỡi rồi hẹn tái khám sau một tuần.",
+          E: "Chuyển mổ cấp cứu cắt tử cung toàn phần và hai phần phụ ngay lập tức mà không cần điều trị kháng sinh trước."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_xam_lan", desc: "Hút buồng tử cung ngay khi đang sốt cao 39.5°C sẽ làm vi khuẩn xâm nhập xoang mạch gây vi khuẩn huyết và sốc nhiễm trùng tử vong." },
+          { opt: "C", code: "qua_bao_ton", desc: "Khai thông ổ sót thai nhiễm trùng bằng MVA là bắt buộc sau khi đã kiểm soát vi khuẩn, chỉ dùng kháng sinh không hút sẽ sót thai kéo dài." },
+          { opt: "D", code: "qua_bao_ton", desc: "Cho về nhà khi sẩy thai nhiễm khuẩn sốt 39.5°C bạch cầu 21.000 là chậm trễ tử vong." },
+          { opt: "E", code: "qua_xam_lan", desc: "Mổ cắt tử cung ngay lập tức ở bệnh nhân 23 tuổi khi chưa điều trị kháng sinh là tàn phế xâm lấn quá mức." }
+        ],
+        decision: "• Sẩy thai tự ý chọc thủ thuật + Sốt 39.5°C + Khí hư hôi thối + Tử cung đau chói + Bạch cầu 21.000 -> Sẩy thai nhiễm khuẩn.\n• Nguyên tắc an toàn tối thượng: Kháng sinh phổ rộng IV liều cao (Ampicillin + Gentamicin + Metronidazole) 24-48h cho hết sốt -> Sau đó mới Hút MVA nhẹ nhàng buồng tử cung.",
+        explanation: "Sản phụ bị Sẩy thai nhiễm khuẩn cấp tính sau phá thai phạm pháp. Nguyên tắc an toàn tối thượng trong Sản khoa: Nạo hút buồng tử cung vội vàng khi đang sốt cao sẽ làm vi khuẩn xâm nhập xối xả vào các xoang tĩnh mạch tử cung đang hở gây nhiễm khuẩn huyết và sốc nhiễm trùng nguy kịch. Phác đồ chuẩn: Dùng kháng sinh phổ rộng liều cao đường tĩnh mạch trước, sau khi nhiệt độ trở về bình thường và lâm sàng ổn định 24 - 48 giờ mới tiến hành hút chân không (MVA) buồng tử cung nhẹ nhàng.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 126)."
+      },
+      {
+        id: 8,
+        title: "Ca 08",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Sản phụ 30 tuổi, PARA 1001, trễ kinh 4 tuần, kinh nguyệt đều. Bệnh nhân đi khám thai lần đầu vì thử que 2 vạch đậm. Lâm sàng: Bệnh nhân hoàn toàn không đau bụng, không ra máu âm đạo. Khám mỏ vịt: Cổ tử cung trơn thon, đóng kín, không có dịch máu. Khám hai tay: Tử cung hơi to mềm, hai phần phụ mềm. Siêu âm TVS thực hiện cẩn thận bởi bác sĩ chuyên khoa: Trong buồng tử cung có 01 túi thai bờ đều tròn, kích thước đường kính túi thai trung bình MSD = 27 mm. Quan sát kỹ toàn bộ buồng túi thai hoàn toàn không thấy âm vang phôi thai và không thấy túi noãn hoàng. Kết luận chẩn đoán xác định dựa trên tiêu chuẩn siêu âm chuẩn quốc tế là gì?",
+        options: {
+          A: "Thai ngừng tiến triển sớm dạng túi thai trống trong buồng tử cung.",
+          B: "Dọa sẩy thai sớm; cần kê đơn Progesterone liều cao đặt âm đạo dưỡng thai.",
+          C: "Thai nghén chưa xác định vị trí; hẹn định lượng lại beta-hCG sau 48 giờ.",
+          D: "Thai trong tử cung sống bình thường nhưng tuổi thai còn quá nhỏ.",
+          E: "Bệnh nguyên bào nuôi thai kỳ dạng thai trứng bán phần sớm."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "bat_tu_khoa", desc: "Nhầm túi thai trống MSD 27mm với dọa sẩy thai rồi cho dưỡng thai mù quáng." },
+          { opt: "C", code: "nham_dan_so", desc: "Túi thai nằm rõ trong tử cung MSD 27mm nên không còn gọi là thai chưa rõ vị trí (PUL)." },
+          { opt: "D", code: "guideline_cu", desc: "Giả định thai nhỏ chờ đợi khi MSD đã 27mm (vượt mốc cắt 25mm)." },
+          { opt: "E", code: "phan_biet_hep", desc: "Thai trứng bán phần đặc trưng bởi hình ảnh túi thai kèm các nang nhỏ hoại tử màng đệm, không phải túi thai trống." }
+        ],
+        decision: "• Siêu âm TVS túi thai trong tử cung có MSD = 27 mm (>= 25 mm) + Không có phôi thai -> Tiêu chuẩn vàng chẩn đoán Thai ngừng tiến triển sớm (Túi thai trống).\n• Đã đủ tiêu chuẩn chẩn đoán thai chết/ngừng phát triển -> Chống chỉ định dùng Progesterone dưỡng thai (B).",
+        explanation: "Theo tiêu chuẩn đồng thuận quốc tế ACOG/ISUOG (Bài 08 & Bài 46): Tiêu chuẩn vàng chẩn đoán chắc chắn Thai ngừng tiến triển sớm (Early Pregnancy Loss) thể túi thai trống là khi đường kính túi thai trung bình MSD >= 25 mm qua siêu âm ngả âm đạo (TVS) mà hoàn toàn không quan sát thấy phôi thai. Bệnh nhân có MSD = 27 mm đủ tiêu chuẩn chẩn đoán xác định mà không cần hẹn siêu âm lại.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 117)."
+      },
+      {
+        id: 9,
+        title: "Ca 09",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Sản phụ 27 tuổi, con so, trễ kinh 3 tuần. Bệnh nhân đi khám thai kiểm tra. Lâm sàng: Không đau bụng, ra ít dịch nâu nhạt ở âm đạo 1 ngày nay. Khám âm đạo: Cổ tử cung đóng kín, tử cung to tương đương thai 7 tuần. Siêu âm TVS: Buồng tử cung có 01 túi thai, bên trong có túi noãn hoàng d = 4 mm và quan sát thấy âm vang phôi thai rõ. Bác sĩ phóng đại hình ảnh, thực hiện đo chiều dài đầu mông phôi thai thu được CRL = 9 mm. Khảo sát cẩn thận bằng B-mode và Doppler phổ M-mode trong 3 phút hoàn toàn không ghi nhận được hoạt động tim thai. Khẳng định chẩn đoán và thái độ xử trí chuyên môn chuẩn xác nhất là gì?",
+        options: {
+          A: "Chẩn đoán thai ngừng tiến triển sớm; tư vấn các phương án chấm dứt thai kỳ bằng nội khoa hoặc hút chân không.",
+          B: "Chẩn đoán dọa sẩy thai; tiêm bắp khẩn cấp hCG ngoại sinh để kích thích tim thai xuất hiện trở lại.",
+          C: "Chưa đủ tiêu chuẩn chẩn đoán thai lưu; hẹn sản phụ tái khám siêu âm lại sau 10 đến 14 ngày.",
+          D: "Chẩn đoán thai ngoài tử cung làm tổ ở kênh cổ tử cung; chỉ định mổ nội soi ổ bụng thám sát cấp cứu.",
+          E: "Chẩn đoán chửa ngoài tử cung thể tràn ngập ổ bụng; chuyển phẫu thuật mổ mở truyền máu cấp cứu."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "bo_chong_chi_dinh", desc: "Phôi CRL 9mm không tim thai đã chết, tiêm hCG dưỡng thai là chống chỉ định và gây lưu thai kéo dài." },
+          { opt: "C", code: "guideline_cu", desc: "CRL 9mm đã >= 7mm nên đủ tiêu chuẩn khẳng định ngay, không cần chờ đợi thêm 10-14 ngày." },
+          { opt: "D", code: "nham_dan_so", desc: "Phôi thai nằm rõ trong lòng tử cung, không phải thai cổ tử cung." },
+          { opt: "E", code: "nham_dan_so", desc: "Không có dấu hiệu chảy máu trong ổ bụng, siêu âm thai nằm trong tử cung." }
+        ],
+        decision: "• Siêu âm TVS phôi thai trong tử cung CRL = 9 mm (>= 7 mm) + Không có hoạt động tim thai -> Tiêu chuẩn vàng khẳng định Thai ngừng tiến triển sớm.\n• Chẩn đoán đã xác định 100% -> Tư vấn chấm dứt thai kỳ (Nội khoa Mife+Miso hoặc Ngoại khoa MVA).",
+        explanation: "Theo tiêu chuẩn ACOG/ISUOG: Tiêu chuẩn vàng chẩn đoán chắc chắn Thai ngừng tiến triển sớm là khi chiều dài đầu mông phôi thai CRL >= 7 mm trên siêu âm TVS mà không có hoạt động tim thai. Ở đây CRL = 9 mm (> 7 mm) không tim thai đủ tiêu chuẩn khẳng định 100%. Tư vấn cặn kẽ cho sản phụ các lựa chọn chấm dứt thai kỳ: theo dõi chờ sẩy tự nhiên, điều trị nội khoa (Mifepristone + Misoprostol) hoặc hút chân không (MVA).",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 117)."
+      },
+      {
+        id: 10,
+        title: "Ca 10",
+        level: "Nội trú BSNT | Đánh giá",
+        vignette: "Sản phụ 25 tuổi, con so, trễ kinh 2 tuần, kinh nguyệt không đều (chu kỳ 30 - 42 ngày). Bệnh nhân đi siêu âm thai lần đầu. Lâm sàng: Không đau bụng, không ra máu âm đạo. Khám âm đạo: Cổ tử cung đóng kín, tử cung hơi to mềm. Siêu âm TVS: Buồng tử cung có 01 túi thai, có túi noãn hoàng d = 3,5 mm, quan sát thấy âm vang phôi thai nhỏ, đo chiều dài đầu mông phôi thai CRL = 4,5 mm. Khảo sát cẩn thận trên M-mode chưa thấy hoạt động tim thai rõ ràng. Quyết định chuyên môn nào sau đây là chuẩn xác và an toàn nhất để tránh chẩn đoán nhầm?",
+        options: {
+          A: "Chưa đủ tiêu chuẩn chẩn đoán thai ngừng tiến triển; hẹn sản phụ siêu âm kiểm tra lại sau 7 đến 10 ngày.",
+          B: "Chẩn đoán thai đã chết lưu; chỉ định cho sản phụ uống ngay Mifepristone 200 mg để tống xuất thai.",
+          C: "Chẩn đoán thai chết lưu; cho chỉ định hút buồng tử cung bằng máy MVA ngay trong buổi sáng.",
+          D: "Chẩn đoán thai trứng bán phần; cho làm xét nghiệm định lượng beta-hCG máu và X-quang tim phổi khẩn.",
+          E: "Chẩn đoán dọa sẩy thai nặng; cho nhập viện tiêm tĩnh mạch thuốc giảm co Spasfon phối hợp kháng sinh."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_xam_lan", desc: "CRL mới 4.5mm (< 7mm) chưa đủ tiêu chuẩn kết luận thai lưu, uống thuốc Mife sẽ phá nhầm thai sống." },
+          { opt: "C", code: "qua_xam_lan", desc: "Hút MVA khi CRL < 7mm là sai lầm nghiêm trọng phá nhầm thai sống do rụng trứng muộn." },
+          { opt: "D", code: "phan_biet_hep", desc: "Phôi CRL 4.5mm là hình ảnh thai sớm bình thường, không có dấu hiệu thai trứng." },
+          { opt: "E", code: "qua_muc", desc: "Bệnh nhân không đau bụng, không chảy máu, không có chỉ định Spasfon hay kháng sinh." }
+        ],
+        decision: "• Siêu âm TVS phôi thai CRL = 4,5 mm (< 7 mm) chưa thấy tim thai + Lâm sàng hoàn toàn bình thường -> Chưa đủ tiêu chuẩn khẳng định thai lưu.\n• Mục tiêu an toàn 100% (không phá nhầm thai sống) -> Bắt buộc hẹn siêu âm đối chứng sau 7-10 ngày.",
+        explanation: "Tiêu chuẩn ACOG/ISUOG quy định: Chỉ khẳng định thai ngừng tiến triển khi phôi thai CRL >= 7 mm mà không có tim thai. Khi CRL < 7 mm (ở đây CRL = 4,5 mm) chưa có tim thai, có khoảng 5-10% thai kỳ sống bình thường do thụ thai muộn chưa xuất hiện tim thai sinh lý. Quyết định chuẩn xác: Chưa kết luận thai lưu, hẹn sản phụ tái khám siêu âm đối chứng sau 7 - 10 ngày để đạt độ đặc hiệu 100%, tuyệt đối tránh can thiệp phá nhầm thai sống.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 117)."
+      },
+      {
+        id: 11,
+        title: "Ca 11",
+        level: "Nội trú BSNT | Đánh giá",
+        vignette: "Sản phụ 33 tuổi, PARA 1001, thai 15 tuần theo ngày kinh cuối. Bệnh nhân đi khám vì thấy ngực bớt căng đau từ lâu, bụng không to thêm và ra ít dịch nâu sẫm ở âm đạo 5 ngày nay. Siêu âm TVS: Buồng tử cung có 01 phôi thai thoái hóa, CRL = 28 mm (tương đương thai 9 tuần 3 ngày), không có tim thai. Bệnh nhân khai đã từng đi siêu âm cách đây 5 tuần được thông báo thai 9 tuần có tim thai nhưng sau đó nghỉ việc gia đình không đi khám lại. Xét nghiệm máu: Công thức máu bình thường; Fibrinogen huyết thanh = 1,4 g/L (giảm rõ so với mức sinh lý thai kỳ 3,5 - 5,5 g/L); D-Dimer tăng cao. Biến chứng nguy hiểm nhất cần đánh giá và dự phòng trước khi tiến hành can thiệp thủ thuật cho sản phụ là gì?",
+        options: {
+          A: "Hội chứng đông máu nội mạch rải rác do tổ chức thai lưu thoái hóa giải phóng nhiều Thromboplastin.",
+          B: "Tắc mạch do nước ối xâm nhập vào hệ thống xoang tĩnh mạch tử cung bị hở do thai chết lưu.",
+          C: "Thủng tử cung do cơ tử cung mỏng đi dưới tác động của độc tố vi khuẩn anaerobic xâm nhập.",
+          D: "Hội chứng HELLP biến chứng suy gan thận cấp do độc tố của thai lưu tống vào tuần hoàn mẹ.",
+          E: "Bệnh nguyên bào nuôi ác tính di căn phổi do sự tăng sinh loạn sản của các tế bào hợp bào nuôi."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "phan_biet_hep", desc: "Tắc mạch ối xảy ra trong chuyển dạ hoặc mổ lấy thai, không phải biến chứng chính của thai lưu rải rác quý 1-2." },
+          { opt: "C", code: "phan_biet_hep", desc: "Thủng tử cung là biến chứng kỹ thuật phẫu thuật, không phải biến chứng sinh hóa máu do thai lưu kéo dài." },
+          { opt: "D", code: "nham_dan_so", desc: "HELLP là biến chứng của Tiền sản giật nặng quý 2-3, không do thai lưu kéo dài quý 1." },
+          { opt: "E", code: "nham_dan_so", desc: "Thai lưu không phải là yếu tố gây ra bệnh nguyên bào nuôi ác tính." }
+        ],
+        decision: "• Thai chết lưu trong tử cung kéo dài > 4 tuần (lưu từ tuần 9 đến tuần 15) + Fibrinogen giảm (1.4 g/L) -> Nguy cơ giải phóng Thromboplastin từ mô thai hoại tử.\n• Tình trạng trên -> Nguy cơ cao nhất là Đông máu nội mạch rải rác (DIC) -> Bắt buộc xét nghiệm đông máu toàn bộ & chuẩn bị Fibrinogen/máu trước khi nạo hút.",
+        explanation: "Theo Giáo trình Sản khoa Huế (Bài 08): Khi thai chết lưu trong tử cung kéo dài trên 4 tuần, các tổ chức thai và nhau hoại tử sẽ giải phóng dần chất Thromboplastin vào tuần hoàn mẹ, kích hoạt hệ thống đông máu nội mạch gây ra Đông máu nội mạch rải rác (DIC) và tiêu sợi huyết thứ phát (thể hiện qua Fibrinogen giảm < 1,5 g/L). Cần đánh giá đông máu toàn bộ, chuẩn bị Fibrinogen/huyết tương tươi trước khi can thiệp tống xuất thai.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ."
+      },
+      {
+        id: 12,
+        title: "Ca 12",
+        level: "Nội trú BSNT | Đánh giá",
+        vignette: "Sản phụ 28 tuổi, PARA 0010 (tiền sử sẩy thai 18 tuần cách đây 1 năm). Hiện tại thai 18 tuần 2 ngày theo siêu âm quý 1. Sản phụ đi khám định kỳ vì thấy ra nhiều dịch nhầy âm đạo. Thăm khám lâm sàng: Sản phụ không đau bụng, không sốt, HA 115/70 mmHg. Khám mỏ vịt: Cổ tử cung mở 2 cm, quan sát thấy đầu bọc màng ối căng phồng đang tụt thấp xuống phình ở lỗ ngoài cổ tử cung, dịch âm đạo đọng ít nhầy trong, không có mủ hôi. Siêu âm TVS: Cổ tử cung bị xóa ngắn còn 10 mm, lỗ trong cổ tử cung mở dạng hình chữ V rộng 18 mm, màng ối sa vào kênh cổ tử cung. Xét nghiệm: Bạch cầu 8.500/mm³, CRP = 4 mg/L. Chẩn đoán và kế hoạch can thiệp sản khoa nào sau đây là phù hợp và an toàn nhất?",
+        options: {
+          A: "Hở eo cổ tử cung sa màng ối; cho nằm đầu thấp, dùng kháng sinh dự phòng, thực hiện thủ thuật khâu vòng cổ tử cung cấp cứu.",
+          B: "Sẩy thai khó tránh; chỉ định ngậm dưới lưỡi Misoprostol 400 mcg mỗi 4 giờ để tống xuất thai ra ngoài khẩn cấp.",
+          C: "Nhiễm trùng ối cấp tính; chỉ định bấm ối tống xuất thai ngay lập tức phối hợp tiêm tĩnh mạch Ampicillin liều cao.",
+          D: "Dọa sinh non; cho nhập viện tiêm tĩnh mạch Salbutamol liên tục 48 giờ phối hợp tiêm bắp Betamethasone trưởng thành phổi.",
+          E: "Viêm âm đạo cấp; kê đơn thuốc đặt âm đạo Clotrimazole 7 ngày và cho sản phụ về nhà tự theo dõi nghỉ ngơi."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_xam_lan", desc: "Bệnh nhân không có nhiễm trùng ối, không có cơn co, thai 18w còn sống, bỏ thai bằng Misoprostol là từ bỏ quá sớm." },
+          { opt: "C", code: "nham_dan_so", desc: "Bệnh nhân không sốt, BC 8.500, CRP 4mg/L (không có nhiễm trùng ối), bấm ối hủy thai là sai hoàn toàn." },
+          { opt: "D", code: "guideline_cu", desc: "Thai 18 tuần chưa có chỉ định corticoid trưởng thành phổi (chỉ dùng từ 24 tuần) và Salbutamol không điều trị hở eo CTC." },
+          { opt: "E", code: "qua_bao_ton", desc: "Cho về nhà khi màng ối sa kênh CTC sẽ dẫn đến vỡ ối sẩy thai ngay lập tức." }
+        ],
+        decision: "• Tiền sử sẩy thai 18w + Thai 18w sa màng ối kênh CTC + Không sốt + BC 8.500 + CRP 4 mg/L (Không nhiễm trùng ối) -> Hở eo cổ tử cung sa màng ối.\n• Chưa có nhiễm trùng ối + Chưa có cơn co tử cung -> Chỉ định Khâu vòng cổ tử cung cấp cứu (Emergency cerclage) + Nằm đầu thấp + Kháng sinh.",
+        explanation: "Bệnh nhân có tiền sử sẩy thai 3 tháng giữa, hiện tại thai 18 tuần cổ tử cung mở sa màng ối nhưng HOÀN TOÀN KHÔNG CÓ NHIỄM TRÙNG ỐI (không sốt, bạch cầu và CRP bình thường, không dịch mủ hôi) và không có cơn co tử cung -> Chẩn đoán Hở eo cổ tử cung sa màng ối. Phác đồ xử trí: Cho nằm đầu thấp, đẩy nhẹ bọc ối lên, dùng kháng sinh dự phòng và tiến hành KHÂU VÒNG CỔ TỬ CUNG CẤP CỨU để cứu sống thai nhi.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08 & Bài 14: Sinh non (tr. 216)."
+      },
+      {
+        id: 13,
+        title: "Ca 13",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Bệnh nhân nữ 29 tuổi, PARA 0020, cùng chồng đi khám tư vấn sinh sản. Tiền sử mang thai: Lần 1 sẩy thai tự phát ở tuổi thai 8 tuần (siêu âm buồng tử cung có thai nhưng ngưng phát triển); Lần 2 cách đây 6 tháng sẩy thai ở tuổi thai 10 tuần (đã thấy phôi thai nhưng mất tim thai). Cả hai lần sẩy thai bệnh nhân đều được hút thai tại bệnh viện tuyến tỉnh và không làm xét nghiệm di truyền mô sẩy. Hiện tại kinh nguyệt đều chu kỳ 28 ngày, hai vợ chồng khỏe mạnh, chưa ghi nhận tiền sử bệnh lý nội tiết hay tự miễn. Theo khuyến cáo hiện hành của ASRM (2012) và ESHRE (2018), nhận định nào sau đây là chuẩn xác nhất?",
+        options: {
+          A: "Bệnh nhân đủ tiêu chuẩn chẩn đoán sẩy thai liên tiếp và có chỉ định khảo sát toàn diện tìm nguyên nhân.",
+          B: "Bệnh nhân chưa đủ tiêu chuẩn sẩy thai liên tiếp vì chưa sẩy thai đủ từ ba lần trở lên theo quy định.",
+          C: "Chỉ cần làm xét nghiệm NST hai vợ chồng mà tuyệt đối không cần khảo sát hình thái tử cung hay APS.",
+          D: "Trì hoãn mọi xét nghiệm thăm dò, khuyên hai vợ chồng tự nhiên mang thai lại lần ba không cần dự phòng.",
+          E: "Chỉ định làm thủ thuật khâu vòng cổ tử cung dự phòng ngay từ khi thử que hai vạch ở lần mang thai sau."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "guideline_cu", desc: "Quy định cũ RCOG yêu cầu >= 3 lần, nhưng ASRM 2012 và ESHRE 2018 đã thống nhất >= 2 lần là sẩy thai liên tiếp." },
+          { opt: "C", code: "thieu_cau_phan", desc: "Khảo sát STLT phải đánh giá toàn diện gồm giải phẫu, APS, nội tiết chứ không chỉ làm Karyotype." },
+          { opt: "D", code: "qua_bao_ton", desc: "Khuyên tự nhiên mang thai không thăm dò ở bệnh nhân STLT 2 lần là bỏ lỡ cơ hội chẩn đoán nguyên nhân." },
+          { opt: "E", code: "bo_chong_chi_dinh", desc: "Khâu eo tử cung không có chỉ định khi chưa chứng minh được hở eo cổ tử cung." }
+        ],
+        decision: "• Tiền sử sẩy thai 2 lần liên tiếp < 10w -> Đủ tiêu chuẩn chẩn đoán Sẩy thai liên tiếp (STLT) theo ASRM 2012 & ESHRE 2018.\n• Đã chẩn đoán STLT -> Bắt buộc tiến hành quy trình khảo sát toàn diện (Giải phẫu tử cung, APS, Karyotype, Nội tiết).",
+        explanation: "Theo tiêu chuẩn Hiệp hội Y học Sinh sản Hoa Kỳ (ASRM 2012) và Hiệp hội Sinh sản & Phôi học châu Âu (ESHRE 2018): Sẩy thai liên tiếp (RPL) được định nghĩa khi có từ 2 lần sẩy thai trở lên. Do đó, bệnh nhân đã đủ tiêu chuẩn chẩn đoán và cần được tiến hành quy trình tầm soát toàn diện các nguyên nhân (bất thường giải phẫu tử cung, hội chứng kháng phospholipid APS, di truyền Karyotype hai vợ chồng, nội tiết tuyến giáp/đường huyết).",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 123)."
+      },
+      {
+        id: 14,
+        title: "Ca 14",
+        level: "Nội trú BSNT | Vận dụng",
+        vignette: "Bệnh nhân nữ 27 tuổi, PARA 0020 (tiền sử 2 lần sẩy thai ở tuổi thai 12 tuần và 14 tuần). Bệnh nhân đi khám tầm soát nguyên nhân sẩy thai liên tiếp. Khám phụ khoa bình thường. Kết quả chụp phim tử cung - vòi tử cung (HSG) và siêu âm 3D dựng hình buồng tử cung: Khảo sát đáy tử cung phẳng nhẵn từ phía ngoài ổ bụng, nhưng bên trong buồng tử cung có một vách ngăn dầy đi từ đáy xuống sát lỗ trong cổ tử cung chia buồng tử cung làm hai phần. Khảo sát Karyotype hai vợ chồng, kháng thể APS, TSH và đường huyết hoàn toàn bình thường. Can thiệp phẫu thuật chuẩn mực nhất được chỉ định để điều trị triệt để cho bệnh nhân là gì?",
+        options: {
+          A: "Phẫu thuật cắt vách ngăn tử cung qua nội soi buồng tử cung ống cứng phối hợp quan sát ổ bụng.",
+          B: "Mổ mở đường bụng thực hiện phẫu thuật tạo hình tử cung tái tạo buồng tử cung theo Strassman.",
+          C: "Nạo hút buồng tử cung bằng máy hút chân không MVA kết hợp đặt dụng cụ tử cung chứa Levonorgestrel.",
+          D: "Khâu vòng cổ tử cung ngả âm đạo bằng mũi Mc Donald dự phòng ở tuần thai thứ 12 ở lần mang thai sau.",
+          E: "Tư vấn bệnh nhân không thể mang thai tự nhiên và bắt buộc phải chuyển làm thụ tinh trong ống nghiệm."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_xam_lan", desc: "Mổ mở phẫu thuật Strassman chỉ dùng cho tử cung hai sừng, không dùng cho vách ngăn tử cung vì xơ sẹo tử cung." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "Đặt vòng chứa Levonorgestrel gây ngừa thai, hoàn toàn sai mục đích điều trị hiếm muộn." },
+          { opt: "D", code: "thieu_cau_phan", desc: "Khâu eo CTC không sửa chữa được bất thường thể tích và tưới máu do vách ngăn tử cung." },
+          { opt: "E", code: "nham_dan_so", desc: "Cắt vách ngăn tử cung thành công giúp bệnh nhân mang thai tự nhiên hoàn toàn bình thường." }
+        ],
+        decision: "• Tiền sử STLT 2 lần + Đáy tử cung phẳng + Buồng tử cung có vách ngăn kéo dài -> Chẩn đoán Vách ngăn tử cung (Uterine septum).\n• Vách ngăn tử cung gây STLT -> Bắt buộc Phẫu thuật cắt vách ngăn qua soi buồng tử cung (Hysteroscopic metroplasty).",
+        explanation: "Vách ngăn tử cung (Uterine septum) là bất thường giải phẫu bẩm sinh phổ biến nhất gây sẩy thai liên tiếp (do vách ngăn kém tưới máu và giảm thể tích buồng tử cung). Phương pháp điều trị chuẩn mực có hiệu quả cao nhất là Phẫu thuật cắt vách ngăn qua soi buồng tử cung (Hysteroscopic resection of septum). Mổ mở tạo hình Strassman chống chỉ định cho vách ngăn tử cung vì gây sẹo mổ lớn không cần thiết.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 128)."
+      },
+      {
+        id: 15,
+        title: "Ca 15",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Bệnh nhân 31 tuổi, PARA 0020 (tiền sử 2 lần sẩy thai 16 tuần và 18 tuần). Siêu âm 3D và chụp cộng hưởng từ (MRI) khung chậu ghi nhận: Bờ ngoài đáy tử cung có lõm sâu > 1 cm phân tách rõ hai sừng tử cung, bên trong có hai buồng tử cung riêng biệt nhập chung ở đoạn eo tử cung và chung 01 cổ tử cung. Chẩn đoán xác định: Tử cung hai sừng (Bicornuate uterus). Các xét nghiệm tầm soát nguyên nhân STLT khác hoàn toàn âm tính. Chiến lược quản lý sản khoa đúng đắn và an toàn nhất cho bệnh nhân là gì?",
+        options: {
+          A: "Quản lý thai kỳ cẩn thận, theo dõi chiều dài cổ tử cung, chỉ mổ tạo hình Strassman khi tiền sử rất xấu.",
+          B: "Chỉ định mổ mở đường bụng thực hiện phẫu thuật cắt bỏ một sừng tử cung nhỏ ngay trước khi mang thai.",
+          C: "Phẫu thuật cắt vách ngăn qua soi buồng tử cung bằng dao điện đơn cực ngay tại thời điểm chẩn đoán.",
+          D: "Đặt dụng cụ tử cung TCu-380A trong 6 tháng để kích thích buồng tử cung giãn rộng tự nhiên.",
+          E: "Khuyên bệnh nhân xin trứng và nhờ người mang thai hộ do tử cung hai sừng hoàn toàn không thể giữ thai."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_xam_lan", desc: "Cắt bỏ sừng tử cung chỉ áp dụng cho sừng thoái hóa không liên thông trong tử cung một sừng." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "Tử cung hai sừng có bờ đáy lõm sâu, cắt ở giữa bằng soi buồng tử cung sẽ gây thủng tử cung nguy hiểm." },
+          { opt: "D", code: "bo_chong_chi_dinh", desc: "Đặt vòng TCu-380A gây ngừa thai và viêm nhiễm." },
+          { opt: "E", code: "qua_muc", desc: "Tử cung hai sừng vẫn có thể mang thai đến đủ tháng dưới sự quản lý sản khoa cẩn thận." }
+        ],
+        decision: "• Đáy tử cung lõm sâu > 1cm + 2 sừng riêng biệt chung 1 CTC -> Chẩn đoán Tử cung hai sừng (Bicornuate uterus).\n• Tử cung hai sừng -> Quản lý sản khoa cẩn thận thai kỳ tiếp theo; Phẫu thuật đại phẫu Strassman chỉ dùng khi tiền sử quá xấu.",
+        explanation: "Theo Giáo trình Sản khoa Huế (Bài 08, tr. 128): Tử cung hai sừng (Bicornuate uterus) là do sự hợp nhất không hoàn chỉnh của hai ống Müller. Khác với vách ngăn tử cung, tử cung hai sừng KHÔNG CÓ chỉ định cắt qua soi buồng tử cung (vì sẽ gây thủng tử cung). Hướng quản lý: Quản lý sản khoa cẩn thận trong thai kỳ (theo dõi cổ tử cung, dọa sinh non). Phẫu thuật đại phẫu đường bụng tạo hình tử cung Strassman chỉ đặt ra khi tiền sử sản khoa rất xấu bất kể mọi nỗ lực điều trị hỗ trợ.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 128)."
+      },
+      {
+        id: 16,
+        title: "Ca 16",
+        level: "Nội trú BSNT | Vận dụng",
+        vignette: "Bệnh nhân 28 tuổi, PARA 0020. Tiền sử nạo hút thai lưu cách đây 1 năm, sau đó lượng kinh nguyệt sụt giảm rõ rệt (chỉ ra ít máu nâu 1 ngày). Bệnh nhân bị sẩy thai liên tiếp 2 lần sau đó ở tuổi thai 6 tuần và 7 tuần. Siêu âm 3D bơm dịch buồng tử cung (SIS) và Soi buồng tử cung chẩn đoán: Buồng tử cung bị dính dải xơ dầy chiếm khoảng 40% thể tích buồng tử cung, niêm mạc xung quanh mỏng mạn tính (Hội chứng Asherman). Các nguyên nhân STLT khác chưa ghi nhận bất thường. Phác đồ điều trị phối hợp chuẩn mực nhất để phục hồi khả năng mang thai cho bệnh nhân là gì?",
+        options: {
+          A: "Gỡ dính buồng tử cung qua soi buồng tử cung, đặt dụng cụ chống dính, bổ sung Estrogen liều cao kích thích niêm mạc.",
+          B: "Nạo kiểm soát buồng tử cung bằng thìa sharp curette, cho uống thuốc tránh thai kết hợp hàng ngày trong 3 tháng.",
+          C: "Tiêm tĩnh mạch Methotrexate phối hợp ngậm Misoprostol để làm bong toàn bộ dải xơ dính buồng tử cung.",
+          D: "Mổ mở đường bụng xẻ dọc tử cung gỡ dính trực tiếp, khâu phục hồi cơ tử cung hai lớp bằng chỉ đơn sợi.",
+          E: "Chỉ định làm phẫu thuật khâu vòng cổ tử cung ngả âm đạo dự phòng ở tuần thai thứ 12 ở lần mang thai tiếp theo."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_xam_lan", desc: "Nạo thìa sắc (sharp curette) sẽ làm tổn thương sâu hơn lớp đáy nội mạc gây dính vĩnh viễn nặng hơn." },
+          { opt: "C", code: "sai_tang", desc: "Methotrexate và Misoprostol không có tác dụng gỡ xơ dính buồng tử cung." },
+          { opt: "D", code: "qua_xam_lan", desc: "Mổ mở xẻ tử cung là đại phẫu gây tổn thương cơ tử cung nghiêm trọng không cần thiết." },
+          { opt: "E", code: "thieu_cau_phan", desc: "Khâu eo CTC không giải quyết được dính buồng tử cung và niêm mạc mỏng." }
+        ],
+        decision: "• Tiền sử nạo thai + Kinh ít + STLT 2 lần + Soi buồng tử cung thấy dải xơ dính 40% -> Hội chứng Asherman (Dính buồng tử cung).\n• Phác đồ chuẩn Asherman -> Gỡ dính qua Soi B TC + Đặt dụng cụ chống dính (bóng Foley/Vòng) + Estrogen liều cao (Estradiol 4-8mg/ngày) tái tạo nội mạc.",
+        explanation: "Dính buồng tử cung (Hội chứng Asherman) hậu quả của nạo hút thai làm tổn thương lớp đáy nội mạc tử cung. Phác đồ điều trị chuẩn mực: (1) Phẫu thuật gỡ dính qua soi buồng tử cung (Hysteroscopic adhesiolysis); (2) Đặt dụng cụ ngăn dính lại (bóng Foley buồng tử cung hoặc vòng chống dính IUD); (3) Liệu pháp Estrogen liều cao (Estradiol 4 - 8 mg/ngày trong 21 - 28 ngày) phối hợp Progestin cuối chu kỳ để kích thích tái tạo lớp nội mạc tử cung.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 128)."
+      },
+      {
+        id: 17,
+        title: "Ca 17",
+        level: "Nội trú BSNT | Vận dụng",
+        vignette: "Bệnh nhân 30 tuổi, PARA 0020. Tiền sử sản khoa: Lần 1 sẩy thai 18 tuần (diễn tiến vỡ ối không đau bụng); Lần 2 sẩy thai 20 tuần (đến viện cổ tử cung đã mở trọn, thai sổ nhanh không đau đớn). Hiện tại bệnh nhân đang mang thai lần 3, thai 13 tuần 0 ngày theo siêu âm quý 1. Thăm khám hiện tại: Bệnh nhân hoàn toàn không đau bụng, không ra máu âm đạo. Khám mỏ vịt: Cổ tử cung trơn thon, lỗ ngoài đóng kín. Siêu âm TVS: Chiều dài cổ tử cung CL = 34 mm, lỗ trong cổ tử cung đóng kín dạng hình chữ T, không có hình ảnh sa màng ối. Kế hoạch can thiệp dự phòng chuẩn mực nhất được chỉ định cho bệnh nhân ở lần mang thai này là gì?",
+        options: {
+          A: "Thực hiện thủ thuật khâu vòng cổ tử cung dự phòng ngả âm đạo ngay ở tuổi thai từ 12 đến 14 tuần.",
+          B: "Theo dõi đơn thuần không can thiệp, chỉ khâu cổ tử cung khi bắt đầu xuất hiện cơn đau bụng chuyển dạ.",
+          C: "Đặt vòng nâng cổ tử cung Pessary kết hợp tiêm bắp Progesterone hàng tuần từ tuần 28 của thai kỳ.",
+          D: "Chỉ định mổ lấy thai chủ động ngay ở tuổi thai 32 tuần để tránh nguy cơ vỡ tử cung.",
+          E: "Kê đơn thuốc ngậm dưới lưỡi Misoprostol liều thấp hàng ngày kéo dài đến khi thai đủ tháng."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "sai_thu_tu", desc: "Khi đã có cơn co chuyển dạ hoặc CTC mở to, khâu vòng cổ tử cung dự phòng hoàn toàn thất bại và chống chỉ định." },
+          { opt: "C", code: "sai_thu_tu", desc: "Khai thác tiền sử điển hình hở eo CTC thì khâu vòng dự phòng tuần 12-14 là chỉ định ưu tiên số 1." },
+          { opt: "D", code: "qua_xam_lan", desc: "Mổ lấy thai 32w làm thai sinh cực non hoàn toàn sai chỉ định." },
+          { opt: "E", code: "bo_chong_chi_dinh", desc: "Misoprostol gây co bóp tống thai, chống chỉ định tuyệt đối." }
+        ],
+        decision: "• Tiền sử 2 lần sẩy thai 3 tháng giữa (18w, 20w) diễn tiến sẩy thai nhanh không đau bụng -> Chẩn đoán Hở eo cổ tử cung (Cervical insufficiency).\n• Chẩn đoán Hở eo CTC + Thai hiện tại 13 tuần -> Bắt buộc Khâu vòng cổ tử cung dự phòng (Prophylactic cerclage) ở tuần 12 - 14.",
+        explanation: "Bệnh nhân có tiền sử sản khoa điển hình của Hở eo cổ tử cung (sẩy thai 3 tháng giữa liên tiếp với đặc điểm thai sổ nhanh, không đau bụng hoặc đau ít). Chỉ định chuẩn mực tuyệt đối: Khâu vòng cổ tử cung dự phòng (Prophylactic cerclage theo McDonald hoặc Shirodkar) ở tuổi thai từ 12 đến 14 tuần (sau khi siêu âm khẳng định thai sống và không có dị tật lớn).",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08 & Bài 14: Sinh non (tr. 216)."
+      },
+      {
+        id: 18,
+        title: "Ca 18",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Hai vợ chồng bệnh nhân (chồng 32 tuổi, vợ 28 tuổi) đi khám do bị sẩy thai liên tiếp 3 lần đều ở tuổi thai 7 - 9 tuần. Tiền sử gia đình: Chị gái của người chồng cũng có tiền sử 2 lần thai lưu sớm. Khảo sát toàn bộ các nguyên nhân giải phẫu tử cung, APS, nội tiết tuyến giáp và đường huyết ở người vợ đều hoàn toàn bình thường. Kết quả phân tích nhiễm sắc thể đồ (Karyotype) máu ngoại vi: Người vợ có bộ NST 46,XX bình thường; Người chồng có bộ NST 46,XY, t(11;22)(q23;q11.2) - Chuyển đoạn tương hỗ cân bằng giữa nhánh dài NST số 11 và NST số 22. Cơ chế sinh học gây sẩy thai liên tiếp và lời tư vấn chuyên môn chuẩn xác nhất cho hai vợ chồng là gì?",
+        options: {
+          A: "Chuyển đoạn cân bằng ở người chồng tạo giao tử mất cân bằng di truyền; tư vấn làm thụ tinh trong ống nghiệm kết hợp PGT-SR.",
+          B: "Chuyển đoạn cân bằng gây đột biến gen lặn trên NST X; tư vấn xin tinh trùng hiến tặng làm IUI là con đường duy nhất.",
+          C: "Chuyển đoạn cân bằng làm yếu chất lượng đuôi tinh trùng; tư vấn điều trị Vitamin E liều cao 6 tháng rồi mang thai tự nhiên.",
+          D: "Chuyển đoạn cân bằng gây suy giảm miễn dịch người vợ; tư vấn tiêm truyền Immunoglobulin IVIG hàng tháng khi mang thai.",
+          E: "Chuyển đoạn cân bằng không gây ảnh hưởng gì đến phôi; khuyên hai vợ chồng tiếp tục mang thai tự nhiên không cần can thiệp."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "phan_biet_hep", desc: "PGT-SR giúp chọn phôi cân bằng di truyền từ chính tinh trùng người chồng, không cần vội vàng xin tinh trùng." },
+          { opt: "C", code: "qua_bao_ton", desc: "Dùng Vitamin E không sửa được bất thường cấu trúc nhiễm sắc thể." },
+          { opt: "D", code: "nham_dan_so", desc: "IVIG dùng cho nguyên nhân miễn dịch tranh cãi, không giải quyết được phôi lệch bội do chuyển đoạn NST." },
+          { opt: "E", code: "qua_bao_ton", desc: "Mang thai tự nhiên khi chồng có chuyển đoạn NST sẽ tiếp tục bị sẩy thai lưu hoặc sinh con dị tật nặng." }
+        ],
+        decision: "• STLT 3 lần + Chồng mang Chuyển đoạn tương hỗ cân bằng t(11;22) -> Trong phân bào tạo giao tử sẽ tạo ra các giao tử thừa/thiếu đoạn NST (mất cân bằng).\n• Tư vấn giải pháp -> Làm IVF + Xét nghiệm di truyền tiền làm tổ PGT-SR (Preimplantation Genetic Testing for Structural Rearrangements) để chọn phôi cân bằng.",
+        explanation: "Người mang chuyển đoạn tương hỗ cân bằng (Balanced reciprocal translocation) có kiểu hình hoàn toàn bình thường, nhưng khi giảm phân tạo giao tử sẽ tạo ra tỷ lệ lớn các giao tử bị thừa hoặc thiếu đoạn NST (mất cân bằng cấu trúc). Khi thụ thai, phôi thai lệch bội/mất cân bằng sẽ bị sẩy thai sớm hoặc thai lưu. Giải pháp tối ưu: Làm IVF kết hợp Xét nghiệm di truyền tiền làm tổ cấu trúc NST (PGT-SR) để chọn lọc phôi chuyển có bộ NST cân bằng/bình thường.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 118)."
+      },
+      {
+        id: 19,
+        title: "Ca 19",
+        level: "Nội trú BSNT | Vận dụng cao",
+        vignette: "Bệnh nhân 31 tuổi, PARA 0010. Tiền sử mang thai lần 1 bị thai lưu ở tuổi thai 14 tuần (siêu âm thai nhi bình thường về hình thái, xét nghiệm Karyotype mô thai lưu 46,XX bình thường). Sau sẩy thai 3 tháng, bệnh nhân được làm xét nghiệm tầm soát: Anti-cardiolipin IgG = 52 GPL (dương tính cao > 40 GPL), Lupus Anticoagulant (LA) dương tính. Bệnh nhân được hẹn xét nghiệm kiểm tra lại sau 12 tuần: Anti-cardiolipin IgG = 48 GPL (tiếp tục dương tính). Hiện tại bệnh nhân vừa thử que 2 vạch (thai 5 tuần 2 ngày). Chẩn đoán xác định và phác đồ điều trị chuẩn mực trong thai kỳ cho sản phụ là gì?",
+        options: {
+          A: "Hội chứng Kháng Phospholipid; cho uống Aspirin liều thấp phối hợp tiêm dưới da Heparin trọng lượng phân tử thấp LMWH.",
+          B: "Hội chứng Kháng Phospholipid; cho uống Warfarin 5 mg hàng ngày kết hợp tiêm tĩnh mạch Dexamethasone liều cao.",
+          C: "Lupus ban đỏ hệ thống; chỉ định tiêm truyền Immunoglobulin IVIG hàng tuần kết hợp cho uống Hydroxychloroquine.",
+          D: "Tăng đông di truyền Thrombophilia; cho uống Rivaroxaban liều 15 mg/ngày kéo dài liên tục đến khi sinh.",
+          E: "Sẩy thai liên tiếp chưa rõ nguyên nhân; cho nằm nghỉ ngơi tuyệt đối tại giường và đặt âm đạo Progesterone tự nhiên."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "bo_chong_chi_dinh", desc: "Warfarin qua nhau thai gây dị tật quái thai nghiêm trọng ở 3 tháng đầu, chống chỉ định tuyệt đối." },
+          { opt: "C", code: "nham_dan_so", desc: "Bệnh nhân thỏa tiêu chí APS, chưa có tiêu chuẩn chẩn đoán Lupus ban đỏ hệ thống." },
+          { opt: "D", code: "bo_chong_chi_dinh", desc: "Rivaroxaban (DOAC) không được chấp thuận sử dụng trong thai kỳ." },
+          { opt: "E", code: "qua_bao_ton", desc: "APS đã xác định mà chỉ dưỡng thai bằng Progesterone sẽ dẫn đến thai lưu do tắc mạch nhau thai." }
+        ],
+        decision: "• 1 lần thai lưu >= 10w hình thái bình thường + Anti-cardiolipin IgG dương tính 2 lần cách nhau 12w -> Đủ tiêu chuẩn chẩn đoán APS.\n• Phác đồ chuẩn APS trong thai kỳ -> Aspirin liều thấp (81-100mg/ngày) + Heparin trọng lượng phân tử thấp (LMWH Enoxaparin) tiêm dưới da hàng ngày.",
+        explanation: "Bệnh nhân thỏa mãn 100% tiêu chuẩn chẩn đoán Hội chứng Kháng Phospholipid (APS) theo Sydney/ACR: (1) Tiêu chí lâm sàng: 01 lần thai lưu >= 10 tuần bình thường hình thái; (2) Tiêu chí xét nghiệm: Anti-cardiolipin IgG dương tính chuẩn độ cao 2 lần cách nhau >= 12 tuần. APS gây tắc mạch vi tuần hoàn bánh nhau. Phác đồ điều trị chuẩn mực suốt thai kỳ: Aspirin liều thấp (81-100 mg/ngày) phối hợp LMWH (Enoxaparin) tiêm dưới da hàng ngày.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 120 & 128)."
+      },
+      {
+        id: 20,
+        title: "Ca 20",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Bệnh nhân 28 tuổi, PARA 0030 (tiền sử 3 lần sẩy thai liên tiếp ở các tuổi thai 7 tuần, 8 tuần và 8 tuần). Bệnh nhân đi khám tìm nguyên nhân. Khám phụ khoa và siêu âm tử cung hoàn toàn bình thường. Kết quả xét nghiệm huyết thanh: Lupus Anticoagulant (LA) dương tính rõ. Kháng thể Anti-beta2 Glycoprotein-I IgG = 45 U/mL (dương tính > 20 U/mL). Sau 12 tuần làm xét nghiệm kiểm tra lặp lại: LA tiếp tục dương tính, Anti-beta2 Glycoprotein-I IgG = 42 U/mL. Nhận định nào sau đây là chuẩn xác nhất về chẩn đoán và hướng điều trị cho bệnh nhân ở lần mang thai tới?",
+        options: {
+          A: "Đủ tiêu chuẩn chẩn đoán APS; chỉ định Aspirin liều thấp phối hợp LMWH tiêm dưới da ngay khi thử thai dương tính.",
+          B: "Chưa đủ tiêu chuẩn APS vì bệnh nhân chưa từng bị thai lưu trên mười tuần hoặc chưa từng bị tắc mạch sâu.",
+          C: "Đủ tiêu chuẩn APS nhưng chống chỉ định dùng LMWH vì nguy cơ gây xuất huyết tụ dưới màng đệm.",
+          D: "Chẩn đoán rối loạn đông máu di truyền; chỉ định dùng đơn độc Warfarin đường uống trong suốt thai kỳ.",
+          E: "Chẩn đoán sẩy thai liên tiếp do suy hoàng thể; chỉ định tiêm bắp hCG 5000 UI hàng tuần từ tuần thứ sáu."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "guideline_cu", desc: "Tiêu chuẩn lâm sàng APS chấp nhận: HOẶC 1 lần thai lưu >= 10w, HOẶC 1 lần sinh non < 34w do TSG/suy nhau, HOẶC >= 3 lần sẩy thai liên tiếp < 10w." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "LMWH là thuốc bắt buộc phối hợp trong APS, không bị chống chỉ định." },
+          { opt: "D", code: "bo_chong_chi_dinh", desc: "Warfarin qua nhau gây quái thai quý 1, chống chỉ định tuyệt đối." },
+          { opt: "E", code: "thieu_cau_phan", desc: "Bệnh nhân đã chẩn đoán APS, tiêm hCG không có tác dụng ngăn ngừa tắc mạch nhau thai." }
+        ],
+        decision: "• 3 lần STLT < 10w + LA và Anti-beta2GPI dương tính 2 lần cách nhau 12w -> Đủ tiêu chuẩn chẩn đoán APS đầy đủ.\n• Điều trị thai kỳ tới -> Bắt buộc Aspirin liều thấp + LMWH tiêm dưới da ngay khi thử thai dương tính.",
+        explanation: "Tiêu chuẩn lâm sàng APS chấp nhận 1 trong 3 kịch bản: (1) >= 1 lần thai lưu >= 10 tuần; (2) >= 1 lần sinh non < 34 tuần do tiền sản giật/suy nhau; (3) >= 3 lần sẩy thai liên tiếp không rõ nguyên nhân trước tuần 10. Bệnh nhân có 3 lần sẩy thai < 10w + Kháng thể APS dương tính 2 lần cách 12w -> Đủ tiêu chuẩn chẩn đoán APS. Phác đồ điều trị: Aspirin liều thấp + LMWH ngay khi có thai.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 120)."
+      },
+      {
+        id: 21,
+        title: "Ca 21",
+        level: "Nội trú BSNT | Vận dụng",
+        vignette: "Bệnh nhân nữ 30 tuổi, PARA 0020 (tiền sử 2 lần sẩy thai ở tuổi thai 7 tuần và 9 tuần). Bệnh nhân đi khám sức khỏe tiền mang thai. Khám lâm sàng: Thể trạng bình thường, BMI = 22 kg/m², tuyến giáp không to, không có triệu chứng sợ lạnh hay mệt mỏi. Kết quả xét nghiệm nội tiết tuyến giáp: TSH = 4,8 mIU/L (tăng nhẹ, giới hạn bình thường 0,4 - 4,0 mIU/L); FT4 = 14,2 pmol/L (bình thường); Xét nghiệm kháng thể Anti-TPO = 180 IU/mL (dương tính > 34 IU/mL). Các nguyên nhân STLT khác hoàn toàn bình thường. Chẩn đoán và mục tiêu điều trị bằng Levothyroxine trước và trong thai kỳ là gì?",
+        options: {
+          A: "Suy giáp cận lâm sàng; điều trị Levothyroxine kiểm soát nồng độ TSH duy trì dưới 2,5 mIU/L.",
+          B: "Cường giáp Basedow; chỉ định điều trị bằng thuốc kháng giáp tổng hợp Propylthiouracil liều cao.",
+          C: "Bình giáp hoàn toàn; không cần điều trị thuốc, hẹn kiểm tra lại TSH khi thai được 20 tuần.",
+          D: "Viêm tuyến giáp mạn tính Hashimoto; chỉ định mổ cắt bỏ toàn bộ hai thùy tuyến giáp trước khi mang thai.",
+          E: "Suy tuyến yên; chỉ định tiêm hydrocortisone phối hợp tiêm hormone tăng trưởng GH kéo dài."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "nham_dan_so", desc: "TSH tăng (4.8 mIU/L) là suy giáp, không phải cường giáp Basedow." },
+          { opt: "C", code: "qua_bao_ton", desc: "TSH 4.8 mIU/L kèm Anti-TPO (+) ở phụ nữ STLT có chỉ định điều trị Levothyroxine bắt buộc." },
+          { opt: "D", code: "qua_xam_lan", desc: "Mổ cắt tuyến giáp ở bệnh nhân suy giáp cận lâm sàng là sai lầm nghiêm trọng." },
+          { opt: "E", code: "nham_dan_so", desc: "FT4 bình thường và TSH tăng nhẹ là suy giáp tại giáp cận lâm sàng, không phải suy tuyến yên." }
+        ],
+        decision: "• TSH = 4.8 mIU/L (> 4.0) + FT4 bình thường + Anti-TPO (+) + Tiền sử STLT 2 lần -> Chẩn đoán Suy giáp cận lâm sàng.\n• Mục tiêu điều trị Levothyroxine ở phụ nữ STLT / chuẩn bị mang thai -> Duy trì TSH < 2.5 mIU/L.",
+        explanation: "Bệnh nhân được chẩn đoán Suy giáp cận lâm sàng (TSH tăng nhẹ 4,8 mIU/L, FT4 bình thường, Anti-TPO dương tính). Suy giáp cận lâm sàng và tự kháng thể tuyến giáp dương tính làm tăng rõ rệt nguy cơ sẩy thai liên tiếp và thai lưu. Khuyến cáo của Hiệp hội Tuyến giáp Hoa Kỳ (ATA) và Giáo trình Sản khoa Huế: Bắt buộc điều trị bằng Levothyroxine (L-thyroxine) với mục tiêu kiểm soát TSH < 2,5 mIU/L trước khi mang thai và trong suốt 3 tháng đầu thai kỳ.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08 & Bài 20: Bệnh tuyến giáp và thai kỳ."
+      },
+      {
+        id: 22,
+        title: "Ca 22",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Bệnh nhân 32 tuổi, PARA 0020 (tiền sử 2 lần sẩy thai ở tuổi thai 8 tuần và 10 tuần). Bệnh nhân có tiền sử Đái tháo đường tuýp 2 đã 3 năm nhưng tuân thủ điều trị kém, thường xuyên tự ngưng thuốc. Bệnh nhân đến khám tư nhân chuẩn bị mang thai lại. Kết quả xét nghiệm sinh hóa: Đường huyết tương lúc đói = 10,2 mmol/L; Xét nghiệm HbA1c = 8,8% (tăng cao > 6,5%). Các xét nghiệm tầm soát nguyên nhân sẩy thai liên tiếp khác (Karyotype, giải phẫu tử cung, APS, tuyến giáp) chưa thấy bất thường. Mức HbA1c mục tiêu cần đạt được trước khi cho phép bệnh nhân mang thai lại để giảm thiểu nguy cơ sẩy thai là bao nhiêu?",
+        options: {
+          A: "Kiểm soát đường huyết bằng Insulin đạt HbA1c dưới 6,5% trước khi bắt đầu thả mang thai.",
+          B: "Cho phép mang thai ngay vì mức HbA1c 8,8% hoàn toàn không ảnh hưởng đến sự làm tổ của phôi.",
+          C: "Kê đơn thuốc viên Metformin phối hợp Sulfonylurea uống kéo dài suốt 3 tháng đầu thai kỳ.",
+          D: "Chỉ định làm thủ thuật nạo kiểm soát buồng tử cung dự phòng trước khi kiểm soát đường huyết.",
+          E: "Tư vấn xin trứng nhờ người mang thai hộ vì đái tháo đường tuýp 2 chống chỉ định mang thai."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_bao_ton", desc: "HbA1c 8.8% làm tăng nguy cơ sẩy thai sớm và dị tật bẩm sinh nặng lên gấp 3-4 lần." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "Sulfonylurea qua nhau gây hạ đường huyết thai nhi nặng, không phải lựa chọn ưu tiên." },
+          { opt: "D", code: "qua_xam_lan", desc: "Nạo buồng tử cung không có chỉ định khi niêm mạc bình thường." },
+          { opt: "E", code: "qua_muc", desc: "Đái tháo đường tuýp 2 kiểm soát tốt bằng Insulin hoàn toàn mang thai an toàn." }
+        ],
+        decision: "• STLT 2 lần + Đái tháo đường tuýp 2 kiểm soát kém (HbA1c = 8,8%) -> Đường huyết cao giai đoạn thụ tinh/làm tổ gây sẩy thai sớm và dị tật.\n• Mục tiêu chuẩn bị tiền mang thai -> Bắt buộc điều chỉnh Insulin đưa HbA1c < 6,5% trước khi cho phép thả mang thai lại.",
+        explanation: "Tăng đường huyết không kiểm soát ở giai đoạn thụ tinh và 8 tuần đầu thai kỳ (khi HbA1c > 8,0%) làm tăng nguy cơ sẩy thai tự phát sớm và dị tật bẩm sinh nặng (dị tật tim, sứt môi, chẻ đôi đốt sống) lên gấp 3 - 4 lần. Khuyến cáo ADA và Giáo trình Sản khoa Huế: Bệnh nhân bắt buộc phải chuyển sang điều trị kiểm soát đường huyết bằng Insulin tối ưu để đạt mục tiêu HbA1c < 6,5% (hoặc < 6,0%) ổn định ít nhất 1 - 2 tháng trước khi cho phép bắt đầu thả mang thai.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08 & Bài 18: Đái tháo đường thai kỳ."
+      },
+      {
+        id: 23,
+        title: "Ca 23",
+        level: "Nội trú BSNT | Vận dụng",
+        vignette: "Bệnh nhân 27 tuổi, PARA 0020 (tiền sử 2 lần sẩy thai sớm ở tuổi thai 6 tuần và 7 tuần). Bệnh nhân đi khám theo dõi chu kỳ kinh nguyệt. Kinh nguyệt đều chu kỳ 28 ngày, pha hoàng thể bị ngắn (chỉ kéo dài 9 - 10 ngày sau rụng trứng). Định lượng Progesterone huyết thanh ở ngày thứ 21 của chu kỳ (7 ngày sau phóng noãn): Progesterone = 6,2 ng/mL (giảm thấp, tiêu chuẩn sinh lý pha hoàng thể > 10 ng/mL). Siêu âm canh noãn ghi nhận niêm mạc tử cung ngày 21 mỏng kém phát triển. Các nguyên nhân STLT khác hoàn toàn bình thường. Phác đồ bổ sung nội tiết chuẩn mực nhất được chỉ định cho bệnh nhân là gì?",
+        options: {
+          A: "Bổ sung Progesterone tự nhiên ngay sau khi xác nhận phóng noãn hoặc ngay khi thử que thai dương tính.",
+          B: "Chỉ định uống Estrogen liều cao liên tục suốt 28 ngày của chu kỳ không cần phối hợp Progesterone.",
+          C: "Tiêm bắp Methotrexate liều đơn vào ngày thứ 14 của chu kỳ để kích thích hoàng thể phát triển.",
+          D: "Chỉ định làm thủ thuật khâu vòng cổ tử cung ngả âm đạo ngay ở tuần thứ 6 của thai kỳ tiếp theo.",
+          E: "Cho uống thuốc tránh thai hàng ngày chứa Levonorgestrel trong 6 tháng để điều trị triệt để suy hoàng thể."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "bo_chong_chi_dinh", desc: "Dùng Estrogen đơn độc không có Progesterone gây quá sản nội mạc và không hỗ trợ pha hoàng thể." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "Methotrexate gây độc tế bào và sẩy thai, chống chỉ định tuyệt đối." },
+          { opt: "D", code: "nham_dan_so", desc: "Khâu eo CTC không điều trị được suy hoàng thể thiếu hụt progesterone." },
+          { opt: "E", code: "bo_chong_chi_dinh", desc: "Thuốc tránh thai gây ngừa thai, sai mục đích điều trị hiếm muộn sẩy thai." }
+        ],
+        decision: "• STLT 2 lần < 8w + Pha hoàng thể ngắn (9-10 ngày) + Progesterone ngày 21 = 6,2 ng/mL (< 10) -> Chẩn đoán Suy hoàng thể (Luteal phase deficiency).\n• Điều trị -> Bắt buộc Bổ sung Progesterone tự nhiên (dạng vi hạt đặt âm đạo hoặc uống) từ sau phóng noãn / thử thai dương tính kéo dài đến 10-12 tuần.",
+        explanation: "Suy hoàng thể (Khiếm khuyết giai đoạn hoàng thể) dẫn đến thiếu hụt Progesterone - hormone thiết yếu để biến đổi nội mạc tử cung sang chế tiết và duy trì sự bám làm tổ của phôi. Định lượng Progesterone ngày 21 < 10 ng/mL khẳng định suy hoàng thể. Phác đồ điều trị: Bổ sung Progesterone tự nhiên (vi hạt đặt âm đạo hoặc dydrogesterone uống) khởi đầu từ sau khi phóng noãn (hoặc ngay khi có thai) và kéo dài liên tục đến tuổi thai 10 - 12 tuần (khi bánh nhau đã hoàn thiện chức năng tiết Progesterone).",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 05 & Bài 08: Thất bại thai kỳ (tr. 129)."
+      },
+      {
+        id: 24,
+        title: "Ca 24",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Bệnh nhân 29 tuổi, PARA 0020 (tiền sử 2 lần sẩy thai ở tuổi thai 7 tuần và 8 tuần). Bệnh nhân có thể trạng béo phì (BMI = 29,5 kg/m²), kinh nguyệt thưa (3 - 4 tháng mới có kinh 1 lần), rậm lông vùng cằm và bụng dưới. Siêu âm ngả âm đạo: Hai buồng trứng có > 20 nang nhỏ d = 4 - 8 mm xếp chuỗi hạt ở ngoại vi, thể tích buồng trứng > 10 mL. Xét nghiệm sinh hóa: Tỷ lệ LH/FSH = 2,8; Chỉ số kháng Insulin HOMA-IR = 4,2 (tăng cao > 2,5). Chẩn đoán xác định: Hội chứng Buồng trứng đa nang (PCOS) kèm kháng Insulin. Thuốc điều trị hỗ trợ chuyển hóa được chứng minh giúp làm giảm tỷ lệ sẩy thai ở bệnh nhân này là gì?",
+        options: {
+          A: "Metformin phối hợp điều chỉnh chế độ ăn giảm cân và tập luyện thể dục.",
+          B: "Clomiphene citrate uống liên tục 30 ngày trong tháng để kích thích rụng trứng.",
+          C: "Bromocriptine uống hàng ngày để ức chế tuyến yên tiết hormone Prolactin.",
+          D: "Dexamethasone liều cao tiêm bắp hàng tuần để chế tiết nội tiết tố nam.",
+          E: "Levothyroxine uống liều cao để kích thích tốc độ chuyển hóa cơ bản."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "sai_thu_tu", desc: "Clomiphene chỉ uống 5 ngày (ngày 2-6 chu kỳ) để kích trứng, uống 30 ngày liên tục là sai phác đồ." },
+          { opt: "C", code: "nham_dan_so", desc: "Bromocriptine chỉ dùng cho tăng Prolactin máu, không dùng cho PCOS kháng insulin." },
+          { opt: "D", code: "bo_chong_chi_dinh", desc: "Corticoid Dexamethasone làm tăng nguy cơ Đái tháo đường và béo phì nặng hơn." },
+          { opt: "E", code: "nham_dan_so", desc: "Bệnh nhân không bị suy giáp, không có chỉ định Levothyroxine." }
+        ],
+        decision: "• PCOS + Béo phì BMI 29,5 + STLT 2 lần + Kháng Insulin (HOMA-IR 4.2) -> Tăng Insulin máu kích thích LH và androgen gây suy giảm chất lượng noãn và sẩy thai.\n• Điều trị chuyển hóa -> Metformin (Sensitizer insulin) + Giảm cân/Tập luyện làm giảm tỷ lệ sẩy thai sớm.",
+        explanation: "Ở bệnh nhân PCOS kèm béo phì và kháng Insulin, tình trạng tăng Insulin máu bù trừ kích thích tế bào vỏ buồng trứng tăng tiết Androgen và làm rối loạn chức năng nội mạc tử cung, dẫn đến tỷ lệ sẩy thai sớm cao (30-50%). Metformin (thuốc làm nhạy cảm Insulin) phối hợp với chế độ ăn giảm cân và tập luyện giúp cải thiện đề kháng Insulin, giảm nồng độ Androgen và đã được chứng minh lâm sàng giúp giảm rõ rệt tỷ lệ sẩy thai sớm ở nhóm bệnh nhân này.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ."
+      },
+      {
+        id: 25,
+        title: "Ca 25",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Bệnh nhân 32 tuổi, PARA 0030 (tiền sử 3 lần sẩy thai tự phát ở các tuổi thai 9 tuần, 11 tuần và 14 tuần). Tiền sử gia đình: Mẹ ruột bị huyết khối tĩnh mạch sâu chi dưới ở tuổi 45. Bệnh nhân đã được làm xét nghiệm khảo sát nguyên nhân sẩy thai liên tiếp: Khảo sát Karyotype, giải phẫu tử cung, APS, tuyến giáp hoàn toàn bình thường. Kết quả xét nghiệm di truyền Thrombophilia: Phát hiện đột biến dị hợp tử gen Yếu tố V Leiden (Factor V Leiden mutation). Phương pháp điều trị dự phòng nguy cơ tắc mạch nhau thai được chỉ định khi bệnh nhân mang thai lại là gì?",
+        options: {
+          A: "Dự phòng bằng Heparin trọng lượng phân tử thấp LMWH tiêm dưới da trong suốt thai kỳ.",
+          B: "Dự phòng bằng thuốc chống đông Warfarin đường uống kéo dài liên tục từ quý 1.",
+          C: "Chỉ định điều trị bằng tiêm truyền tĩnh mạch Huyết tương tươi đông lạnh hàng tuần.",
+          D: "Chỉ định phẫu thuật khâu vòng cổ tử cung ngả âm đạo dự phòng ở tuần thai thứ 12.",
+          E: "Tư vấn không cần điều trị gì vì đột biến gen di truyền hoàn toàn không thể can thiệp."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "bo_chong_chi_dinh", desc: "Warfarin qua nhau gây dị tật quái thai cấu trúc xương ở quý 1, chống chỉ định tuyệt đối." },
+          { opt: "C", code: "nham_dan_so", desc: "Truyền huyết tương tươi bổ sung yếu tố đông máu làm tăng nguy cơ tắc mạch nặng hơn." },
+          { opt: "D", code: "nham_dan_so", desc: "Khâu eo CTC không điều trị được bệnh lý tăng đông Thrombophilia." },
+          { opt: "E", code: "qua_bao_ton", desc: "Đột biến Yếu tố V Leiden gây tăng đông hoàn toàn điều trị dự phòng thành công bằng LMWH." }
+        ],
+        decision: "• STLT 3 lần + Tiền sử gia đình huyết khối + Đột biến gen Yếu tố V Leiden -> Bệnh lý tăng đông di truyền (Hereditary Thrombophilia).\n• Điều trị dự phòng thai kỳ -> Tiêm dưới da LMWH (Enoxaparin) suốt thai kỳ để ngăn ngừa tắc mạch vi tuần hoàn nhau thai.",
+        explanation: "Đột biến gen Yếu tố V Leiden là dạng Thrombophilia di truyền phổ biến nhất, gây ra tình trạng đề kháng với C-protein hoạt hóa, làm tăng nguy cơ hình thành huyết khối vi mạch nhau thai dẫn đến sẩy thai liên tiếp và thai lưu quý 2. Phác đồ điều trị dự phòng chuẩn mực khi mang thai: Tiêm dưới da Heparin trọng lượng phân tử thấp (LMWH như Enoxaparin) hàng ngày trong suốt thai kỳ và giai đoạn hậu sản.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 122)."
+      },
+      {
+        id: 26,
+        title: "Ca 26",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Bệnh nhân 30 tuổi, PARA 0030 (tiền sử 3 lần sẩy thai sớm ở các tuổi thai 7 tuần, 8 tuần và 8 tuần). Hai vợ chồng đi khám tầm soát nguyên nhân sẩy thai liên tiếp tại trung tâm hỗ trợ sinh sản. Kết quả toàn bộ các xét nghiệm chuyên sâu: Karyotype máu ngoại vi hai vợ chồng bình thường; Siêu âm 3D tử cung và HSG không có bất thường giải phẫu; Xét nghiệm kháng thể APS (LA, aCL, Anti-beta2GPI) âm tính 2 lần; TSH, FT4, HbA1c, Progesterone ngày 21 bình thường; Tinh dịch đồ chồng và DFI bình thường. Chẩn đoán: Sẩy thai liên tiếp chưa rõ nguyên nhân (Unexplained RPL). Bệnh nhân vô cùng lo âu và tuyệt vọng. Lời tư vấn chuyên môn y học chứng cứ đúng đắn và nhân văn nhất cho hai vợ chồng là gì?",
+        options: {
+          A: "Tư vấn động viên tâm lý, khẳng định tỷ lệ mang thai thành công tự nhiên ở lần sau vẫn đạt từ 60 đến 70%.",
+          B: "Tư vấn bắt buộc phải chuyển sang làm thụ tinh trong ống nghiệm xin trứng kết hợp mang thai hộ.",
+          C: "Chỉ định tiêm truyền tĩnh mạch Immunoglobulin IVIG hàng tuần kết hợp tiêm corticoid suốt thai kỳ tới.",
+          D: "Khuyên hai vợ chồng tuyệt đối không được mang thai tự nhiên lại vì tỷ lệ sẩy thai lần sau là 100%.",
+          E: "Chỉ định phẫu thuật mổ mở khâu vòng cổ tử cung ngả bụng dự phòng ngay trước khi thả mang thai."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_muc", desc: "Bệnh nhân buồng tử cung và vòi trứng bình thường, không có chỉ định xin trứng mang thai hộ." },
+          { opt: "C", code: "guideline_cu", desc: "Liệu pháp IVIG và Corticoid không được chứng minh hiệu quả trong Unexplained RPL và gây nhiều tác dụng phụ." },
+          { opt: "D", code: "qua_bao_ton", desc: "Tuyên bố sẩy thai 100% là sai sự thật, làm bệnh nhân hoảng loạn." },
+          { opt: "E", code: "bo_chong_chi_dinh", desc: "Khâu eo tử cung không có chỉ định khi chưa có bằng chứng hở eo CTC." }
+        ],
+        decision: "• STLT 3 lần + Toàn bộ xét nghiệm tầm soát nguyên nhân (Karyotype, Giải phẫu, APS, Nội tiết) bình thường -> Chẩn đoán Unexplained RPL (Sẩy thai liên tiếp chưa rõ nguyên nhân).\n• Theo khuyến cáo ESHRE/ASRM -> Cơ hội mang thai sống tự nhiên ở lần sau dù không can thiệp vẫn đạt 60 - 70% -> Bắt buộc tư vấn hỗ trợ tâm lý (Tender loving care) + Thay đổi lối sống.",
+        explanation: "Có tới 50% các trường hợp sẩy thai liên tiếp sau khi đã thăm khám đầy đủ vẫn được xếp vào nhóm Chưa rõ nguyên nhân (Unexplained RPL). Khuyến cáo mạnh mẽ của ESHRE và ASRM: Cần nhấn mạnh và trấn an bệnh nhân rằng tỷ lệ mang thai và sinh con sống tự nhiên thành công ở lần mang thai tiếp theo dù không điều trị can thiệp gì vẫn đạt từ 60% đến 70%. Hỗ trợ tâm lý (Tender loving care), tư vấn lối sống lành mạnh là chìa khóa quan trọng nhất.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 127 & 129)."
+      },
+      {
+        id: 27,
+        title: "Ca 27",
+        level: "Nội trú BSNT | Vận dụng",
+        vignette: "Sản phụ 29 tuổi, PARA 1001, thai 16 tuần 4 ngày theo siêu âm quý 1. Bệnh nhân nhập viện vì đau trằn nặng hạ vị từng cơn kèm ra máu âm đạo sẫm màu lượng vừa. Thăm khám lâm sàng: Huyết động ổn định, HA 110/70 mmHg, Mạch 80 lần/phút. Khám bụng: Sờ thấy tử cung co cứng từng cơn nhẹ. Khám mỏ vịt: Cổ tử cung dài đóng kín, có ít máu nâu ở âm đạo. Siêu âm TVS: Buồng tử cung có 01 thai sống, tim thai 150 lần/phút, chiều dài cổ tử cung CL = 36 mm, lỗ trong đóng kín. Cạnh bờ dưới bánh nhau có vùng tụ máu bóc tách màng ối kích thước 35 x 15 mm (chiếm khoảng 30% diện tích bánh nhau). Phác đồ điều trị nội khoa phối hợp chuẩn mực nhất cho sản phụ là gì?",
+        options: {
+          A: "Nằm nghỉ ngơi tại giường, bổ sung Progesterone tự nhiên phối hợp thuốc giảm co cơ trơn Spasfon đường tiêm.",
+          B: "Chỉ định chọc ối xét nghiệm Karyotype thai nhi ngay lập tức để loại trừ bất thường nhiễm sắc thể.",
+          C: "Tiêm tĩnh mạch Oxytocin liên tục 24 giờ để làm sạch khối máu tụ dưới màng ối trong buồng tử cung.",
+          D: "Chỉ định phẫu thuật khâu vòng cổ tử cung ngả âm đạo cấp cứu để ngăn ngừa nguy cơ vỡ ối sớm.",
+          E: "Cho ngậm dưới lưỡi Misoprostol liều 400 mcg mỗi 6 giờ để tống xuất khối máu tụ bóc tách ra ngoài."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_xam_lan", desc: "Chọc ối khi đang dọa sẩy thai bóc tách bánh nhau làm tăng nguy cơ vỡ ối sẩy thai." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "Oxytocin gây co bóp tử cung làm sẩy thai ngay lập tức." },
+          { opt: "D", code: "bo_chong_chi_dinh", desc: "Cổ tử cung dài 36mm đóng kín không có chỉ định khâu vòng CTC." },
+          { opt: "E", code: "bo_chong_chi_dinh", desc: "Misoprostol gây co bóp tống thai, chống chỉ định tuyệt đối." }
+        ],
+        decision: "• Thai 16w4d + Đau bụng cơn + Ra máu sẫm + Bóc tách bánh nhau 30% + CTC dài đóng -> Dọa sẩy thai quý 2.\n• Phác đồ chuẩn Dọa sẩy thai quý 2 -> Nằm nghỉ ngơi + Bổ sung Progesterone + Thuốc giảm co cơ trơn (Spasfon/Phloroglucinol).",
+        explanation: "Bệnh nhân được chẩn đoán Dọa sẩy thai quý 2 (thai 16 tuần, đau bụng cơn, bóc tách màng ối 30%, cổ tử cung còn dài đóng kín). Phác đồ điều trị phối hợp chuẩn mực: (1) Nằm nghỉ ngơi tại giường; (2) Bổ sung Progesterone (giúp an thai, giảm nhạy cảm cơ tử cung); (3) Thuốc giảm co cơ trơn (Phloroglucinol/Spasfon tiêm hoặc uống) để cắt cơn co tử cung. Không dùng Oxytocin hay Misoprostol.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 124)."
+      },
+      {
+        id: 28,
+        title: "Ca 28",
+        level: "Nội trú BSNT | Vận dụng cao",
+        vignette: "Sản phụ 26 tuổi, PARA 0000, thai 28 tuần 4 ngày theo siêu âm quý 1. Bệnh nhân nhập viện vì đau quặn bụng dưới từng cơn dồn dập (3 cơn/10 phút) kèm ra ít dịch nhầy hồng ở âm đạo. Thăm khám lâm sàng: HA 110/70 mmHg, Mạch 84 lần/phút, không sốt. Khám mỏ vịt: Âm đạo có ít nhầy hồng, không có nước ối chảy ra. Khám hai tay: Cổ tử cung xóa 50%, mở 1 cm, đầu thai nhi chúc thấp. Siêu âm TVS: Cổ tử cung bị ngắn còn 18 mm. Test Fibronectin trong dịch âm đạo (fFN) dương tính. Không có dấu hiệu nhiễm trùng ối. Phác đồ điều trị nội khoa phối hợp chuẩn mực nhất được chỉ định cấp cứu cho sản phụ là gì?",
+        options: {
+          A: "Dùng thuốc giảm co Tocolytics cắt cơn co tử cung, tiêm bắp Betamethasone trưởng thành phổi, dùng Nifedipine.",
+          B: "Chỉ định mổ lấy thai cấp cứu ngay lập tức mà không cần tiêm thuốc trưởng thành phổi do cổ tử cung đã mở.",
+          C: "Cho ngậm dưới lưỡi Misoprostol liều 200 mcg mỗi 4 giờ để kích thích cổ tử cung mở nhanh tống thai ra.",
+          D: "Tiêm tĩnh mạch Oxytocin nhỏ giọt liên tục để thúc đẩy quá trình chuyển dạ diễn ra nhanh chóng.",
+          E: "Thực hiện thủ thuật khâu vòng cổ tử cung cấp cứu ngay tại phòng cấp cứu sản khoa."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_xam_lan", desc: "Thai 28 tuần cực non, cổ tử cung mới mở 1cm chưa có suy thai, mổ lấy thai ngay là can thiệp vội vàng không cần thiết." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "Misoprostol làm tăng co bóp tống thai cực non." },
+          { opt: "D", code: "bo_chong_chi_dinh", desc: "Oxytocin làm tăng chuyển dạ sinh non." },
+          { opt: "E", code: "bo_chong_chi_dinh", desc: "Khâu eo CTC chống chỉ định khi tuổi thai > 24 tuần." }
+        ],
+        decision: "• Thai 28w4d + Cơn co 3 cơn/10p + CTC xóa 50% mở 1cm + CL 18mm + fFN (+) -> Chẩn đoán Dọa sinh non / Dọa sẩy thai muộn.\n• Phác đồ chuẩn 28 tuần -> Bắt buộc Thuốc giảm co Tocolytics (Nifedipine/Atosiban) cắt cơn co + Betamethasone 12mg (2 liều tiêm bắp cách 24h) trưởng thành phổi.",
+        explanation: "Sản phụ được chẩn đoán Dọa sinh non / Dọa sẩy thai muộn ở tuổi thai 28 tuần 4 ngày (tuổi thai cực non). Mục tiêu xử trí tối thượng: (1) Bắt buộc dùng thuốc giảm co tử cung Tocolytics (như Nifedipine hoặc Atosiban) để trì hoãn chuyển dạ ít nhất 48 giờ; (2) Tiêm bắp Betamethasone 12 mg (2 liều cách nhau 24 giờ) để kích thích trưởng thành phổi thai nhi; (3) Bổ sung Magnesi sulfat bảo vệ thần kinh thai nhi.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08 & Bài 14: Sinh non (tr. 212)."
+      },
+      {
+        id: 29,
+        title: "Ca 29",
+        level: "Nội trú BSNT | Vận dụng",
+        vignette: "Sản phụ 32 tuổi, PARA 1001, thai 16 tuần theo ngày kinh cuối. Sản phụ đi siêu âm kiểm tra phát hiện thai chết lưu trong tử cung (phôi thai thoái hóa CRL = 65 mm tương đương thai 13 tuần, không có tim thai). Lâm sàng: Sản phụ không đau bụng, không ra máu âm đạo, cổ tử cung dài đóng kín. Khảo sát xét nghiệm công thức máu, đông máu toàn bộ (Fibrinogen = 3,8 g/L) hoàn toàn bình thường. Bệnh nhân có nguyện vọng điều trị chấm dứt thai kỳ bằng nội khoa. Phác đồ điều trị nội khoa chuẩn mực được chỉ định để tống xuất thai lưu cho sản phụ là gì?",
+        options: {
+          A: "Uống Mifepristone 200 mg, sau 24 đến 48 giờ cho ngậm dưới lưỡi Misoprostol 400 mcg lặp lại mỗi 3 giờ.",
+          B: "Chỉ dùng đơn độc Misoprostol 800 mcg đặt âm đạo một liều duy nhất mà không dùng Mifepristone.",
+          C: "Tiêm tĩnh mạch Oxytocin liều cao 30 UI hòa Glucose 5% truyền nhỏ giọt tốc độ nhanh ngay từ đầu.",
+          D: "Chỉ định phẫu thuật mổ lấy thai chủ động qua đường bụng để lấy thai lưu ra ngoài an toàn.",
+          E: "Chỉ định thủ thuật nạo hút buồng tử cung bằng thìa sharp curette ngay lập tức không cần dùng thuốc."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "thieu_cau_phan", desc: "Dùng đơn độc Misoprostol có tỷ lệ tống xuất thai lưu 3 tháng giữa kém hơn nhiều so với phác đồ kết hợp Mife + Miso." },
+          { opt: "C", code: "sai_thu_tu", desc: "Tử cung 16w cổ tử cung chưa chín muồi, dùng Oxytocin đơn độc từ đầu hoàn toàn thất bại." },
+          { opt: "D", code: "qua_xam_lan", desc: "Mổ lấy thai để lấy thai lưu 16w là phẫu thuật xâm lấn thô bạo lãng phí vô lý." },
+          { opt: "E", code: "qua_xam_lan", desc: "Nạo bằng thìa sắc ở thai 16w gây thủng tử cung và dính buồng tử cung nặng nề." }
+        ],
+        decision: "• Thai lưu 16w (CRL 65mm) + Đông máu bình thường + CTC đóng -> Bắt buộc phác đồ chấm dứt thai kỳ nội khoa 3 tháng giữa.\n• Phác đồ chuẩn FIGO/ACOG -> Mifepristone 200mg uống -> Sau 24-48h ngậm Misoprostol 400mcg lặp lại mỗi 3h (tối đa 4-5 liều).",
+        explanation: "Phác đồ chuẩn mực quốc tế (FIGO) và Bộ Y tế về Chấm dứt thai lưu 3 tháng giữa (13 - 22 tuần): Uống Mifepristone 200 mg (để làm mềm chín muồi cổ tử cung và thoái hóa niêm mạc), sau 24 - 48 giờ cho ngậm dưới lưỡi hoặc đặt âm đạo Misoprostol 400 mcg, lặp lại mỗi 3 giờ (tối đa 4 - 5 liều) cho đến khi thai và nhau tống xuất hoàn toàn. Phác đồ phối hợp Mife + Miso giúp tống xuất thai nhanh và an toàn vượt trội.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 125)."
+      },
+      {
+        id: 30,
+        title: "Ca 30",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Sản phụ 29 tuổi, con so, thai 9 tuần 5 ngày theo siêu âm quý 1. Bệnh nhân nhập viện vì ra máu âm đạo màu đỏ sẫm lượng vừa kéo dài 4 ngày nay. Thăm khám lâm sàng: Huyết động ổn định, HA 115/70 mmHg, Mạch 78 lần/phút. Cổ tử cung đóng kín, có ít máu nâu ở âm đạo. Siêu âm TVS: Buồng tử cung có 01 thai sống, CRL = 30 mm, tim thai 168 lần/phút. Khảo sát diện bám bánh nhau: Có khối máu tụ lớn nằm dưới màng đệm kéo dài từ bờ dưới đến sát đáy tử cung, kích thước 48 x 22 mm, diện tích bóc tách chiếm 55% chu vi túi thai. Nhận định tiên lượng và kế hoạch theo dõi lâm sàng phù hợp nhất cho sản phụ là gì?",
+        options: {
+          A: "Tụ máu dưới màng đệm diện rộng trên 50%; tiên lượng nguy cơ sẩy thai cao, cần điều trị bảo tồn và theo dõi siêu âm mỗi tuần.",
+          B: "Tụ máu dưới màng đệm diện rộng; chỉ định hút thai MVA khẩn cấp vì túi thai chắc chắn sẽ bị sẩy trong 24 giờ.",
+          C: "Tụ máu dưới màng đệm diện rộng; tiêm tĩnh mạch Oxytocin liên tục để làm tan khối máu tụ nhanh chóng.",
+          D: "Tụ máu dưới màng đệm diện rộng; chỉ định mổ mở bóc khối máu tụ bảo tồn thai nhi.",
+          E: "Tụ máu dưới màng đệm diện rộng; kê đơn uống Aspirin liều cao để chống đông làm tan khối máu tụ."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_xam_lan", desc: "Bóc tách 55% thai vẫn đang sống, nạo hút thai vội vàng là phá thai nhầm." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "Oxytocin làm co bóp tử cung gây tống thai sẩy ngay." },
+          { opt: "D", code: "qua_xam_lan", desc: "Mổ mở bóc khối máu tụ dưới màng đệm hoàn toàn không có trong thực hành y khoa." },
+          { opt: "E", code: "bo_chong_chi_dinh", desc: "Aspirin làm tăng nguy cơ chảy máu và bóc tách diện rộng hơn." }
+        ],
+        decision: "• Thai 9w5d sống + Tụ máu dưới màng đệm bóc tách 55% (> 50%) -> Tụ máu diện rộng, tiên lượng nguy cơ sẩy thai / suy nhau cao hơn bóc tách nhẹ.\n• Thai vẫn đang sống -> Bắt buộc Điều trị bảo tồn (Progesterone + Nghỉ ngơi) + Theo dõi sát siêu âm mỗi tuần, không được nạo hút thai.",
+        explanation: "Tụ máu dưới màng đệm (Subchorionic hematoma) diện rộng bóc tách > 50% chu vi túi thai làm tăng đáng kể nguy cơ sẩy thai tự phát, thai chậm tăng trưởng và ối vỡ sớm. Tuy nhiên, khi thai nhi vẫn đang sống (CRL = 30 mm, tim thai 168 ck/p), thái độ xử trí chuẩn mực vẫn là điều trị bảo tồn (Progesterone, nghỉ ngơi) và theo dõi sát siêu âm đánh giá sự hấp thu của khối máu tụ mỗi tuần, tuyệt đối không nạo hút hay dùng thuốc tăng co.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 124)."
+      },
+      {
+        id: 31,
+        title: "Ca 31",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Sản phụ 26 tuổi, PARA 0010 (tiền sử sẩy thai 19 tuần). Hiện tại thai 17 tuần 5 ngày. Bệnh nhân nhập viện vì ra nhiều dịch nhầy âm đạo kèm sốt nhẹ 38,2°C và đau râm râm bụng dưới 2 ngày nay. Khám mỏ vịt: Cổ tử cung mở 2 cm, bọc màng ối sa tụt xuống kênh cổ tử cung, dịch âm đạo màu đục đọng ít ở túi cùng sau có mùi hôi nhẹ. Siêu âm TVS: Cổ tử cung ngắn 12 mm, lỗ trong mở rộng sa màng ối. Xét nghiệm máu: Bạch cầu vọt lên 16.500/mm³ (Neutrophil 85%), CRP = 48 mg/L (tăng cao). Bác sĩ trực dự định tiến hành khâu vòng cổ tử cung cấp cứu. Nhận định nào sau đây là chuẩn xác nhất về quyết định khâu vòng cổ tử cung ở sản phụ này?",
+        options: {
+          A: "Chống chỉ định tuyệt đối khâu vòng cổ tử cung do bệnh nhân đã có tình trạng nhiễm trùng ối.",
+          B: "Chỉ định khâu vòng cổ tử cung cấp cứu ngay lập tức sau khi tiêm một liều hạ sốt Paracetamol.",
+          C: "Chỉ định khâu vòng cổ tử cung kết hợp đặt vòng nâng Pessary để tăng hiệu quả giữ thai.",
+          D: "Chỉ định mổ lấy thai cấp cứu ngay lập tức để lấy thai ra ngoài tránh nhiễm trùng máu cho mẹ.",
+          E: "Chỉ định tiêm Methotrexate liều đơn để làm teo bớt khối màng ối sa rồi mới tiến hành khâu vòng."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_xam_lan", desc: "Khâu vòng CTC khi đang nhiễm trùng ối sẽ nhốt vi khuẩn gây áp xe tử cung, vi khuẩn huyết và vỡ tử cung nguy kịch." },
+          { opt: "C", code: "qua_xam_lan", desc: "Khâu vòng hay đặt Pessary đều chống chỉ định khi có nhiễm trùng ối." },
+          { opt: "D", code: "nham_dan_so", desc: "Thai 17 tuần chưa sống được, mổ lấy thai là phẫu thuật đại phẫu không có chỉ định." },
+          { opt: "E", code: "bo_chong_chi_dinh", desc: "Methotrexate chống chỉ định cho thai sống trong tử cung." }
+        ],
+        decision: "• Thai 17w5d + Sốt 38,2°C + Khí hư đục hôi + BC 16.500 + CRP 48 mg/L -> Chẩn đoán Nhiễm trùng ối (Chorioamnionitis).\n• Đã có Nhiễm trùng ối -> CHỐNG CHỈ ĐỊNH TUYỆT ĐỐI Khâu vòng cổ tử cung -> Bắt buộc dùng kháng sinh toàn thân IV + Chấm dứt thai kỳ.",
+        explanation: "Các chống chỉ định tuyệt đối của Khâu vòng cổ tử cung (Bài 08 & Bài 14, tr. 216): (1) Nhiễm trùng ối (Mẹ sốt, dịch âm đạo hôi, bạch cầu/CRP tăng); (2) Chảy máu từ buồng tử cung; (3) Cơn co tử cung chuyển dạ rõ; (4) Vỡ ối; (5) Thai dị tật lớn hoặc thai chết. Việc cố tình khâu cổ tử cung khi có nhiễm trùng ối sẽ gây áp xe tử cung, nhiễm khuẩn huyết và sốc nhiễm trùng nguy hiểm tính mạng người mẹ.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08 & Bài 14: Sinh non (tr. 216)."
+      },
+      {
+        id: 32,
+        title: "Ca 32",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Sản phụ 29 tuổi, PARA 0020 (tiền sử sẩy thai 16 tuần và 18 tuần không đau bụng). Hiện tại thai 13 tuần 2 ngày, chẩn đoán Hở eo cổ tử cung, đủ điều kiện khâu vòng cổ tử cung dự phòng. Phẫu thuật viên tiến hành thủ thuật khâu vòng ngả âm đạo theo phương pháp Mc Donald tại phòng mổ. Thao tác: Đặt mỏ vịt bộc lộ cổ tử cung, dùng kẹp vô khuẩn kẹp nhẹ mép trước và mép sau cổ tử cung để kéo nhẹ ra ngoài. Mô tả chuẩn xác về vị trí và đường khâu trong kỹ thuật khâu vòng Mc Donald là gì?",
+        options: {
+          A: "Khâu mũi túi vòng quanh cổ tử cung bằng chỉ không tan ở vị trí rãnh âm đạo - cổ tử cung, thắt ở góc 12 giờ.",
+          B: "Rạch phẫu thuật bóc tách niêm mạc âm đạo đẩy bàng quang lên cao rồi khâu sát lỗ trong cổ tử cung.",
+          C: "Mổ mở đường bụng xẻ đáy tử cung khâu một dải băng Mersilene vòng quanh eo tử cung từ phía trên.",
+          D: "Khâu mũi chữ X đâm xuyên qua toàn bộ độ dày cơ cổ tử cung ở ngay mép ngoài lỗ ngoài cổ tử cung.",
+          E: "Dùng chỉ catgut tự tiêu khâu liên tục từ lỗ ngoài cổ tử cung ngược lên trên rãnh âm đạo."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "phan_biet_hep", desc: "Rạch niêm mạc đẩy bàng quang là kỹ thuật Shirodkar, không phải McDonald." },
+          { opt: "C", code: "nham_dan_so", desc: "Khâu đường bụng chỉ dùng khi khâu ngả âm đạo thất bại hoặc CTC bị cụt/dính nặng." },
+          { opt: "D", code: "sai_thu_tu", desc: "Khâu sát lỗ ngoài CTC hoàn toàn không có tác dụng giữ eo CTC và dễ tụt chỉ." },
+          { opt: "E", code: "bo_chong_chi_dinh", desc: "Dùng chỉ tự tiêu sẽ bị tiêu trước khi thai đủ tháng, bắt buộc dùng chỉ không tan (Mersilene/Prolene)." }
+        ],
+        decision: "• Khâu vòng cổ tử cung dự phòng phương pháp Mc Donald -> Kỹ thuật đơn giản, phổ biến nhất.\n• Mô tả kỹ thuật Mc Donald -> Khâu mũi túi (purse-string) 4-5 mũi vòng quanh cổ tử cung tại rãnh âm đạo - cổ tử cung (cách lỗ ngoài 1-2cm) bằng chỉ không tan, thắt ở góc 12 giờ.",
+        explanation: "Phương pháp khâu vòng cổ tử cung Mc Donald (Bài 14, tr. 216): Dùng chỉ không tan sợi to (như dải băng Mersilene hoặc chỉ Prolene số 1) khâu một mũi túi (purse-string suture) ăn sâu vào lớp cơ cổ tử cung tại rãnh âm đạo - cổ tử cung (ngang mức lỗ trong cổ tử cung), đi xung quanh cổ tử cung với 4 - 5 mũi khâu, sau đó thắt nút chỉ ở phía trước (góc 12 giờ). Khác với Shirodkar (phải rạch niêm mạc âm đạo đẩy bàng quang).",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 14: Sinh non (tr. 216)."
+      },
+      {
+        id: 33,
+        title: "Ca 33",
+        level: "Nội trú BSNT | Vận dụng",
+        vignette: "Sản phụ 31 tuổi, PARA 0020, được khâu vòng cổ tử cung dự phòng theo phương pháp Mc Donald lúc thai 13 tuần do Hở eo cổ tử cung. Quá trình theo dõi thai kỳ diễn tiến hoàn toàn thuận lợi, sản phụ không đau bụng, không ra máu, chiều dài cổ tử cung duy trì 32 mm. Hiện tại thai nhi được 36 tuần 5 ngày theo siêu âm quý 1, thai phát triển bình thường, ước lượng cân nặng 2.800 g. Thăm khám hiện tại: Sản phụ chưa có cơn co chuyển dạ, cổ tử cung vẫn còn chỉ khâu giữ chắc. Thời điểm và kế hoạch tháo chỉ khâu vòng cổ tử cung chủ động chuẩn mực nhất là khi nào?",
+        options: {
+          A: "Thực hiện cắt tháo chỉ khâu vòng chủ động ở tuổi thai 36 đến 37 tuần tại phòng khám sản khoa.",
+          B: "Tiếp tục giữ chỉ khâu vòng cho đến khi thai đủ 40 tuần đúng ngày dự sinh mới tiến hành cắt chỉ.",
+          C: "Chỉ cắt tháo chỉ khâu vòng ngay trong mổ khi thực hiện phẫu thuật mổ lấy thai chủ động.",
+          D: "Tháo chỉ khâu vòng ngay sau khi sản phụ đã sinh xong em bé và đã sổ nhau hoàn toàn.",
+          E: "Tháo chỉ khâu vòng ở tuổi thai 32 tuần kết hợp tiêm tĩnh mạch Oxytocin kích thích sinh sớm."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "sai_thu_tu", desc: "Giữ chỉ đến 40w nếu có cơn co chuyển dạ đột ngột sẽ gây rách đứt cổ tử cung nghiêm trọng." },
+          { opt: "C", code: "qua_xam_lan", desc: "Khâu vòng CTC không có chỉ định mổ lấy thai bắt buộc, sản phụ hoàn toàn có thể sinh thường ngả âm đạo." },
+          { opt: "D", code: "bo_chong_chi_dinh", desc: "Không tháo chỉ trước sinh thì thai không thể sổ ngả âm đạo và rách nát cổ tử cung." },
+          { opt: "E", code: "qua_xam_lan", desc: "Tháo chỉ và kích sinh ở tuần 32 làm thai sinh non không cần thiết." }
+        ],
+        decision: "• Khâu vòng CTC dự phòng + Thai hiện tại 36 tuần 5 ngày (gần đủ tháng) + Chưa có chuyển dạ -> Bắt buộc kế hoạch tháo chỉ chủ động.\n• Thời điểm tháo chỉ khâu vòng chủ động -> Cắt tháo chỉ ở tuổi thai 36 - 37 tuần (hoặc ngay khi có chuyển dạ/ối vỡ).",
+        explanation: "Khuyến cáo chuẩn mực của ACOG và Bộ Y tế (Bài 14, tr. 216): Chỉ khâu vòng cổ tử cung phải được cắt tháo chủ động ở tuổi thai từ 36 đến 37 tuần (khi thai đã gần đủ tháng). Việc tháo chỉ chủ động thời điểm này giúp sản phụ có thể vào chuyển dạ sinh ngả âm đạo tự nhiên an toàn; đồng thời tránh nguy cơ cơn co chuyển dạ cấp tính xé rách đứt phức tạp cổ tử cung do dải chỉ khâu giữ chặt.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 14: Sinh non (tr. 216)."
+      },
+      {
+        id: 34,
+        title: "Ca 34",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Bệnh nhân 26 tuổi, PARA 0020 (tiền sử 2 lần sẩy thai ở tuổi thai 14 tuần và 16 tuần). Chụp HSG và siêu âm 3D dựng hình buồng tử cung: Chỉ quan sát thấy một nửa buồng tử cung hình chuối nằm lệch sang bên phải liên thông với 01 vòi tử cung phải, phía bên trái hoàn toàn không phát triển sừng tử cung (Tử cung một sừng - Unicornuate uterus, ASRM Class II). Không có sừng thô bên còn lại. Các xét nghiệm nguyên nhân STLT khác bình thường. Lời tư vấn chuyên môn và thái độ quản lý sản khoa đúng đắn nhất cho bệnh nhân là gì?",
+        options: {
+          A: "Tử cung một sừng có thể mang thai; cần quản lý thai kỳ cẩn thận, theo dõi chiều dài cổ tử cung và dọa sinh non.",
+          B: "Chỉ định mổ mở đường bụng thực hiện phẫu thuật tái tạo ghép nối hai nửa buồng tử cung.",
+          C: "Chỉ định phẫu thuật xẻ mở buồng tử cung qua soi buồng tử cung bằng dao điện đơn cực.",
+          D: "Tư vấn bệnh nhân tuyệt đối chống chỉ định mang thai và bắt buộc phải nhờ người mang thai hộ.",
+          E: "Chỉ định đặt dụng cụ chống dính buồng tử cung phối hợp tiêm tĩnh mạch Methotrexate."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "bo_chong_chi_dinh", desc: "Tử cung một sừng không có nửa còn lại để ghép nối phẫu thuật." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "Tử cung một sừng chỉ có 1 kênh duy nhất, xẻ mở soi buồng tử cung sẽ gây thủng tử cung." },
+          { opt: "D", code: "qua_muc", desc: "Tử cung một sừng vẫn có thể mang thai và sinh con thành công dưới sự quản lý cẩn thận." },
+          { opt: "E", code: "bo_chong_chi_dinh", desc: "Đặt vòng chống dính và Methotrexate hoàn toàn sai chỉ định." }
+        ],
+        decision: "• STLT 2 lần + HSG/Siêu âm 3D chỉ thấy 1 nửa buồng tử cung dạng hình chuối -> Tử cung một sừng (Unicornuate uterus).\n• Tử cung một sừng -> Không có chỉ định phẫu thuật tái tạo -> Quản lý sản khoa cẩn thận thai kỳ tiếp theo (theo dõi dọa sinh non, hở eo CTC).",
+        explanation: "Tử cung một sừng (Unicornuate uterus - Bài 08, tr. 117) xảy ra khi một trong hai ống Müller bất phát triển. Buồng tử cung có thể tích hạn chế làm tăng nguy cơ sẩy thai 3 tháng giữa và sinh non. Tử cung một sừng KHÔNG CÓ chỉ định phẫu thuật tạo hình buồng tử cung. Thái độ quản lý: Tư vấn bệnh nhân vẫn có thể mang thai, cần được quản lý sản khoa chặt chẽ (theo dõi sát chiều dài cổ tử cung, dự phòng sinh non và ngôi bất thường).",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 117)."
+      },
+      {
+        id: 35,
+        title: "Ca 35",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Bệnh nhân nữ 30 tuổi, PARA 0030 (tiền sử 3 lần sẩy thai muộn ở các tuổi thai 12 tuần, 14 tuần và 15 tuần). Tiền sử: Mẹ ruột của bệnh nhân từng sử dụng thuốc nội tiết Diethylstilbestrol (DES) trong thời gian mang thai bệnh nhân để giữ thai. Chụp HSG và Soi buồng tử cung chẩn đoán: Lòng tử cung hẹp theo chiều ngang, hai góc tử cung thắt lại tạo hình ảnh buồng tử cung dạng chữ T (T-shaped uterus). Các xét nghiệm nguyên nhân STLT khác hoàn toàn bình thường. Can thiệp phẫu thuật hiện đại được chứng minh giúp cải thiện thể tích buồng tử cung và kết cục thai kỳ cho bệnh nhân là gì?",
+        options: {
+          A: "Phẫu thuật mở rộng thành bên buồng tử cung qua soi buồng tử cung Hysteroscopic metroplasty.",
+          B: "Mổ mở đường bụng cắt bỏ toàn bộ hai sừng tử cung rồi khâu phục hồi tạo hình tử cung.",
+          C: "Đặt dụng cụ tử cung chứa Levonorgestrel trong 12 tháng để kích thích cơ tử cung giãn nở.",
+          D: "Tiêm tĩnh mạch Dexamethasone liều cao phối hợp uống Aspirin liều thấp kéo dài.",
+          E: "Tư vấn chống chỉ định mang thai vĩnh viễn do tử cung phơi nhiễm DES không thể phục hồi."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_xam_lan", desc: "Mổ mở xẻ tử cung là đại phẫu tàn phá không cần thiết." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "Vòng Levonorgestrel gây ngừa thai, chống chỉ định ở người mong con." },
+          { opt: "D", code: "nham_dan_so", desc: "Dexamethasone + Aspirin không sửa được bất thường hình thái buồng tử cung chữ T." },
+          { opt: "E", code: "qua_muc", desc: "Tử cung chữ T hoàn toàn có thể phẫu thuật soi buồng tử cung mở rộng giúp mang thai thành công." }
+        ],
+        decision: "• Mẹ dùng DES + STLT 3 lần + Chụp HSG buồng tử cung dạng chữ T -> Tử cung chữ T (T-shaped uterus do phơi nhiễm DES).\n• Điều trị -> Phẫu thuật mở rộng thành bên buồng tử cung qua soi buồng tử cung (Hysteroscopic metroplasty / lateral incision).",
+        explanation: "Tử cung hình chữ T (T-shaped uterus - Bài 08) là dị dạng bẩm sinh đặc trưng ở phụ nữ bị phơi nhiễm thuốc Diethylstilbestrol (DES) từ thời kỳ bào thai. Tử cung chữ T có thể tích buồng nhỏ và thắt hẹp hai bên gây sẩy thai liên tiếp. Phương pháp điều trị hiệu quả hiện nay: Phẫu thuật cắt mở rộng thành bên buồng tử cung qua soi buồng tử cung (Hysteroscopic metroplasty) giúp khôi phục hình dạng và thể tích buồng tử cung bình thường.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ."
+      },
+      {
+        id: 36,
+        title: "Ca 36",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Bệnh nhân 31 tuổi, PARA 0020 (tiền sử 2 lần sẩy thai sớm ở tuổi thai 7 tuần và 8 tuần). Bệnh nhân bị ra máu âm đạo giữa chu kỳ kinh (metrorrhagia) 6 tháng nay. Chụp HSG và Siêu âm bơm dịch buồng tử cung (SIS): Trong buồng tử cung có một khối giảm âm bờ đều, có cuống mạch máu nuôi rõ trên Doppler, kích thước 26 x 14 mm chiếm gần toàn bộ khoang buồng tử cung. Chẩn đoán: Polyp nội mạc tử cung kích thước lớn (Endometrial polyp). Xử trí chuẩn mực để giải quyết nguyên nhân gây sẩy thai liên tiếp cho bệnh nhân là gì?",
+        options: {
+          A: "Cắt polyp nội mạc tử cung tận gốc cuống qua soi buồng tử cung phẫu thuật.",
+          B: "Nạo mù buồng tử cung bằng thìa sharp curette tại phòng khám phụ khoa.",
+          C: "Cho uống thuốc progesterone tổng hợp Chlormadinone 10 mg/ngày trong 6 tháng.",
+          D: "Tiêm tĩnh mạch Methotrexate liều đơn để làm teo hoàn toàn khối polyp.",
+          E: "Chỉ định mổ cắt tử cung bán phần ngả âm đạo do polyp có nguy cơ ung thư cao."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "thieu_cau_phan", desc: "Nạo mù bằng thìa sắc dễ sót chân cuống polyp và gây tổn thương nội mạc tử cung diện rộng." },
+          { opt: "C", code: "qua_bao_ton", desc: "Uống Progesterone không thể làm rụng polyp kích thước lớn 26mm." },
+          { opt: "D", code: "bo_chong_chi_dinh", desc: "Methotrexate không có chỉ định cho polyp nội mạc tử cung." },
+          { opt: "E", code: "qua_xam_lan", desc: "Mổ cắt tử cung ở bệnh nhân 31 tuổi mong con là xâm lấn thô bạo tàn phế." }
+        ],
+        decision: "• STLT 2 lần + Ra máu giữa chu kỳ + Siêu âm SIS thấy khối polyp 26x14 mm trong lòng tử cung -> Polyp nội mạc tử cung lớn.\n• Điều trị -> Phẫu thuật Cắt polyp tận gốc cuống qua Soi buồng tử cung (Hysteroscopic polypectomy).",
+        explanation: "Polyp nội mạc tử cung kích thước lớn (> 1,5 - 2 cm) chiếm không gian buồng tử cung, gây phản ứng viêm niêm mạc mạn tính và cản trở sự làm tổ bám của phôi thai -> Nguyên nhân gây sẩy thai liên tiếp và ra máu bất thường. Phương pháp xử trí chuẩn mực duy nhất: Cắt polyp nội mạc tử cung tận chân cuống qua soi buồng tử cung phẫu thuật (Hysteroscopic polypectomy), gửi mô làm giải phẫu bệnh lý.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 128)."
+      },
+      {
+        id: 37,
+        title: "Ca 37",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Bệnh nhân 33 tuổi, PARA 0020 (tiền sử 2 lần sẩy thai ở tuổi thai 8 tuần và 10 tuần). Bệnh nhân bị rong kinh, cường kinh kéo dài gây thiếu máu nhẹ (Hb = 102 g/L). Chụp HSG và Soi buồng tử cung chẩn đoán: Thành sau buồng tử cung có một khối u xơ dưới niêm mạc (FIGO type 0), đường kính 32 mm nhô hoàn toàn vào lòng tử cung làm biến dạng nghiêm trọng khoang nội mạc. Các xét nghiệm nguyên nhân STLT khác hoàn toàn bình thường. Can thiệp phẫu thuật tối ưu nhất được chỉ định để điều trị cho bệnh nhân trước khi mang thai lại là gì?",
+        options: {
+          A: "Phẫu thuật bóc u xơ tử cung qua soi buồng tử cung Hysteroscopic myomectomy.",
+          B: "Mổ mở đường bụng thực hiện phẫu thuật bóc u xơ tử cung ngả bụng.",
+          C: "Thực hiện thủ thuật làm tắc động mạch tử cung UAE bằng hạt nhựa dưới X-quang tăng sáng.",
+          D: "Cho tiêm agonist GnRH hàng tháng trong 2 năm để làm teo hoàn toàn khối u xơ.",
+          E: "Chỉ định mổ cắt tử cung toàn phần ngả bụng vì u xơ tử cung gây rong kinh nặng."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_xam_lan", desc: "U xơ type 0 nhô hoàn toàn trong lòng tử cung bóc ngả bụng phải xẻ sâu qua cơ tử cung gây sẹo lớn không cần thiết." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "Thuyên tắc động mạch tử cung (UAE) gây hoại tử giảm dự trữ buồng trứng và dính buồng tử cung, chống chỉ định ở người mong con." },
+          { opt: "D", code: "qua_bao_ton", desc: "Dùng GnRH agonist kéo dài 2 năm gây mãn kinh giả và loãng xương, ngừng thuốc u xơ sẽ to lại." },
+          { opt: "E", code: "qua_xam_lan", desc: "Mổ cắt tử cung ở bệnh nhân 33 tuổi mong con là xâm lấn thô bạo." }
+        ],
+        decision: "• STLT 2 lần + Rong kinh + U xơ dưới niêm mạc FIGO type 0 (d = 32mm) nhô hoàn toàn lòng tử cung -> U xơ tử cung dưới niêm mạc.\n• U xơ type 0/1 < 4cm -> Phẫu thuật Bóc u xơ qua Soi buồng tử cung (Hysteroscopic myomectomy) là lựa chọn vàng ít xâm lấn.",
+        explanation: "U xơ tử cung dưới niêm mạc (Submucosal fibroid - FIGO Type 0 hoặc 1) làm biến dạng buồng tử cung, cản trở phôi làm tổ và tưới máu nội mạc -> Nguyên nhân trực tiếp gây sẩy thai liên tiếp và rong kinh. Phác đồ điều trị chuẩn mực tối ưu: Phẫu thuật bóc u xơ tử cung qua soi buồng tử cung (Hysteroscopic myomectomy). Phương pháp UAE chống chỉ định ở phụ nữ muốn sinh con.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 128)."
+      },
+      {
+        id: 38,
+        title: "Ca 38",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Hai vợ chồng (chồng 35 tuổi, vợ 29 tuổi) đi khám do bị sẩy thai liên tiếp 3 lần đều ở tuổi thai 6 - 8 tuần. Khảo sát toàn bộ nguyên nhân từ người vợ (Karyotype, giải phẫu tử cung, APS, nội tiết) đều hoàn toàn bình thường. Xét nghiệm Tinh dịch đồ người chồng theo chuẩn WHO 2021: Mật độ 35 triệu/mL, Tỷ lệ tiến tới 38%, Hình thái bình thường 3% (giảm nhẹ). Xét nghiệm Phân mảnh DNA tinh trùng (DNA Fragmentation Index - DFI): DFI = 38% (tăng cao rõ rệt, ngưỡng bình thường < 15%, DFI > 30% là phân mảnh nặng). Lời tư vấn chuyên môn và giải pháp hỗ trợ sinh sản chuẩn xác nhất cho hai vợ chồng là gì?",
+        options: {
+          A: "Tư vấn thay đổi lối sống người chồng, bổ sung chất chống oxy hóa, chọn IVF/ICSI kết hợp xét nghiệm PGT-A.",
+          B: "Tư vấn bắt buộc phải xin tinh trùng người hiến tặng làm IUI vì tinh trùng phân mảnh DNA không thể thụ tinh.",
+          C: "Khuyên người vợ tiêm truyền Immunoglobulin IVIG hàng tuần để ngăn phản ứng đào thải tinh trùng.",
+          D: "Khuyên hai vợ chồng tiếp tục mang thai tự nhiên không cần điều trị vì phân mảnh DNA tinh trùng hoàn toàn không gây sẩy thai.",
+          E: "Chỉ định cho người chồng phẫu thuật mổ mở bóc toàn bộ hai tinh hoàn để lấy tinh trùng non."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_muc", desc: "DFI cao hoàn toàn có thể chọn tinh trùng tốt qua kỹ thuật ICSI/PICSI/IMSI, không cần vội vàng xin tinh trùng." },
+          { opt: "C", code: "nham_dan_so", desc: "IVIG dùng cho nguyên nhân miễn dịch người vợ, không giải quyết được phân mảnh DNA tinh trùng ở chồng." },
+          { opt: "D", code: "qua_bao_ton", desc: "DFI > 30% đã được chứng minh làm tăng tỷ lệ phôi phân cắt bất thường và sẩy thai sớm." },
+          { opt: "E", code: "qua_xam_lan", desc: "Mổ mở bóc tinh hoàn là xâm lấn thô bạo tàn phá." }
+        ],
+        decision: "• Khảo sát vợ bình thường + Chồng có Phân mảnh DNA tinh trùng DFI = 38% (> 30%) -> Nguyên nhân sẩy thai liên tiếp từ yếu tố nam giới (DNA phôi đứt gãy).\n• Giải pháp -> Chồng dùng chất chống oxy hóa (Vitamin C, E, Zinc, CoQ10) + IVF/ICSI chọn tinh trùng chất lượng cao + PGT-A sàng lọc phôi.",
+        explanation: "Chỉ số phân mảnh DNA tinh trùng (DFI > 30%) ở người chồng là một nguyên nhân quan trọng gây sẩy thai liên tiếp do mang lại bộ gen đứt gãy làm phôi ngừng phát triển sớm sau khi hoạt hóa gen phôi (giai đoạn 8 tế bào). Tối ưu hóa điều trị: (1) Thay đổi lối sống người chồng (tránh nhiệt độ cao, thuốc lá), bổ sung chất chống oxy hóa (CoQ10, Vitamin E, C, Kẽm); (2) Làm IVF/ICSI kết hợp kỹ thuật chọn tinh trùng (PICSI/IMSI) và PGT-A sàng lọc lệch bội phôi.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 01 & Bài 08: Thất bại thai kỳ (tr. 122)."
+      },
+      {
+        id: 39,
+        title: "Ca 39",
+        level: "Nội trú BSNT | Vận dụng",
+        vignette: "Sản phụ 28 tuổi, PARA 1001, thai 20 tuần theo ngày kinh cuối và siêu âm quý 1. Sản phụ nhập viện vì đau tức nhẹ vùng hạ vị kèm ra ít máu âm đạo màu nâu sẫm. Khám lâm sàng: Sinh hiệu ổn định, HA 115/70 mmHg, Mạch 78 lần/phút. Cổ tử cung trơn thon, dài 35 mm, đóng kín. Siêu âm TVS: Buồng tử cung có 01 thai sống, tim thai 155 lần/phút, cử động thai tốt. Cạnh bờ dưới bánh nhau có diện bóc tách màng ối tụ máu kích thước 25 x 12 mm (bóc tách khoảng 20% diện tích bánh nhau). Xét nghiệm công thức máu và CRP hoàn toàn bình thường. Kế hoạch quản lý và điều trị nội khoa thích hợp nhất cho sản phụ là gì?",
+        options: {
+          A: "Nằm nghỉ ngơi tương đối, bổ sung Progesterone tự nhiên, dùng thuốc giảm co cơ trơn Spasfon, theo dõi triệu chứng.",
+          B: "Chỉ định chọc ối xét nghiệm Karyotype thai nhi ngay lập tức để loại trừ bất thường di truyền gây bóc tách.",
+          C: "Cho ngậm dưới lưỡi Misoprostol liều 400 mcg mỗi 4 giờ để tống xuất khối máu tụ bóc tách dưới bánh nhau ra ngoài.",
+          D: "Tiêm tĩnh mạch Oxytocin liên tục 24 giờ để tăng cường co hồi tử cung ép khối máu tụ tan đi.",
+          E: "Chuyển phẫu thuật mổ lấy thai chủ động ngay lập tức do nguy cơ suy thai cấp tính từ diện bóc tách."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_xam_lan", desc: "Chọc ối cấp cứu khi đang dọa sẩy thai bóc tách bánh nhau làm tăng nguy cơ vỡ ối sẩy thai." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "Misoprostol gây co bóp tống thai, chống chỉ định tuyệt đối." },
+          { opt: "D", code: "bo_chong_chi_dinh", desc: "Oxytocin làm co bóp tử cung gây tống thai sẩy." },
+          { opt: "E", code: "qua_xam_lan", desc: "Mổ lấy thai ở tuổi thai 20 tuần (chưa nuôi sống được) khi thai đang sống khỏe mạnh là sai hoàn toàn." }
+        ],
+        decision: "• Thai 20w sống + Bóc tách bánh nhau 20% + CTC dài 35mm đóng -> Dọa sẩy thai quý 2.\n• Phác đồ bảo tồn -> Nằm nghỉ ngơi + Progesterone + Thuốc giảm co Spasfon + Theo dõi lâm sàng.",
+        explanation: "Bệnh nhân dọa sẩy thai quý 2 mức độ nhẹ (bóc tách 20%, cổ tử cung dài đóng kín, thai sống khỏe mạnh). Phác đồ điều trị bảo tồn chuẩn mực: Nằm nghỉ ngơi, bổ sung Progesterone tự nhiên (giúp giảm nhạy cảm cơ tử cung và kháng viêm), kết hợp thuốc giảm co cơ trơn Phloroglucinol/Spasfon và theo dõi triệu chứng chảy máu.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 124)."
+      },
+      {
+        id: 40,
+        title: "Ca 40",
+        level: "Nội trú BSNT | Vận dụng cao",
+        vignette: "Sản phụ 30 tuổi, PARA 1001, thai 18 tuần theo siêu âm quý 1. Sản phụ đi khám siêu âm định kỳ phát hiện thai chết lưu trong tử cung (phôi thai thoái hóa CRL = 72 mm tương đương thai 13 tuần 4 ngày, không có tim thai). Thăm khám lâm sàng: Sản phụ không đau bụng, không ra máu âm đạo. Khám mỏ vịt: Cổ tử cung còn rất dài, cứng, đóng kín hoàn toàn (Chỉ số Bishop = 1 điểm). Xét nghiệm Fibrinogen = 3,5 g/L (bình thường). Sản phụ chọn phác đồ điều trị tống xuất thai bằng nội khoa. Quy trình phối hợp chuẩn mực nhất để làm chín muồi cổ tử cung và tống xuất thai lưu cho sản phụ là gì?",
+        options: {
+          A: "Uống Mifepristone 200 mg, sau 24 đến 48 giờ ngậm dưới lưỡi Misoprostol 400 mcg lặp lại mỗi 3 giờ.",
+          B: "Đặt ngay ống thông Foley bàng quang bơm 50 ml nước muối sinh lý vào kênh cổ tử cung kéo liên tục.",
+          C: "Cho tiêm tĩnh mạch Oxytocin liều cao 30 UI hòa Glucose 5% truyền tốc độ nhanh ngay từ đầu không cần dùng thuốc khác.",
+          D: "Chỉ định làm thủ thuật nạo kiểm soát buồng tử cung bằng thìa sharp curette ngay tại phòng khám phụ khoa.",
+          E: "Cho ngậm dưới lưỡi đơn độc Misoprostol liều cao 800 mcg một liều duy nhất không cần chuẩn bị trước."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "sai_thu_tu", desc: "Đặt bóng Foley là phương pháp cơ học, không phải ưu tiên hàng đầu bằng nội khoa Mife+Miso ở thai 18w." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "Oxytocin đơn độc khi cổ tử cung cứng đóng kín (Bishop 1đ) hoàn toàn thất bại và nguy cơ vỡ tử cung." },
+          { opt: "D", code: "qua_xam_lan", desc: "Nạo thìa sắc thai 18w gây thủng tử cung và dính buồng tử cung nặng nề." },
+          { opt: "E", code: "thieu_cau_phan", desc: "Ngậm đơn độc Miso hiệu quả kém hơn nhiều so với phối hợp Mifepristone trước." }
+        ],
+        decision: "• Thai lưu 18w + CTC chưa chín muồi (Bishop 1đ) + Đông máu bình thường -> Cần phác đồ làm chín muồi CTC và tống xuất thai lưu.\n• Phác đồ chuẩn FIGO -> Mifepristone 200mg (làm chín muồi CTC) -> Sau 24-48h Misoprostol 400mcg ngậm dưới lưỡi/đặt âm đạo lặp lại mỗi 3h.",
+        explanation: "Mifepristone có tác dụng kháng Progesterone, làm mềm chín muồi cổ tử cung và tăng độ nhạy cảm của cơ tử cung với Prostaglandin. Khi phối hợp Mifepristone 200 mg uống trước 24 - 48 giờ rồi mới dùng Misoprostol 400 mcg lặp lại mỗi 3 giờ, tỷ lệ tống xuất thai lưu thành công đạt trên 95% và rút ngắn đáng kể thời gian tống xuất thai.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08 & Bài 29: Khởi phát chuyển dạ (tr. 450)."
+      },
+      {
+        id: 41,
+        title: "Ca 41",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Sản phụ 30 tuổi, PARA 0020, chẩn đoán Hở eo cổ tử cung. Phẫu thuật viên cân nhắc lựa chọn giữa hai phương pháp khâu vòng cổ tử cung ngả âm đạo: Phương pháp Shirodkar và Phương pháp Mc Donald. Bác sĩ giải thích cho phẫu thuật viên phụ về sự khác biệt về mặt kỹ thuật phẫu thuật giữa hai phương pháp này. Đặc điểm kỹ thuật đặc trưng phân biệt phương pháp Shirodkar với phương pháp Mc Donald là gì?",
+        options: {
+          A: "Shirodkar rạch niêm mạc âm đạo đẩy bàng quang và trực tràng để khâu dải băng Mersilene sát lỗ trong cổ tử cung.",
+          B: "Shirodkar dùng chỉ tự tiêu Catgut khâu liên tục từ lỗ ngoài cổ tử cung ngược lên trên rãnh âm đạo.",
+          C: "Shirodkar mổ mở đường bụng xẻ dọc đoạn dưới tử cung để thắt vòng dây cơ tử cung từ phía trên.",
+          D: "Shirodkar khâu mũi túi đơn thuần qua niêm mạc âm đạo mà không cần rạch bóc tách niêm mạc.",
+          E: "Shirodkar chỉ áp dụng khi cổ tử cung đã mở trọn và màng ối đã sa xuống tận âm đạo."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "bo_chong_chi_dinh", desc: "Chỉ tự tiêu không được dùng cho khâu vòng cổ tử cung." },
+          { opt: "C", code: "nham_dan_so", desc: "Rạch mổ đường bụng là khâu eo ngả bụng, không phải Shirodkar ngả âm đạo." },
+          { opt: "D", code: "phan_biet_hep", desc: "Khâu mũi túi qua niêm mạc không bóc tách là kỹ thuật Mc Donald, không phải Shirodkar." },
+          { opt: "E", code: "bo_chong_chi_dinh", desc: "Cổ tử cung mở trọn sa màng ối là chống chỉ định khâu vòng." }
+        ],
+        decision: "• Phân biệt Shirodkar vs Mc Donald -> Shirodkar phức tạp hơn, yêu cầu rạch bóc tách niêm mạc âm đạo thành trước/sau để đẩy bàng quang/trực tràng lên sát lỗ trong CTC rồi mới khâu dải băng Mersilene chìm dưới niêm mạc.\n• Mc Donald đơn giản hơn -> Khâu mũi túi trực tiếp qua niêm mạc tại rãnh âm đạo - cổ tử cung không rạch bóc tách.",
+        explanation: "Phân biệt kỹ thuật (Bài 14, tr. 216): Phương pháp Shirodkar yêu cầu rạch niêm mạc âm đạo ở mặt trước và mặt sau cổ tử cung, đẩy bàng quang và trực tràng lên cao để buộc dải băng Mersilene sát lỗ trong cổ tử cung, sau đó phủ niêm mạc âm đạo lên chỉ khâu (chỉ nằm chìm). Ngược lại, Phương pháp Mc Donald đơn giản hơn, khâu mũi túi trực tiếp qua niêm mạc tại rãnh âm đạo - cổ tử cung không cần bóc tách niêm mạc.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 14: Sinh non (tr. 216)."
+      },
+      {
+        id: 42,
+        title: "Ca 42",
+        level: "Nội trú BSNT | Vận dụng",
+        vignette: "Bệnh nhân 29 tuổi, PARA 0020. Tiền sử sản khoa: Lần 1 thai 16 tuần bị sẩy thai do dị tật chẻ đôi đốt sống (Neural tube defect); Lần 2 sẩy thai 8 tuần. Bệnh nhân đi khám tư vấn dinh dưỡng tiền mang thai. Khảo sát di truyền phát hiện bệnh nhân mang đột biến đồng hợp tử gen MTHFR (Methylenetetrahydrofolate reductase C677T) làm giảm khả năng chuyển hóa Folate. Liều bổ sung Acid Folic chuẩn mực được chỉ định cho bệnh nhân bắt đầu từ 3 tháng trước khi mang thai là bao nhiêu?",
+        options: {
+          A: "Bổ sung Acid Folic liều cao 4 đến 5 mg hàng ngày bắt đầu từ trước khi mang thai ít nhất 3 tháng.",
+          B: "Bổ sung Acid Folic liều thông thường 0,4 mg hàng ngày giống như mọi phụ nữ mang thai nguy cơ thấp.",
+          C: "Chống chỉ định tuyệt đối bổ sung Acid Folic vì sẽ làm tăng nguy cơ ngộ độc vitamin cho thai nhi.",
+          D: "Chỉ bổ sung Acid Folic từ sau khi thai đã được 12 tuần tuổi và đã đo xong độ mờ da gáy.",
+          E: "Thay thế hoàn toàn Acid Folic bằng cách tiêm truyền tĩnh mạch Vitamin B12 liều cao hàng tuần."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "nham_dan_so", desc: "Liều 0,4 mg/ngày chỉ dành cho phụ nữ nguy cơ thấp, bệnh nhân tiền sử dị tật ống thần kinh/MTHFR bắt buộc dùng liều cao 4-5 mg/ngày." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "Acid Folic là chất bắt buộc dự phòng dị tật ống thần kinh." },
+          { opt: "D", code: "sai_thu_tu", desc: "Ống thần kinh khép kín vào tuần thứ 4 sau thụ tinh (tuần 6 thai kỳ), bổ sung từ tuần 12 hoàn toàn không còn tác dụng dự phòng dị tật." },
+          { opt: "E", code: "thieu_cau_phan", desc: "B12 không thay thế được Acid Folic trong khép ống thần kinh." }
+        ],
+        decision: "• Tiền sử con dị tật ống thần kinh + Đột biến gen MTHFR -> Nhóm nguy cơ cao dị tật ống thần kinh và sẩy thai.\n• Liều bổ sung Acid Folic nguy cơ cao -> Bắt buộc Acid Folic liều cao 4 - 5 mg/ngày (gấp 10 lần liều thường) từ 3 tháng trước mang thai đến hết quý 1.",
+        explanation: "Khuyến cáo của CDC, ACOG và Giáo trình Sản khoa Huế (Bài 06, tr. 90): Phụ nữ thuộc nhóm nguy cơ cao (có tiền sử sinh con dị tật ống thần kinh, sẩy thai liên tiếp do đột biến gen MTHFR, Đái tháo đường, hoặc dùng thuốc động kinh) bắt buộc phải bổ sung Acid Folic liều cao 4 đến 5 mg/ngày (gấp 10 lần liều thông thường 0,4 mg/ngày) bắt đầu từ ít nhất 1 - 3 tháng trước khi mang thai kéo dài đến hết 12 tuần đầu thai kỳ.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 06: Quy trình chăm sóc tiền sản (tr. 90)."
+      },
+      {
+        id: 43,
+        title: "Ca 43",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Sản phụ 27 tuổi, PARA 0000, thai 18 tuần 1 ngày theo siêu âm quý 1. Bệnh nhân nhập viện vì đột ngột ra nước âm đạo nhiều ào ạt. Thăm khám lâm sàng: Huyết động ổn định, HA 110/70 mmHg, không sốt. Khám mỏ vịt: Nước ối trong đọng nhiều ở âm đạo và tiếp tục chảy ra từ lỗ cổ tử cung. Thử nghiệm Nitrazine làm giấy quỳ chuyển màu xanh đậm (pH = 7,2). Khám hai tay: Cổ tử cung đã xóa 60%, mở 2 cm, đoạn dưới tử cung giãn. Siêu âm TVS: Buồng tử cung cạn ối hoàn toàn (Chỉ số ối AFI = 0 cm), thai nhi nén chặt vào thành tử cung, tim thai 148 lần/phút. Tư vấn tiên lượng và kế hoạch xử trí sản khoa đúng đắn nhất cho sản phụ là gì?",
+        options: {
+          A: "Tiên lượng cực kỳ dè dặt do cạn ối sớm gây thiểu sản phổi thai nhi; tư vấn chấm dứt thai kỳ để bảo vệ mẹ.",
+          B: "Chỉ định khâu vòng cổ tử cung ngả âm đạo cấp cứu ngay để giữ nước ối và kéo dài thai kỳ đến đủ tháng.",
+          C: "Tiêm tĩnh mạch Salbutamol liên tục phối hợp bơm nước muối sinh lý vào buồng ối hàng tuần để nuôi thai.",
+          D: "Cho sản phụ về nhà tự theo dõi nằm nghỉ ngơi tại giường, hẹn siêu âm kiểm tra lại sau một tháng.",
+          E: "Chỉ định mổ lấy thai cấp cứu ngay lập tức để lấy thai ra nuôi trong lồng ấp sơ sinh tích cực."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "bo_chong_chi_dinh", desc: "Vỡ ối cạn ối hoàn toàn là chống chỉ định tuyệt đối của khâu vòng CTC vì nguy cơ nhiễm trùng ối cấp." },
+          { opt: "C", code: "qua_xam_lan", desc: "Bơm ối lặp lại khi ối vỡ 18 tuần không có hiệu quả lâm sàng và nguy cơ nhiễm trùng tử vong." },
+          { opt: "D", code: "qua_bao_ton", desc: "Cho về nhà khi vỡ ối cạn ối 18w sẽ dẫn đến nhiễm trùng huyết nhiễm độc tử cung." },
+          { opt: "E", code: "qua_xam_lan", desc: "Thai 18 tuần chưa có khả năng sống (viability < 22 tuần), mổ lấy thai là đại phẫu tàn phá không có chỉ định." }
+        ],
+        decision: "• Thai 18w + Vỡ ối ra nước ào ạt + Cạn ối hoàn toàn (AFI 0cm) + CTC mở 2cm -> Vỡ ối cực non quý 2 (PPROM < 22 tuần).\n• Cạn ối kéo dài < 22w -> Thai nhi không thể phát triển phế nang (giảm sản phổi severe pulmonary hypoplasia) + Nguy cơ cao nhiễm trùng ối -> Tư vấn chấm dứt thai kỳ.",
+        explanation: "Vỡ ối cực non ở tuổi thai < 22 tuần (trước ngưỡng nuôi sống) dẫn đến cạn ối kéo dài, hậu quả 100% thai nhi bị thiểu sản phổi nghiêm trọng (Pulmonary hypoplasia - do thiếu nước ối để phế nang giãn nở) và nguy cơ nhiễm trùng ối đe dọa tính mạng người mẹ. Vỡ ối là chống chỉ định khâu vòng cổ tử cung. Hướng xử trí chuẩn mực theo ACOG và Giáo trình Sản khoa Huế (Bài 28, tr. 441): Tư vấn cặn kẽ tiên lượng và tiến hành chấm dứt thai kỳ an toàn.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08 & Bài 28: Ối vỡ non (tr. 441)."
+      },
+      {
+        id: 44,
+        title: "Ca 44",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Sản phụ 34 tuổi, PARA 1001, trễ kinh 10 tuần. Bệnh nhân nhập viện vì ra máu âm đạo rỉ rả màu nâu sẫm kèm nghén nặng nôn nhiều. Thăm khám lâm sàng: Mạch 88 lần/phút, HA 130/85 mmHg. Tử cung to tương đương thai 14 tuần (to hơn so với tuổi thai 10 tuần), mật độ mềm nhão. Khám hai tay: Hai phần phụ sờ thấy hai khối u nang dạng nang bì d = 5 cm di động. Xét nghiệm sinh hóa: Nồng độ beta-hCG huyết thanh vọt lên 210.000 mIU/mL (tăng cao rất nhiều so với thai kỳ bình thường). Siêu âm TVS: Buồng tử cung giãn to chứa đầy hình ảnh âm vang hỗn hợp dạng tuyết rơi / chùm nho, hoàn toàn không thấy phôi thai và túi ối. Chẩn đoán xác định phân biệt với thai lưu thông thường là gì?",
+        options: {
+          A: "Bệnh nguyên bào nuôi thai kỳ dạng Thai trứng toàn phần kèm nang hoàng tuyến hai bên.",
+          B: "Thai chết lưu trong tử cung kéo dài gây hoại tử xuất huyết nội mạc tử cung.",
+          C: "Song thai hai bánh nhau trong đó một thai sống và một thai bị tiêu biến.",
+          D: "Dọa sẩy thai sớm trên bệnh nhân có u nang buồng trứng hai bên kích thước lớn.",
+          E: "Ung thư nguyên bào nuôi di căn buồng trứng và lòng tử cung cấp tính."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "phan_biet_hep", desc: "Thai lưu không bao giờ làm tử cung to hơn tuổi thai và beta-hCG không thể vọt lên 210.000 mIU/mL." },
+          { opt: "C", code: "nham_dan_so", desc: "Song thai tiêu biến vẫn thấy phôi thai sống còn lại, không có hình ảnh chùm nho toàn bộ." },
+          { opt: "D", code: "qua_bao_ton", desc: "Dọa sẩy thai không giải thích được beta-hCG 210.000 mIU/mL và hình ảnh tuyết rơi." },
+          { opt: "E", code: "phan_biet_hep", desc: "Nang 2 bên là nang hoàng tuyến do hCG cao kích thích, không phải di căn ung thư." }
+        ],
+        decision: "• Tử cung to hơn tuổi thai (14w vs 10w) + Nghén nặng + beta-hCG = 210.000 mIU/mL + Siêu âm hình ảnh tuyết rơi/chùm nho + Nang hoàng tuyến 2 bên -> Chẩn đoán Thai trứng toàn phần (Complete hydatidiform mole).\n• Phân biệt với Thai lưu -> Thai lưu tử cung nhỏ hơn tuổi thai, beta-hCG giảm thấp.",
+        explanation: "Các điểm đặc trưng giúp chẩn đoán phân biệt Thai trứng toàn phần với Thai lưu (Bài 08 & Bài 09): (1) Tử cung to hơn tuổi thai thực tế; (2) Nồng độ beta-hCG tăng cao vọt (> 100.000 mIU/mL); (3) Siêu âm buồng tử cung chứa hình ảnh tuyết rơi/bão tuyết/chùm nho không có phôi thai; (4) Xuất hiện nang hoàng tuyến 2 bên do hCG cao kích thích buồng trứng. Hướng xử trí: Nạo hút trứng bằng máy hút chân không cấp cứu.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08 & Bài 09: Bệnh nguyên bào nuôi (tr. 136)."
+      },
+      {
+        id: 45,
+        title: "Ca 45",
+        level: "Nội trú BSNT | Vận dụng",
+        vignette: "Bệnh nhân nữ 26 tuổi, PARA 0000, trễ kinh 6 tuần. Bệnh nhân vào viện vì đau bụng dưới kèm ra máu âm đạo màu đỏ sẫm. Xét nghiệm beta-hCG = 1.450 mIU/mL. Siêu âm TVS: Nội mạc tử cung dày 14 mm, không thấy túi thai rõ trong buồng tử cung, hai phần phụ không thấy khối bất thường. Bệnh nhân sau đó ra một khối tổ chức thịt ở âm đạo và hết đau bụng. Khối tổ chức được gửi làm xét nghiệm giải phẫu bệnh lý khẩn cấp. Hình ảnh vi thể nào trên kết quả giải phẫu bệnh lý khẳng định chắc chắn 100% bệnh nhân đã bị sẩy thai trong tử cung?",
+        options: {
+          A: "Sự hiện diện của các nhung mao gai nhau Chorionic villi và hợp bào nuôi trong mô nạo tống xuất.",
+          B: "Hiện tượng màng rụng hóa mạnh mẽ của các tế bào liên kết nội mạc tử cung.",
+          C: "Hiện tượng Arias-Stella với các tế bào nội mạc tử cung phì đại nhân tăng sắc.",
+          D: "Sự xuất hiện của dải xơ dính và nhiều tế bào bạch cầu đa nhân trung tính ăn mủ.",
+          E: "Sự xuất hiện của các tế bào biểu mô vảy sừng hóa hoại tử màng đáy."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "phan_biet_hep", desc: "Màng rụng hóa xảy ra ở cả thai trong tử cung lẫn thai ngoài tử cung (phản ứng màng rụng), không khẳng định thai trong tử cung." },
+          { opt: "C", code: "phan_biet_hep", desc: "Phản ứng Arias-Stella xuất hiện điển hình trong thai ngoài tử cung, không chứng minh thai trong tử cung." },
+          { opt: "D", code: "nham_dan_so", desc: "Bạch cầu mủ phản ánh viêm nhiễm, không chứng minh thai." },
+          { opt: "E", code: "nham_dan_so", desc: "Biểu mô vảy sừng hóa thuộc cổ tử cung/âm đạo." }
+        ],
+        decision: "• Mô tống xuất âm đạo gửi giải phẫu bệnh -> Tìm thấy Nhung mao gai nhau (Chorionic villi) -> Tiêu chuẩn vàng khẳng định 100% đã có Thai trong tử cung (loại trừ thai ngoài tử cung).\n• Màng rụng (Decidua) hay Phản ứng Arias-Stella -> Có thể gặp trong thai ngoài tử cung, không dùng để khẳng định thai trong tử cung.",
+        explanation: "Theo Giáo trình Sản khoa Huế (Bài 08 & Bài 10): Tiêu chuẩn vàng trên giải phẫu bệnh lý để khẳng định chắc chắn 100% sự hiện diện của thai trong buồng tử cung là tìm thấy các nhung mao gai nhau (Chorionic villi) hoặc tế bào hợp bào nuôi trong mô nạo/tống xuất. Sự hiện diện của lớp màng rụng (Decidua) hay phản ứng Arias-Stella chỉ chứng tỏ có tình trạng mang thai nhưng KHÔNG loại trừ được thai ngoài tử cung.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 120)."
+      },
+      {
+        id: 46,
+        title: "Ca 46",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Bệnh nhân 25 tuổi, được chẩn đoán Sẩy thai hoàn toàn ở tuổi thai 7 tuần cách đây 14 ngày (2 tuần). Quá trình sau sẩy thai diễn tiến hoàn toàn bình thường, hết đau bụng, ra máu âm đạo giảm dần và sạch hẳn sau 5 ngày. Hôm nay bệnh nhân đi tái khám kiểm tra sức khỏe. Khám phụ khoa: Tử cung co hồi bình thường, cổ tử cung đóng kín, hai phần phụ mềm. Siêu âm TVS: Buồng tử cung sạch, nội mạc mỏng 4 mm. Định lượng beta-hCG huyết thanh hiện tại = 28 mIU/mL (giảm rõ so với mức 12.000 mIU/mL lúc bắt đầu sẩy thai). Nhận định nào sau đây là chuẩn xác nhất về diễn tiến nồng độ beta-hCG của bệnh nhân?",
+        options: {
+          A: "Đây là sự thoái triển sinh lý bình thường của beta-hCG, sẽ giảm hoàn toàn về âm tính trong vòng 2 đến 4 tuần.",
+          B: "Nồng độ beta-hCG 28 mIU/mL khẳng định bệnh nhân đã bị biến chứng Bệnh tân sinh nguyên bào nuôi GTN.",
+          C: "Bắt buộc phải tiến hành thủ thuật nạo hút buồng tử cung cấp cứu ngay để tống xuất phần sót thai còn lại.",
+          D: "Chỉ định tiêm Methotrexate liều đơn ngay lập tức do beta-hCG không giảm về dưới 5 mIU/mL sau 2 tuần.",
+          E: "Chẩn đoán bệnh nhân đã mang thai mới trở lại và hẹn siêu âm kiểm tra túi thai sau một tuần."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "guideline_cu", desc: "Bệnh tân sinh nguyên bào nuôi GTN chỉ chẩn đoán khi beta-hCG bình nguyên 4 lần trong 3 tuần hoặc tăng > 10% trong 3 tuần hoặc tồn tại >= 6 tháng." },
+          { opt: "C", code: "qua_xam_lan", desc: "Buồng tử cung đã sạch mỏng 4mm trên siêu âm, nạo hút là xâm lấn thô bạo sai chỉ định." },
+          { opt: "D", code: "qua_muc", desc: "Tiêm MTX không có chỉ định khi beta-hCG đang thoái triển sinh lý bình thường." },
+          { opt: "E", code: "nham_dan_so", desc: "beta-hCG 28 mIU/mL là lượng tồn dư sinh lý từ lần sẩy thai 2 tuần trước, chưa phải thai mới." }
+        ],
+        decision: "• Sẩy thai hoàn toàn 2 tuần trước + Siêu âm buồng tử cung sạch (nội mạc 4mm) + beta-hCG giảm từ 12.000 xuống 28 mIU/mL -> Động học thoái triển sinh lý bình thường.\n• Thời gian thoái triển beta-hCG sau sẩy thai tự phát -> Kéo dài từ 2 đến 4 tuần mới về âm tính (< 5 mIU/mL).",
+        explanation: "Theo Giáo trình Sản khoa Huế (Bài 03 & Bài 08): Sau sẩy thai tự phát hoàn toàn hoặc nạo hút thai, nồng độ beta-hCG giảm dần theo động học bán hủy sinh lý và thường mất từ 2 đến 4 tuần để trở về mức âm tính hoàn toàn (< 5 mIU/mL). Nồng độ beta-hCG = 28 mIU/mL ở tuần thứ 2 sau sẩy thai, siêu âm buồng tử cung sạch là diễn tiến hoàn toàn bình thường, chỉ cần hẹn kiểm tra lại sau 1 - 2 tuần.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ."
+      },
+      {
+        id: 47,
+        title: "Ca 47",
+        level: "Nội trú BSNT | Phân tích",
+        vignette: "Bệnh nhân 30 tuổi, PARA 0020 (tiền sử 2 lần sẩy thai ở các tuổi thai 9 tuần và 12 tuần). Bệnh nhân đi khám tầm soát nguyên nhân sẩy thai liên tiếp khi không mang thai. Bác sĩ tư vấn quy trình xét nghiệm tầm soát Hội chứng Kháng Phospholipid (APS) theo tiêu chuẩn chẩn đoán Sydney. Quy định về loại xét nghiệm và khoảng thời gian xét nghiệm lặp lại chuẩn xác để chẩn đoán APS là gì?",
+        options: {
+          A: "Xét nghiệm LA, aCL và Anti-beta2GPI khi không mang thai, nếu dương tính phải xét nghiệm lặp lại sau ít nhất 12 tuần.",
+          B: "Xét nghiệm duy nhất một lần ngay trong lúc bệnh nhân đang bị dọa sẩy thai chảy máu cấp tính.",
+          C: "Chỉ cần xét nghiệm duy nhất một chỉ số Anti-cardiolipin IgM mà không cần xét nghiệm lặp lại.",
+          D: "Xét nghiệm lặp lại hai lần liên tiếp cách nhau 24 giờ ngay tại thời điểm nhập viện cấp cứu.",
+          E: "Chỉ làm xét nghiệm APS khi sản phụ đã mang thai được từ 20 tuần trở lên."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "guideline_cu", desc: "Xét nghiệm APS khi đang chảy máu cấp hoặc đang mang thai dễ bị dương tính giả hoặc âm tính giả do tiêu thụ kháng thể." },
+          { opt: "C", code: "thieu_cau_phan", desc: "Bắt buộc phải dương tính ít nhất 2 lần cách nhau ít nhất 12 tuần mới đủ tiêu chuẩn chẩn đoán APS." },
+          { opt: "D", code: "sai_thu_tu", desc: "Cách 24 giờ không đủ tiêu chuẩn (bắt buộc cách >= 12 tuần)." },
+          { opt: "E", code: "sai_thu_tu", desc: "Tầm soát APS nên thực hiện tốt nhất trước khi mang thai để điều trị dự phòng từ đầu." }
+        ],
+        decision: "• Quy trình tầm soát APS -> Xét nghiệm 3 bộ kháng thể: Lupus Anticoagulant (LA), Anti-cardiolipin (aCL IgG/IgM), Anti-beta2 Glycoprotein-I (IgG/IgM).\n• Tiêu chuẩn xét nghiệm APS theo Sydney -> Bắt buộc ít nhất 1 kháng thể dương tính chuẩn độ trung bình/cao trong 2 lần xét nghiệm cách nhau ÍT NHẤT 12 TUẦN.",
+        explanation: "Tiêu chuẩn chẩn đoán xét nghiệm APS (Bài 08, tr. 120): Ít nhất một trong 3 loại kháng thể (LA, aCL IgG/IgM, Anti-beta2GPI IgG/IgM) dương tính chuẩn độ trung bình hoặc cao, và bắt buộc phải được xét nghiệm khẳng định lặp lại dương tính lần 2 cách lần đầu ÍT NHẤT 12 TUẦN. Mục đích lặp lại sau 12 tuần là để loại trừ các trường hợp tăng kháng thể thoáng qua do nhiễm trùng cấp.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 120)."
+      },
+      {
+        id: 48,
+        title: "Ca 48",
+        level: "Nội trú BSNT | Đánh giá",
+        vignette: "Sản phụ 27 tuổi, con so, thai 10 tuần theo ngày kinh cuối. Sản phụ vào viện vì đau trằn nhẹ bụng dưới kèm ra ít máu âm đạo màu nâu. Khám lâm sàng: Cổ tử cung đóng kín, tử cung to tương đương thai 10 tuần, Siêu âm TVS: Buồng tử cung có 01 thai sống, CRL = 32 mm, tim thai 165 lần/phút, bóc tách màng đệm 10%. Bác sĩ thực tập đề xuất kê đơn tiêm bắp Ergometrine (Methergin) 0,2 mg để cầm máu âm đạo cho sản phụ. Nhận định chuyên môn nào sau đây là chuẩn xác nhất về đề xuất của bác sĩ thực tập?",
+        options: {
+          A: "Chống chỉ định tuyệt đối Ergometrine vì gây co cứng cơ tử cung mạnh làm sẩy thai ngay lập tức.",
+          B: "Đề xuất hoàn toàn đúng đắn vì Ergometrine là thuốc cầm máu hàng đầu trong mọi trường hợp chảy máu âm đạo.",
+          C: "Chỉ nên dùng Ergometrine đường uống thay vì đường tiêm bắp để giảm tác dụng phụ tăng huyết áp.",
+          D: "Ergometrine giúp làm chín muồi cổ tử cung và hỗ trợ thai bám chặt hơn vào nội mạc tử cung.",
+          E: "Ergometrine là thuốc giảm co cơ trơn ưu tiên số một cho dọa sẩy thai ba tháng đầu."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "bo_chong_chi_dinh", desc: "Ergometrine gây co cứng tử cung, chống chỉ định tuyệt đối khi thai còn sống." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "Đường uống vẫn gây co bóp tử cung làm tống thai." },
+          { opt: "D", code: "nham_dan_so", desc: "Ergometrine không làm chín muồi CTC hay an thai." },
+          { opt: "E", code: "nham_dan_so", desc: "Ergometrine là thuốc TĂNG co bóp tử cung, không phải thuốc GIẢM co." }
+        ],
+        decision: "• Thai 10w đang sống + Dọa sẩy thai bóc tách 10% -> Cần duy trì tử cung thư giãn để bảo tồn thai.\n• Ergometrine (Methergin) -> Thuốc gây co cứng cơ tử cung mạnh và kéo dài -> CHỐNG CHỈ ĐỊNH TUYỆT ĐỐI khi thai còn sống (chỉ dùng khi đã sẩy thai/sinh xong để cầm máu đờ tử cung).",
+        explanation: "Ergometrine (Methergin) là thuốc tăng co tử cung nhóm Ergot alkaloid, gây ra các cơn co cứng cơ tử cung mạnh mẽ và kéo dài liên tục. Ergometrine chống chỉ định tuyệt đối khi thai còn đang sống trong tử cung (vì sẽ ép vỡ bánh nhau và tống sẩy thai ra ngoài ngay lập tức). Ergometrine chỉ được sử dụng sau khi thai và nhau đã tống xuất hoàn toàn để điều trị đờ tử cung chảy máu sau sinh/sẩy thai.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08 & Bài 33: Chảy máu sau sinh."
+      },
+      {
+        id: 49,
+        title: "Ca 49",
+        level: "Nội trú BSNT | Vận dụng",
+        vignette: "Sản phụ 28 tuổi, PARA 0000, thai 29 tuần 2 ngày theo siêu âm quý 1. Sản phụ nhập viện vì đau quặn bụng dồn dập, cổ tử cung đã xóa 80%, mở 3 cm, màng ối còn nguyên. Chẩn đoán: Dọa sinh non / Dọa sẩy thai muộn tiến triển. Bác sĩ chỉ định truyền tĩnh mạch Magnesi sulfat (MgSO4) với mục đích bảo vệ thần kinh thai nhi trước sinh. Khuyến cáo về tuổi thai và phác đồ liều dùng Magnesi sulfat bảo vệ thần kinh thai nhi là gì?",
+        options: {
+          A: "Chỉ định cho tuổi thai dưới 32 tuần; liều tấn công 4g truyền tĩnh mạch trong 20 phút, duy trì 1g/giờ.",
+          B: "Chỉ định cho tất cả các tuổi thai từ 37 tuần trở lên; liều duy trì 5g/giờ kéo dài liên tục 7 ngày.",
+          C: "Chống chỉ định Magnesi sulfat vì gây nguy cơ đờ tử cung và suy hô hấp cấp tính cho trẻ sơ sinh.",
+          D: "Chỉ dùng Magnesi sulfat khi sản phụ đã có biểu hiện sản giật co giật toàn thân.",
+          E: "Tiêm bắp Magnesi sulfat 10g một liều duy nhất không cần theo dõi phản xạ gân xương."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "nham_dan_so", desc: "Bảo vệ thần kinh thai nhi chỉ áp dụng cho thai non tháng < 32 tuần." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "MgSO4 đã được ACOG/WHO chứng minh làm giảm rõ rệt tỷ lệ bại não (Cerebral palsy) ở trẻ sinh cực non." },
+          { opt: "D", code: "nham_dan_so", desc: "Bảo vệ thần kinh thai nhi là chỉ định độc lập ngoài chỉ định dự phòng sản giật." },
+          { opt: "E", code: "bo_chong_chi_dinh", desc: "Dùng MgSO4 bắt buộc phải truyền tĩnh mạch kiểm soát và theo dõi gân xương/nhịp thở/nước tiểu." }
+        ],
+        decision: "• Dọa sinh non / Dọa sẩy thai muộn ở tuổi thai < 32 tuần (ở đây 29w2d) -> Khuyến cáo ACOG/WHO chỉ định Magnesi sulfat (MgSO4) bảo vệ thần kinh thai nhi (Neuroprotection).\n• Phác đồ liều MgSO4 bảo vệ thần kinh -> Liều tấn công 4g IV trong 15-20 phút, duy trì 1g/giờ trong 12-24 giờ.",
+        explanation: "Khuyến cáo chuẩn mực của ACOG, WHO và Giáo trình Sản khoa Huế (Bài 14, tr. 212): Magnesi sulfat (MgSO4) được chỉ định cho các trường hợp dọa sinh non / dọa sẩy thai muộn có nguy cơ sinh trong vòng 24 giờ ở tuổi thai dưới 32 tuần với mục đích bảo vệ thần kinh thai nhi (ngăn ngừa nguy cơ Bại não - Cerebral palsy và rối loạn vận động). Phác đồ: Liều tấn công 4 g IV trong 15-20 phút, duy trì 1 g/giờ trong tối đa 24 giờ.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 14: Sinh non (tr. 212)."
+      },
+      {
+        id: 50,
+        title: "Ca 50",
+        level: "Nội trú BSNT | Đánh giá",
+        vignette: "Hai vợ chồng (chồng 34 tuổi, vợ 30 tuổi) đi khám tư vấn sức khỏe sau khi bị sẩy thai liên tiếp 3 lần. Cả hai vợ chồng đều có thói quen hút thuốc lá (chồng 1 bao/ngày, vợ hút thụ động), BMI người vợ = 28,5 kg/m² (thừa cân béo phì), thường xuyên uống rượu bia và chịu nhiều áp lực căng thẳng công việc. Toàn bộ các xét nghiệm tầm soát nguyên nhân STLT (Karyotype, giải phẫu, APS, nội tiết) đều trong giới hạn bình thường. Lời tư vấn thay đổi lối sống chuẩn mực theo khuyến cáo 'Thực hành tốt sản khoa của ESHRE' là gì?",
+        options: {
+          A: "Cai thuốc lá hoàn toàn, duy trì BMI chuẩn 18,5 - 22,9 kg/m², hạn chế rượu bia, bổ sung vitamin tổng hợp.",
+          B: "Tư vấn người vợ ngưng làm việc nghỉ ngơi hoàn toàn tại giường trong 12 tháng không vận động.",
+          C: "Khuyên hai vợ chồng sử dụng thuốc an thần chẹn beta kéo dài để giải tỏa căng thẳng công việc.",
+          D: "Tư vấn bắt buộc hai vợ chồng ăn chế độ ăn kiêng loại bỏ hoàn toàn mỡ và chất đạm trong 6 tháng.",
+          E: "Chỉ định tiêm vắc xin ngừa Rubella và Cúm ngay trong khi người vợ đang mang thai ở tháng thứ hai."
+        },
+        correct: "A",
+        traps: [
+          { opt: "B", code: "qua_muc", desc: "Nằm nghỉ tại giường kéo dài gây teo cơ, huyết khối tĩnh mạch sâu mà không giảm sẩy thai." },
+          { opt: "C", code: "bo_chong_chi_dinh", desc: "Dùng an thần chẹn beta kéo dài không phải phác đồ chuẩn cho STLT." },
+          { opt: "D", code: "qua_muc", desc: "Loại bỏ hoàn toàn đạm và mỡ gây suy dinh dưỡng nặng nề." },
+          { opt: "E", code: "bo_chong_chi_dinh", desc: "Vắc xin sống giảm độc lực Rubella chống chỉ định tuyệt đối khi đang mang thai." }
+        ],
+        decision: "• Sẩy thai liên tiếp + Yếu tố nguy cơ lối sống (Hút thuốc lá, BMI 28.5 béo phì, Rượu bia, Căng thẳng) -> Các yếu tố có thể thay đổi được (Modifiable risk factors).\n• Khuyến cáo Thực hành tốt ESHRE -> Bắt buộc Cai thuốc lá hoàn toàn (cả chủ động & thụ động) + Giảm cân về BMI 18,5 - 22,9 kg/m² + Bổ sung Vitamin D/Acid folic + Hạn chế rượu bia.",
+        explanation: "Khuyến cáo 'Thực hành tốt sản khoa của ESHRE' (Bài 08, tr. 129): Đối với các cặp vợ chồng sẩy thai liên tiếp, việc điều chỉnh các yếu tố lối sống có thể thay đổi được đóng vai trò cực kỳ quan trọng: (1) Cai thuốc lá hoàn toàn và tránh hút thuốc thụ động; (2) Duy trì chỉ số khối cơ thể BMI trong giới hạn bình thường (18,5 - 22,9 kg/m²); (3) Hạn chế tối đa rượu bia và chất kích thích; (4) Bổ sung vitamin tổng hợp, Acid Folic và Vitamin D; (5) Giảm căng thẳng tâm lý.",
+        source: "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), Đại học Y Dược Huế - Bài 08: Thất bại thai kỳ (tr. 129)."
+      }
+    ];
+
+    // PHÂN TÁCH BỘ NHỚ ĐỘC LẬP THEO TÊN FILE HTML
+    const PAGE_NAME = window.location.pathname.split('/').pop().replace('.html', '').toLowerCase() || 'bai-08-v4';
+    const STORAGE_KEY = `QUIZ_STATE_${PAGE_NAME}`;
+
+    // App State
+    let state = {
+      answers: {},    // { [caseId]: 'A'|'B'|'C'|'D'|'E' }
+      starred: {},    // { [caseId]: boolean }
+      notes: {},      // { [caseId]: string }
+      index: 0
+    };
+
+    let currentFilter = 'all';
+    let saveTimeout = null;
+
+    // Load state từ LocalStorage
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          state = { ...state, ...parsed };
+          if (!(typeof state.index === 'number' && state.index >= 0 && state.index < cases.length)) {
+            state.index = 0;
+          }
+        }
+      } catch (err) {
+        console.error("Lỗi đọc LocalStorage", err);
+      }
+    }
+
+    // Save state vào LocalStorage
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (err) {
+        console.error("Lỗi ghi LocalStorage", err);
+      }
+    }
+
+    // Bộ lọc
+    function getFilteredList() {
+      return cases.map((c, i) => {
+        const ans = state.answers[c.id];
+        const isStarred = !!state.starred[c.id];
+        const isAnswered = !!ans;
+        const isCorrect = isAnswered && ans === c.correct;
+
+        if (currentFilter === 'all') return i;
+        if (currentFilter === 'starred') return isStarred ? i : null;
+        if (currentFilter === 'unanswered') return !isAnswered ? i : null;
+        if (currentFilter === 'wrong') return (isAnswered && !isCorrect) ? i : null;
+        return i;
+      }).filter(i => i !== null);
+    }
+
+    function changeFilter(val) {
+      currentFilter = val;
+      const list = getFilteredList();
+      if (list.length > 0 && !list.includes(state.index)) {
+        state.index = list[0];
+      }
+      render();
+      saveState();
+    }
+
+    // Điều hướng
+    function prevCase() {
+      const list = getFilteredList();
+      if (list.length === 0) return;
+      const pos = list.indexOf(state.index);
+      if (pos > 0) state.index = list[pos - 1];
+      else state.index = list[list.length - 1];
+      render();
+      saveState();
+      scrollTop();
+    }
+
+    function nextCase() {
+      const list = getFilteredList();
+      if (list.length === 0) return;
+      const pos = list.indexOf(state.index);
+      if (pos < list.length - 1) state.index = list[pos + 1];
+      else state.index = list[0];
+      render();
+      saveState();
+      scrollTop();
+    }
+
+    function jumpTo(idx) {
+      state.index = idx;
+      closeJumpModal();
+      render();
+      saveState();
+      scrollTop();
+    }
+
+    function scrollTop() {
+      const el = document.getElementById('main-content');
+      if (el) el.scrollTop = 0;
+    }
+
+    // Chọn đáp án
+    function chooseOption(letter) {
+      const c = cases[state.index];
+      state.answers[c.id] = letter;
+      saveState();
+      render();
+    }
+
+    // Bookmark / Star
+    function toggleStarCurrent() {
+      const c = cases[state.index];
+      state.starred[c.id] = !state.starred[c.id];
+      saveState();
+      renderStarUI();
+    }
+
+    function renderStarUI() {
+      const c = cases[state.index];
+      const isStarred = !!state.starred[c.id];
+      const icon = document.getElementById('star-icon');
+      const btn = document.getElementById('star-btn');
+      if (isStarred) {
+        icon.classList.remove('fill-none', 'text-slate-400');
+        icon.classList.add('fill-amber-400', 'text-amber-500');
+        btn.classList.add('bg-amber-50', 'border-amber-300');
+      } else {
+        icon.classList.remove('fill-amber-400', 'text-amber-500');
+        icon.classList.add('fill-none', 'text-slate-400');
+        btn.classList.remove('bg-amber-50', 'border-amber-300');
+      }
+    }
+
+    // Ghi chú
+    function saveNote(val) {
+      const c = cases[state.index];
+      state.notes[c.id] = val;
+      saveState();
+
+      const hint = document.getElementById('note-saved-hint');
+      if (hint) {
+        hint.style.opacity = '1';
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => { hint.style.opacity = '0'; }, 1000);
+      }
+    }
+
+    // Đặt lại tiến độ
+    function promptReset() {
+      if (window.confirm("Bạn có muốn xóa kết quả đã tick để luyện lại từ đầu? (Ghi chú cá nhân vẫn được bảo lưu)")) {
+        state.answers = {};
+        state.starred = {};
+        state.index = 0;
+        saveState();
+        render();
+      }
+    }
+
+    // Render ca bệnh hiện tại
+    function render() {
+      const c = cases[state.index];
+      if (!c) return;
+
+      const userAns = state.answers[c.id];
+      const isAnswered = !!userAns;
+      const isCorrect = userAns === c.correct;
+
+      // Cập nhật số thứ tự (chỉ giữ "Ca XX")
+      const currentNum = c.id < 10 ? '0' + c.id : c.id;
+      document.getElementById('case-counter').innerText = `Ca ${currentNum}/50`;
+      document.getElementById('bottom-counter').innerText = `${c.id} / 50`;
+      document.getElementById('case-title').innerText = `Ca ${currentNum}`;
+      document.getElementById('case-level').innerText = c.level;
+      
+      document.getElementById('case-vignette').innerText = c.vignette;
+
+      // Tiến độ tổng
+      const answeredCount = Object.keys(state.answers).length;
+      document.getElementById('progress-line').style.width = `${Math.round((answeredCount / cases.length) * 100)}%`;
+
+      // Render 5 phương án A-B-C-D-E
+      const optionsBox = document.getElementById('options-box');
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+      let html = '';
+
+      letters.forEach(letter => {
+        const text = c.options[letter];
+        let btnCls = "w-full text-left p-3 min-h-[48px] rounded-xl border text-xs sm:text-[13px] font-medium transition flex items-center gap-2.5 active:scale-[0.99] ";
+        let badgeCls = "w-6 h-6 rounded-md font-bold flex items-center justify-center shrink-0 text-xs font-mono ";
+
+        if (!isAnswered) {
+          btnCls += "border-slate-200 bg-white text-slate-700 hover:border-teal-500 hover:bg-slate-50";
+          badgeCls += "bg-slate-100 text-slate-600";
+        } else {
+          if (letter === c.correct) {
+            btnCls += "border-emerald-500 bg-emerald-50 text-emerald-950 font-semibold ring-1 ring-emerald-400";
+            badgeCls += "bg-emerald-600 text-white";
+          } else if (letter === userAns) {
+            btnCls += "border-rose-400 bg-rose-50 text-rose-950 font-semibold ring-1 ring-rose-400";
+            badgeCls += "bg-rose-600 text-white";
+          } else {
+            btnCls += "border-slate-200 bg-white text-slate-400 opacity-60";
+            badgeCls += "bg-slate-100 text-slate-400";
+          }
+        }
+
+        html += `
+          <button onclick="chooseOption('${letter}')" class="${btnCls}">
+            <span class="${badgeCls}">${letter}</span>
+            <span class="flex-1 py-0.5 leading-snug">${text}</span>
+            ${isAnswered && letter === c.correct ? '<span class="text-emerald-600 font-bold ml-1 text-sm">✓</span>' : ''}
+            ${isAnswered && letter === userAns && letter !== c.correct ? '<span class="text-rose-500 font-bold ml-1 text-sm">✕</span>' : ''}
+          </button>
+        `;
+      });
+      optionsBox.innerHTML = html;
+
+      // Biện luận y khoa & Phân tích bẫy
+      const expContainer = document.getElementById('explanation-container');
+      const statusBadge = document.getElementById('status-badge');
+      const expText = document.getElementById('explanation-text');
+      const expSource = document.getElementById('explanation-source');
+      const trapsTable = document.getElementById('traps-table');
+      const decisionText = document.getElementById('decision-text');
+
+      if (isAnswered) {
+        expContainer.classList.remove('hidden');
+        if (isCorrect) {
+          statusBadge.className = "p-2.5 rounded-lg text-xs font-semibold flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-900";
+          statusBadge.innerHTML = `<span class="text-emerald-600 text-base">✓</span> <span>Chính xác! Đáp án đúng là <strong>${c.correct}</strong></span>`;
+        } else {
+          statusBadge.className = "p-2.5 rounded-lg text-xs font-semibold flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-900";
+          statusBadge.innerHTML = `<span class="text-rose-500 text-base">✕</span> <span>Chưa chính xác. Đáp án chuẩn là <strong>${c.correct}</strong></span>`;
+        }
+        
+        expText.innerText = c.explanation;
+        expSource.innerText = "Nguồn: " + c.source;
+
+        // Render traps
+        let trapHTML = '';
+        c.traps.forEach(trap => {
+          trapHTML += `
+            <div class="p-2 rounded-lg bg-rose-50/60 border border-rose-100 flex items-start gap-2">
+              <span class="font-bold text-rose-700 shrink-0 font-mono">[Phương án ${trap.opt}]</span>
+              <div class="text-slate-600">
+                <span class="font-mono text-rose-600 font-semibold mr-1">[${trap.code}]:</span>
+                ${trap.desc}
+              </div>
+            </div>
+          `;
+        });
+        trapsTable.innerHTML = trapHTML;
+
+        // Render decision
+        decisionText.innerText = c.decision;
+      } else {
+        expContainer.classList.add('hidden');
+      }
+
+      // Khôi phục ghi chú & sao
+      document.getElementById('note-input').value = state.notes[c.id] || '';
+      renderStarUI();
+    }
+
+    // Modal Jump Grid
+    function openJumpModal() {
+      const container = document.getElementById('grid-container');
+      let html = '';
+
+      cases.forEach((c, idx) => {
+        const ans = state.answers[c.id];
+        const isCurrent = idx === state.index;
+        const isStarred = !!state.starred[c.id];
+
+        let bg = "bg-white border-slate-200 text-slate-700";
+        if (ans) {
+          bg = ans === c.correct ? "bg-emerald-500 border-emerald-600 text-white font-semibold" : "bg-rose-500 border-rose-600 text-white font-semibold";
+        }
+        const currentRing = isCurrent ? " ring-2 ring-teal-500 ring-offset-1 font-bold scale-105 z-10" : "";
+
+        html += `
+          <button onclick="jumpTo(${idx})" class="h-10 rounded-xl border text-xs font-mono relative flex items-center justify-center transition active:scale-95 ${bg} ${currentRing}">
+            <span>${c.id < 10 ? '0' + c.id : c.id}</span>
+            ${isStarred ? '<span class="absolute top-0.5 right-1 text-[10px] text-amber-300 drop-shadow">★</span>' : ''}
+          </button>
+        `;
+      });
+
+      container.innerHTML = html;
+      const modal = document.getElementById('jump-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeJumpModal() {
+      const modal = document.getElementById('jump-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Hỗ trợ vuốt màn hình (Touch Swipe Gestures)
+    let startX = 0;
+    let startY = 0;
+    const mainEl = document.getElementById('main-content');
+
+    mainEl.addEventListener('touchstart', (e) => {
+      startX = e.changedTouches[0].screenX;
+      startY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    mainEl.addEventListener('touchend', (e) => {
+      const diffX = e.changedTouches[0].screenX - startX;
+      const diffY = e.changedTouches[0].screenY - startY;
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+        if (diffX < 0) nextCase();
+        else prevCase();
+      }
+    }, { passive: true });
+
+    // Phím tắt bàn phím
+    window.addEventListener('keydown', (e) => {
+      if (document.activeElement && document.activeElement.tagName === 'TEXTAREA') return;
+      if (e.key === 'ArrowLeft') prevCase();
+      else if (e.key === 'ArrowRight') nextCase();
+      else if (['1', 'a', 'A'].includes(e.key)) chooseOption('A');
+      else if (['2', 'b', 'B'].includes(e.key)) chooseOption('B');
+      else if (['3', 'c', 'C'].includes(e.key)) chooseOption('C');
+      else if (['4', 'd', 'D'].includes(e.key)) chooseOption('D');
+      else if (['5', 'e', 'E'].includes(e.key)) chooseOption('E');
+      else if (['s', 'S'].includes(e.key)) toggleStarCurrent();
+    });
+
+    // Khởi động
+    window.onload = function() {
+      loadState();
+      render();
+    };
+  </script>
+</body>
+</html>
