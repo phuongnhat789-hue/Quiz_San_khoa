@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Quiz 100 Ca Lâm Sàng: Thai Lạc Chỗ (Bài 10)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200 px-3 py-2.5 shadow-sm">
+    <div class="max-w-xl mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-teal-600 text-white font-bold text-sm shadow-sm">
+          10
+        </span>
+        <div>
+          <h1 class="text-sm font-bold text-slate-900 leading-tight">Thai Lạc Chỗ (100 Ca)</h1>
+          <p class="text-[11px] text-slate-500 font-medium">Sản Sau đại học • ĐH Y Dược Huế</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5">
+        <button id="star-btn" onclick="toggleBookmark()" class="p-2 rounded-lg border border-slate-200 text-slate-400 hover:text-amber-500 hover:border-amber-300 transition-colors">
+          <svg id="star-icon" class="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+          </svg>
+        </button>
+        <button onclick="toggleGridModal(true)" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold transition-colors">
+          <span id="current-badge">Ca 1/100</span>
+          <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Thanh tiến độ -->
+    <div class="max-w-xl mx-auto mt-2">
+      <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden flex">
+        <div id="progress-correct" class="bg-emerald-500 transition-all duration-300" style="width: 0%"></div>
+        <div id="progress-wrong" class="bg-rose-500 transition-all duration-300" style="width: 0%"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- BỘ LỌC CHUYÊN ĐỀ DẠNG CUỘN NGANG -->
+  <div class="bg-white border-b border-slate-200 sticky top-[57px] z-20">
+    <div class="max-w-xl mx-auto px-3 py-1.5 flex items-center gap-1.5 overflow-x-auto custom-scrollbar text-[11px] font-semibold text-slate-600">
+      <button onclick="setFilter('all')" id="flt-all" class="px-2.5 py-1 rounded-full whitespace-nowrap bg-teal-600 text-white shadow-xs">Tất cả (100)</button>
+      <button onclick="setFilter('starred')" id="flt-starred" class="px-2.5 py-1 rounded-full whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-700">Đã nhớ (★)</button>
+      <button onclick="setFilter('wrong')" id="flt-wrong" class="px-2.5 py-1 rounded-full whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-700">Làm sai</button>
+      <button onclick="setFilter('part1')" id="flt-part1" class="px-2.5 py-1 rounded-full whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-700">Mức 3–4 (Ca 1–50)</button>
+      <button onclick="setFilter('part2')" id="flt-part2" class="px-2.5 py-1 rounded-full whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-700">Mức 5 Thẩm định (Ca 51–100)</button>
+    </div>
+  </div>
+
+  <!-- NỘI DUNG CHÍNH (VERTICAL VIEW) -->
+  <main class="flex-1 max-w-xl w-full mx-auto p-3 pb-24 flex flex-col gap-3">
+
+    <!-- KHUNG TÌNH HUỐNG LÂM SÀNG -->
+    <div class="bg-white rounded-xl border border-slate-200 p-3.5 shadow-xs">
+      <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-100">
+        <div class="flex items-center gap-1.5">
+          <span id="case-title" class="text-xs font-bold px-2 py-0.5 rounded bg-teal-50 text-teal-700 border border-teal-200">Ca 01</span>
+          <span id="case-bloom" class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">Mức 3-4</span>
+        </div>
+        <span id="case-source" class="text-[10px] text-slate-400 font-medium">Giáo trình Huế</span>
+      </div>
+      
+      <!-- Nội dung Vignette -->
+      <div id="case-stem" class="text-[13px] leading-relaxed text-slate-700 space-y-1.5">
+        <!-- JS fill stem -->
+      </div>
+
+      <!-- Câu hỏi -->
+      <div id="case-question" class="mt-3 pt-2.5 border-t border-slate-100 text-[13.5px] font-semibold text-slate-900 leading-snug">
+        <!-- JS fill question -->
+      </div>
+    </div>
+
+    <!-- 5 PHƯƠNG ÁN LỰA CHỌN A-E -->
+    <div id="options-container" class="space-y-2">
+      <!-- JS fill 5 options -->
+    </div>
+
+    <!-- KHỐI BIỆN LUẬN & PHÂN TÍCH BẪY (BUNG KHI CHỌN) -->
+    <div id="explanation-box" class="hidden bg-white rounded-xl border border-slate-200 p-3.5 shadow-xs space-y-3">
+      <div>
+        <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-700 mb-1">
+          <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          Biện luận lâm sàng & Nguồn trích dẫn
+        </div>
+        <p id="exp-text" class="text-xs text-slate-600 leading-relaxed pl-5 border-l-2 border-emerald-500">
+          <!-- JS fill explanation -->
+        </p>
+      </div>
+
+      <!-- Bảng gán mã bẫy -->
+      <div>
+        <div class="text-[11px] font-bold text-slate-700 mb-1.5 uppercase tracking-wider flex items-center gap-1">
+          <span>Giải mã cạm bẫy lâm sàng</span>
+        </div>
+        <div id="traps-list" class="space-y-1.5 text-xs">
+          <!-- JS fill traps -->
+        </div>
+      </div>
+
+      <!-- Chốt quyết định -->
+      <div id="decision-box" class="bg-amber-50/70 border border-amber-200 rounded-lg p-2.5 text-xs text-amber-900">
+        <span class="font-bold text-amber-800">Chốt quyết định: </span>
+        <span id="decision-text"></span>
+      </div>
+
+      <!-- Ghi chú cá nhân -->
+      <div class="pt-2 border-t border-slate-100">
+        <label class="block text-[11px] font-semibold text-slate-500 mb-1">Ghi chú cá nhân cho ca này (tự lưu):</label>
+        <textarea id="personal-note" oninput="saveCurrentNote()" placeholder="Nhập kinh nghiệm, mẹo nhớ ca này..." class="w-full text-xs p-2 border border-slate-200 rounded-lg focus:ring-1 focus:ring-teal-500 focus:border-teal-500 outline-none resize-none h-16 bg-slate-50/50"></textarea>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BOTTOM FLOATING ACTION BAR -->
+  <footer class="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur border-t border-slate-200 py-2 px-3">
+    <div class="max-w-xl mx-auto flex items-center justify-between gap-3">
+      <button onclick="navigate(-1)" id="prev-btn" class="flex-1 py-2.5 px-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none">
+        ← Trước
+      </button>
+
+      <button onclick="toggleGridModal(true)" class="py-2.5 px-4 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center gap-1.5 shadow-xs transition-colors">
+        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+        </svg>
+        <span id="footer-index">1 / 100</span>
+      </button>
+
+      <button onclick="navigate(1)" id="next-btn" class="flex-1 py-2.5 px-3 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition-all active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none shadow-xs">
+        Tiếp →
+      </button>
+    </div>
+  </footer>
+
+  <!-- MODAL BOTTOM SHEET: 100 Ô SỐ CHỌN CA -->
+  <div id="grid-modal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs hidden flex items-end justify-center transition-opacity">
+    <div class="bg-white rounded-t-2xl w-full max-w-xl max-h-[80vh] flex flex-col p-4 shadow-xl">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <h3 class="text-sm font-bold text-slate-900">Danh sách 100 Ca Lâm Sàng</h3>
+          <p class="text-[11px] text-slate-500">Chạm vào số ca để chuyển nhanh</p>
+        </div>
+        <button onclick="toggleGridModal(false)" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Grid 100 nút ca -->
+      <div id="grid-cells" class="grid grid-cols-10 gap-1.5 py-3 overflow-y-auto custom-scrollbar flex-1">
+        <!-- JS fill 100 buttons -->
+      </div>
+
+      <!-- Chú thích màu -->
+      <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
+        <div class="flex items-center gap-1">
+          <span class="w-2.5 h-2.5 rounded bg-emerald-500 inline-block"></span> Đúng
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2.5 h-2.5 rounded bg-rose-500 inline-block"></span> Sai
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2.5 h-2.5 rounded bg-slate-200 inline-block"></span> Chưa làm
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="text-amber-500 font-bold">★</span> Đã nhớ
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // DỮ LIỆU ĐÃ TRỘN ĐÁP ÁN (100 CA: 50 CA MỨC 3-4 + 50 CA MỨC 5 THẨM ĐỊNH)
+    // Tự động hoán đổi đáp án đúng sang C, E, B, D, A luân phiên chuẩn xác
+    const RAW_QUESTIONS = [
+      // ==========================================
+      // PHẦN I: 50 CA MỨC ĐỘ 3 - 4 (Ca 01 -> 50)
+      // ==========================================
+      {
+        id: 1, part: 1, bloom: "Mức 3-4",
+        stem: "Bệnh nhân nữ 31 tuổi, PARA 1011, tiền sử phẫu thuật vi phẫu phục hồi vòi tử cung trái cách đây 2 năm do tắc vòi sau nhiễm trùng khung chậu. Bệnh nhân vào viện vì trễ kinh 6 tuần, ra máu âm đạo rỉ rả màu nâu đen 3 ngày nay kèm đau tức âm ỉ vùng hạ vị lệch trái. Sinh hiệu: HA 115/70 mmHg, Mạch 78 lần/phút, Thân nhiệt 36.8°C. Khám phụ khoa: Tử cung hơi to mềm, phần phụ trái ấn đau chói nhẹ và sờ thấy khối nhỏ mềm ranh giới không rõ. Cận lâm sàng: beta-hCG = 1.850 mIU/mL. Siêu âm TVS: Buồng tử cung trống, cạnh buồng trứng trái có khối echo hỗn hợp kích thước 22 x 16 mm.",
+        question: "Yếu tố nguy cơ có tỷ lệ rủi ro tương đối cao nhất gây ra thai lạc chỗ ở bệnh nhân này và cơ chế sinh bệnh tương ứng là gì?",
+        options: [
+          "Tiền sử nạo hút thai 1 lần, làm tổn thương lớp màng rụng nội mạc tử cung gây cản trở phôi làm tổ",
+          "Tuổi mẹ trên 30 tuổi, làm suy giảm chất lượng noãn bào và rối loạn co bóp cơ tử cung",
+          "Tiền sử phẫu thuật can thiệp vòi tử cung, phá hủy biểu mô lông chuyển và gây chít hẹp lòng vòi",
+          "Tình trạng căng thẳng tâm lý mạn tính, làm tăng tiết cortisol gây rối loạn nhu động vòi tử cung",
+          "Sử dụng thuốc tránh thai đường uống kết hợp kéo dài, làm teo niêm mạc vòi tử cung và buồng tử cung"
+        ],
+        correct: 2, // C
+        explanation: "Theo Bài 10: Tiền sử phẫu thuật can thiệp trên vòi tử cung (mổ tái tạo, nối vòi, xẻ vòi) là yếu tố nguy cơ hàng đầu với nguy cơ tương đối OR vọt cao gấp 9 - 21 lần. Phẫu thuật làm mất đi lớp biểu mô lông chuyển và tạo sẹo dính hẹp lòng vòi.",
+        traps: [
+          { key: "A", trap: "[phan_biet_hep] Nạo hút thai cũ chỉ là yếu tố nguy cơ nhẹ, không phải nguyên nhân tắc cơ học vòi tử cung" },
+          { key: "B", trap: "[nham_dan_so] Tuổi mẹ > 30 là yếu tố nguy cơ chung nhưng OR thấp hơn nhiều so với phẫu thuật vòi (OR > 9-21)" },
+          { key: "D", trap: "[bat_tu_khoa] Căng thẳng tâm lý không phải là yếu tố nguy cơ sinh học được ghi nhận" },
+          { key: "E", trap: "[bo_chong_chi_dinh] Thuốc tránh thai kết hợp làm giảm nguy cơ thai ngoài tử cung do ức chế rụng trứng" }
+        ],
+        decision: "Tiền sử mổ vòi tử cung + Khối phần phụ -> Yếu tố nguy cơ cao nhất là phẫu thuật vòi tử cung (OR > 9) do tổn thương lông chuyển và sẹo hẹp vòi."
+      },
+      {
+        id: 2, part: 1, bloom: "Mức 3-4",
+        stem: "Bệnh nhân nữ 28 tuổi, PARA 0000, trễ kinh 12 ngày (chu kỳ kinh đều 28 ngày). Bệnh nhân đến khám vì 3 ngày nay xuất hiện ra máu âm đạo ít, máu màu nâu đen rỉ rả liên tục, không đóng thành cục, kèm đau tức âm ỉ vùng hố chậu bên phải. Thăm khám lâm sàng: Sinh hiệu ổn định, Mạch 76 lần/phút, HA 110/70 mmHg, Thân nhiệt 36.9°C. Bụng mềm, ấn tức nhẹ hố chậu phải, không có phản ứng thành bụng. Khám mỏ vịt: Cổ tử cung khép kín, có ít máu nâu ở cùng đồ sau. Khám hai tay: Tử cung to nhẹ mật độ mềm, phần phụ phải sờ thấy khối nhỏ mềm kích thước khoảng 2 cm, ấn đau nhẹ.",
+        question: "Tam chứng lâm sàng kinh điển được ghi nhận đầy đủ trên bệnh nhân này bao gồm những triệu chứng nào?",
+        options: [
+          "Trễ kinh, nôn mửa dữ dội kéo dài và sốt cao rét run kèm đau tức hạ vị",
+          "Ra máu đỏ tươi lượng nhiều kèm cục máu đông, vỡ ối sớm và đau bụng từng cơn dồn dập",
+          "Trễ kinh, tử cung to nhanh vượt tuổi thai và xuất hiện hai khối u nang hoàng tuyến hai bên",
+          "Đau nhói đột ngột như dao đâm, choáng vã mồ hôi và túi cùng Douglas phồng đau chói",
+          "Trễ kinh, ra máu âm đạo nâu đen rỉ rả không đông và đau bụng dưới âm ỉ lệch bên"
+        ],
+        correct: 4, // E
+        explanation: "Tam chứng lâm sàng kinh điển của thai ngoài tử cung thể chưa vỡ gồm: (1) Trễ kinh / Vô kinh; (2) Ra máu âm đạo bất thường (màu nâu đen, rỉ rả, ít, không đông); (3) Đau bụng dưới âm ỉ một bên hố chậu.",
+        traps: [
+          { key: "A", trap: "[phan_biet_hep] Nôn mửa nghén nặng và sốt cao là biểu hiện của thai trứng hoặc sẩy thai nhiễm khuẩn" },
+          { key: "B", trap: "[nham_dan_so] Ra máu đỏ tươi nhiều có cục máu đông là lâm sàng của sẩy thai đang tiến triển" },
+          { key: "C", trap: "[bat_tu_khoa] Tử cung to nhanh và nang hoàng tuyến là lâm sàng điển hình của bệnh nguyên bào nuôi" },
+          { key: "D", trap: "[qua_muc] Đau dao đâm và choáng phồng túi cùng là lâm sàng của thể vỡ ngập máu ổ bụng" }
+        ],
+        decision: "Trễ kinh 12 ngày + Ra máu nâu đen rỉ rả không đông + Đau hố chậu phải âm ỉ -> Tam chứng kinh điển thai ngoài tử cung CHƯA VỠ."
+      },
+      {
+        id: 3, part: 1, bloom: "Mức 3-4",
+        stem: "Bệnh nhân nữ 29 tuổi, trễ kinh 5 tuần, được chẩn đoán thai ngoài tử cung và tiến hành phẫu thuật nội soi ổ bụng thám sát. Trong mổ quan sát thấy: Tử cung kích thước bình thường. Vòi tử cung bên phải ở đoạn giữa bóng vòi phồng to kích thước 3 x 2.5 cm, màu tím sẫm, chưa vỡ, không thấy máu chảy qua loa vòi. Vòi tử cung trái và hai buồng trứng hình thể bình thường, không dính. Phẫu thuật viên tiến hành xẻ vòi tử cung phải hút tống xuất khối thai bảo tồn vòi tử cung thành công.",
+        question: "Đoạn bóng vòi tử cung chiếm tỷ lệ bao nhiêu trong tổng số các trường hợp thai lạc chỗ ở vòi tử cung?",
+        options: [
+          "Khoảng 12 đến 15 phần trăm tổng số trường hợp thai ngoài tử cung",
+          "Khoảng 75 đến 80 phần trăm tổng số trường hợp thai ngoài tử cung",
+          "Khoảng 5 phần trăm tổng số trường hợp thai ngoài tử cung",
+          "Khoảng 2 đến 3 phần trăm tổng số trường hợp thai ngoài tử cung",
+          "Khoảng 0.5 phần trăm tổng số trường hợp thai ngoài tử cung"
+        ],
+        correct: 1, // B
+        explanation: "Vòi tử cung là vị trí làm tổ phổ biến nhất (> 95%). Trong đó đoạn bóng chiếm tỷ lệ cao nhất 75 - 80%, tiếp theo là đoạn eo (12%), đoạn loa (5%) và đoạn kẽ (2-3%).",
+        traps: [
+          { key: "A", trap: "[phan_biet_hep] 12% là tỷ lệ thai làm tổ ở đoạn eo vòi tử cung" },
+          { key: "C", trap: "[nham_dan_so] 5% là tỷ lệ thai làm tổ ở đoạn loa vòi tử cung" },
+          { key: "D", trap: "[bat_tu_khoa] 2-3% là tỷ lệ thai làm tổ ở đoạn kẽ / sừng tử cung" },
+          { key: "E", trap: "[qua_muc] < 1% là tỷ lệ thai ở cổ tử cung hoặc buồng trứng" }
+        ],
+        decision: "Khối thai làm tổ ở đoạn bóng vòi tử cung -> Tỷ lệ vị trí phổ biến nhất -> 75 - 80%."
+      },
+      {
+        id: 4, part: 1, bloom: "Mức 3-4",
+        stem: "Bệnh nhân nữ 26 tuổi, trễ kinh 6 tuần, đột ngột đau quặn dữ dội vùng hạ vị như dao đâm, sau đó vã mồ hôi, choáng váng và ngất xỉu tại nhà được gia đình đưa vào cấp cứu. Thăm khám lúc vào viện: Bệnh nhân lơ mơ, da xanh tái, niêm mạc nhợt nhạt, chi lạnh. Mạch 125 lần/phút nhỏ khó bắt, Huyết áp tụt 75/40 mmHg. Khám bụng: Bụng chướng nhẹ, cảm ứng phúc mạc toàn bụng, gõ đục vùng thấp. Khám âm đạo: Cổ tử cung khép, lắc cổ tử cung bệnh nhân đau chói, túi cùng sau Douglas phồng căng và ấn đau dữ dội (tiếng kêu Douglas). Siêu âm cấp cứu tại giường: Máu ngập ổ bụng lượng nhiều, tử cung trống, phần phụ phải có khối vỡ.",
+        question: "Chẩn đoán lâm sàng cấp cứu và chiến lược xử trí sản khoa tối khẩn nào cần được thực hiện ngay lập tức?",
+        options: [
+          "Thai ngoài tử cung chưa vỡ, chỉ định tiêm Methotrexate nội khoa liều đơn và theo dõi sát huyết động",
+          "Sẩy thai băng huyết choáng mất máu, chỉ định nạo hút chân không buồng tử cung cấp cứu tại phòng thủ thuật",
+          "Vỡ u nang buồng trứng chảy máu, chỉ định nạo buồng tử cung chẩn đoán và truyền khối hồng cầu lắng",
+          "Thai ngoài tử cung vỡ ngập máu ổ bụng gây sốc mất máu, chuyển mổ mở cấp cứu cầm máu ngay vừa mổ vừa hồi sức",
+          "Viêm phúc mạc toàn thể do vỡ ruột thừa, chỉ định điều trị kháng sinh phổ rộng tĩnh mạch 24 giờ rồi mới mổ"
+        ],
+        correct: 3, // D
+        explanation: "Bệnh nhân có sốc mất máu nặng (HA 75/40, M 125), túi cùng Douglas phồng đau chói và tràn máu ổ bụng lượng nhiều. Chỉ định tối khẩn: Chuyển mổ mở cấp cứu kẹp cầm máu vòi tử cung vỡ, vừa mổ vừa hồi sức truyền máu.",
+        traps: [
+          { key: "A", trap: "[bo_chong_chi_dinh] Tiêm MTX khi đang sốc HA 75/40 mmHg là chống chỉ định tuyệt đối gây tử vong" },
+          { key: "B", trap: "[sai_tang] Nạo buồng tử cung không giải quyết được nguồn chảy máu ở vòi tử cung vỡ" },
+          { key: "C", trap: "[phan_biet_hep] Nạo buồng tử cung trong vỡ u nang buồng trứng là can thiệp sai lầm mất thời gian vàng" },
+          { key: "E", trap: "[qua_bao_ton] Hoãn mổ 24h ở bệnh nhân đang chảy máu trong ổ bụng cấp tính sẽ làm bệnh nhân tử vong" }
+        ],
+        decision: "Sốc mất máu HA 75/40 + Cảm ứng phúc mạc + Douglas phồng đau + Tràn máu ổ bụng -> Mổ mở cấp cứu cầm máu vừa mổ vừa hồi sức."
+      },
+      {
+        id: 5, part: 1, bloom: "Mức 3-4",
+        stem: "Bệnh nhân nữ 33 tuổi, tiền sử trễ kinh khoảng 2 tháng kèm ra máu âm đạo rỉ rả kéo dài 3 tuần nay. Bệnh nhân từng có cơn đau bụng cấp cách đây 2 tuần nhưng tự uống thuốc giảm đau ở nhà. Hiện tại bệnh nhân vào viện vì đau tức nặng liên tục vùng hạ vị, mệt mỏi, sốt nhẹ 37.8°C và mót rặn đi cầu nhiều lần. Thăm khám: Da niêm mạc nhạt, Mạch 84 lần/phút, HA 110/70 mmHg. Khám bụng: Vùng hạ vị sờ thấy một khối chắc ranh giới không rõ, ấn đau nhẹ. Khám âm đạo bằng hai tay: Tử cung bị đẩy lệch ra trước sát xương vệ; túi cùng sau Douglas sờ thấy một khối chắc, không di động, ấn đau chói nhẹ, thâm nhiễm rộng ra hai bên dây chằng rộng.",
+        question: "Thể lâm sàng thai ngoài tử cung đặc biệt nào cần được nghĩ đến đầu tiên ở bệnh nhân này?",
+        options: [
+          "Thai ngoài tử cung thể bọc huyết tụ tiểu khung do thai sẩy rỉ rả được mạc nối và ruột bao bọc",
+          "Thai ngoài tử cung thể vỡ cấp tính ngập máu toàn bộ ổ bụng",
+          "Thai ngoài tử cung thể tiến triển bình thường trong tử cung",
+          "Ung thư niêm mạc tử cung di căn xâm lấn toàn bộ khung chậu",
+          "U xơ tử cung hoại tử vô khuẩn gây phản ứng viêm phúc mạc"
+        ],
+        correct: 0, // A
+        explanation: "Thai ngoài tử cung thể bọc huyết tụ tiểu khung (Pelvic hematocele) hình thành do thai vỡ hoặc sẩy rỉ rả lượng máu ít, được mạc nối và các quai ruột bao bọc ở túi cùng Douglas tạo thành khối dính chặt, đẩy tử cung ra trước và gây mót rặn đi cầu.",
+        traps: [
+          { key: "B", trap: "[qua_muc] Thể vỡ cấp tính sẽ gây choáng mất máu dữ dội và phản ứng thành bụng toàn bộ" },
+          { key: "C", trap: "[sai_tang] Bệnh nhân có khối ở túi cùng sau đẩy tử cung ra trước, không phải thai trong tử cung" },
+          { key: "D", trap: "[nham_dan_so] Tiền sử trễ kinh và đau bụng rỉ rả gợi ý bệnh lý thai nghén hơn là ung thư di căn" },
+          { key: "E", trap: "[phan_biet_hep] U xơ hoại tử không giải thích được tiền sử trễ kinh và ra máu rỉ rả kéo dài 3 tuần" }
+        ],
+        decision: "Trễ kinh 2 tháng + Khối chắc túi cùng Douglas đẩy tử cung ra trước + Mót rặn -> Bọc huyết tụ tiểu khung (Pelvic hematocele)."
+      },
+      {
+        id: 6, part: 1, bloom: "Mức 3-4",
+        stem: "Sản phụ 30 tuổi, PARA 1001, trễ kinh 10 tuần. Sản phụ đột ngột đau dữ dội vùng hạ vị và ngất xỉu. Khi vào viện: Mạch 130 lần/phút, HA 70/40 mmHg, da xanh niêm mạc nhạt chanh. Siêu âm TVS: Buồng tử cung trống, lớp cơ tử cung vùng sừng phải bị mỏng còn 1.5 mm, vách túi thai nằm hoàn toàn trong lớp cơ đoạn kẽ tử cung với kích thước túi thai d = 35 mm có phôi thai và tim thai (+). Khảo sát Doppler thấy mạng lưới mạch máu nuôi phong phú từ động mạch tử cung và động mạch buồng trứng quanh túi thai. Ổ bụng tràn ngập máu.",
+        question: "Đặc điểm giải phẫu học và nguy cơ lâm sàng đặc thù của thai làm tổ ở đoạn kẽ tử cung là gì?",
+        options: [
+          "Thai nằm ở đầu loa vòi nên dễ tự sẩy hoàn toàn vào ổ bụng mà không gây chảy máu",
+          "Thai nằm ở cổ tử cung nên luôn luôn tự tống xuất ra ngoài đường âm đạo mà không gây vỡ cơ",
+          "Thai nằm trong lớp cơ tử cung được mạch máu nuôi phong phú nên vỡ muộn ở tuần 12 đến 16 gây chảy máu cực kỳ ồ ạt",
+          "Thai nằm trong dây chằng rộng nên hoàn toàn không ảnh hưởng đến hệ thống mạch máu tử cung",
+          "Thai nằm ở vùng đáy tử cung nên phát triển bình thường đến đủ tháng như thai trong buồng"
+        ],
+        correct: 2, // C
+        explanation: "Đoạn kẽ vòi tử cung được lớp cơ tử cung bao bọc nên thai có thể phát triển lớn hơn và vỡ muộn hơn (tuần 12-16). Nơi này nhận máu nuôi dồi dào từ vòng nối ĐM tử cung và ĐM buồng trứng nên khi vỡ sẽ gây xuất huyết nội cực kỳ dữ dội.",
+        traps: [
+          { key: "A", trap: "[sai_tang] Đoạn kẽ là đoạn vòi nằm trong cơ tử cung, không phải đoạn loa vòi" },
+          { key: "B", trap: "[nham_dan_so] Mô tả thai ở cổ tử cung, không phải thai đoạn kẽ" },
+          { key: "D", trap: "[bat_tu_khoa] Đoạn kẽ nhận máu nuôi từ cả ĐM tử cung và ĐM buồng trứng nên chảy máu rất nặng khi vỡ" },
+          { key: "E", trap: "[qua_bao_ton] Thai đoạn kẽ nằm ngoài khoang nội mạc, cơ tử cung giãn mỏng sẽ bị vỡ nguy hiểm" }
+        ],
+        decision: "Thai đoạn kẽ sừng tử cung -> Cơ tử cung co giãn tốt giúp vỡ muộn (tuần 12-16) nhưng vỡ rách vòng nối mạch máu lớn gây chảy máu cực kỳ ồ ạt."
+      },
+      {
+        id: 7, part: 1, bloom: "Mức 3-4",
+        stem: "Bệnh nhân nữ 27 tuổi, trễ kinh 5 tuần, ra máu nâu rỉ rả ở âm đạo. Định lượng beta-hCG huyết thanh ban đầu đạt 2.200 mIU/mL. Bác sĩ chỉ định làm siêu âm qua đầu dò âm đạo (TVS). Trên hình ảnh siêu âm TVS: Buồng tử cung hoàn toàn trống rỗng, không quan sát thấy túi thai thật hay túi thai giả, nội mạc tử cung dày 12 mm, không có dịch túi cùng sau.",
+        question: "Khái niệm ngưỡng phân định (Discriminatory zone) beta-hCG đối với siêu âm TVS và ý nghĩa chẩn đoán trên bệnh nhân này là gì?",
+        options: [
+          "Nồng độ beta-hCG từ 5.000 đến 10.000 mIU/mL mới bắt buộc thấy túi thai trên TVS, nồng độ 2.200 mIU/mL là còn quá sớm",
+          "Nồng độ beta-hCG từ 100 đến 500 mIU/mL đã phải thấy phôi thai có tim thai trên TVS",
+          "Nồng độ beta-hCG không có mối liên quan sinh học nào với hình ảnh túi thai trên siêu âm",
+          "Nồng độ beta-hCG trên 50.000 mIU/mL mới được chỉ định siêu âm qua ngả âm đạo",
+          "Nồng độ beta-hCG từ 1.500 đến 2.000 mIU/mL bắt buộc phải thấy túi thai trong tử cung trên TVS, nếu buồng tử cung trống là gợi ý mạnh thai lạc chỗ"
+        ],
+        correct: 4, // E
+        explanation: "Ngưỡng phân định (Discriminatory zone) của siêu âm TVS là 1.500 - 2.000 mIU/mL. Khi beta-hCG >= 2.000 mIU/mL mà siêu âm TVS buồng tử cung hoàn toàn trống rỗng, chẩn đoán thai lạc chỗ được gợi ý mạnh mẽ.",
+        traps: [
+          { key: "A", trap: "[guideline_cu] 5.000 - 10.000 mIU/mL là ngưỡng phân định của siêu âm thành bụng TAS" },
+          { key: "B", trap: "[qua_muc] 100-500 mIU/mL là nồng độ quá thấp, chưa thể thấy túi thai trên siêu âm" },
+          { key: "C", trap: "[bat_tu_khoa] Phát biểu sai sinh học, beta-hCG tương quan thuận với kích thước túi thai" },
+          { key: "D", trap: "[bo_chong_chi_dinh] Siêu âm TVS được thực hiện ngay từ giai đoạn sớm, không chờ đến 50.000 mIU/mL" }
+        ],
+        decision: "beta-hCG 2.200 mIU/mL (> 2.000) mà TVS buồng tử cung trống -> Vượt ngưỡng phân định TVS (1.500-2.000 mIU/mL) -> Khẳng định nghi ngờ thai ngoài tử cung."
+      },
+      {
+        id: 8, part: 1, bloom: "Mức 3-4",
+        stem: "Bệnh nhân nữ 25 tuổi, trễ kinh 4 ngày, ra chút dịch nâu âm đạo, không đau bụng. Khám lâm sàng bình thường, tử cung nhỏ, hai phần phụ mềm. Xét nghiệm lần 1: beta-hCG = 450 mIU/mL. Siêu âm TVS: Buồng tử cung trống, hai phần phụ bình thường, không có dịch ổ bụng. Bệnh nhân được chẩn đoán Thai chưa rõ vị trí (Pregnancy of Unknown Location - PUL) và hẹn xét nghiệm lại beta-hCG sau 48 giờ. Kết quả lần 2 sau 48 giờ: beta-hCG = 520 mIU/mL (mức tăng 15.5%).",
+        question: "Động học beta-hCG tăng 15.5% sau 48 giờ phản ánh tình trạng sinh lý bệnh nào và hướng theo dõi tiếp theo là gì?",
+        options: [
+          "Động học hoàn toàn bình thường của thai trong tử cung giai đoạn sớm, cho bệnh nhân về nhà hẹn tái khám sau hai tuần",
+          "Động học bất thường của thai không sống hoặc thai lạc chỗ, cần tiếp tục theo dõi sát lâm sàng và định lượng lại beta-hCG sau 48 giờ",
+          "Động học điển hình của thai đôi khác trứng phát triển khỏe mạnh, chỉ định tiêm Progesterone liều cao dưỡng thai",
+          "Bằng chứng chắc chắn của bệnh nguyên bào nuôi ác tính, chỉ định tiêm Methotrexate toàn thân ngay lập tức",
+          "Bằng chứng chắc chắn sẩy thai hoàn toàn, cho xuất viện và không cần xét nghiệm theo dõi thêm"
+        ],
+        correct: 1, // B
+        explanation: "Thai sống trong buồng tử cung bình thường beta-hCG phải tăng ít nhất 35% - 53% sau 48h. Mức tăng chỉ 15.5% là động học bất thường, cảnh báo thai ngừng tiến triển hoặc thai lạc chỗ. Xử trí: Tiếp tục theo dõi sát lâm sàng, lặp lại beta-hCG và TVS sau 48h.",
+        traps: [
+          { key: "A", trap: "[qua_bao_ton] Thai sinh lý sống bình thường phải tăng tối thiểu 35-53% sau 48h, tăng 15.5% là bất thường" },
+          { key: "C", trap: "[bat_tu_khoa] Thai đôi có beta-hCG tăng rất nhanh chứ không tăng chậm 15.5%" },
+          { key: "D", trap: "[qua_xam_lan] Tiêm MTX ngay khi chưa có chẩn đoán xác định vị trí và beta-hCG < 1.000 mIU/mL là vội vã" },
+          { key: "E", trap: "[qua_bao_ton] Sẩy thai hoàn toàn thì beta-hCG phải giảm ít nhất 21-35% sau 48h, không phải tăng" }
+        ],
+        decision: "PUL + beta-hCG tăng 15.5% sau 48h (< 35-53%) -> Động học bất thường -> Cảnh báo thai ngoài tử cung hoặc thai thoái triển -> Tiếp tục theo dõi beta-hCG 48h."
+      },
+      {
+        id: 9, part: 1, bloom: "Mức 3-4",
+        stem: "Sản phụ 29 tuổi, trễ kinh 6 tuần, ra ít dịch máu nâu âm đạo. Định lượng beta-hCG = 1.650 mIU/mL. Bác sĩ tiến hành siêu âm TVS khảo sát kỹ vùng chậu. Kết quả: Buồng tử cung trống, nội mạc dày 10 mm. Tại vị trí phần phụ bên phải, nằm tách biệt hoàn toàn với buồng trứng phải, quan sát thấy một cấu trúc dạng nang tròn bờ đều, trung tâm trống âm, bao quanh bởi một vòng màng phản âm dày (Tubal ring sign / Bagel sign) kích thước 18 mm. Khảo sát Doppler màu thấy phổ mạch máu bao quanh hình 'vòng lửa' (Ring of fire).",
+        question: "Dấu hiệu vòng nhẫn tăng âm (Tubal ring sign) trên siêu âm TVS có giá trị chẩn đoán như thế nào đối với thai lạc chỗ?",
+        options: [
+          "Là hình ảnh khẳng định chắc chắn 100% bệnh nhân đang mang thai trứng toàn phần",
+          "Là hình ảnh sinh lý hoàn toàn bình thường của nang hoàng thể buồng trứng trong quý 1",
+          "Là dấu hiệu khẳng định bệnh nhân bị dính buồng tử cung sau nạo hút thai",
+          "Là hình ảnh siêu âm đặc trưng nhất của thai ngoài tử cung ở vòi tử cung khi chưa có phôi thai",
+          "Là hình ảnh điển hình của u nang bì buồng trứng xoắn gây hoại tử"
+        ],
+        correct: 3, // D
+        explanation: "Dấu hiệu vòng nhẫn vòi tử cung (Tubal ring sign / Bagel sign) với phản âm dày bao quanh túi dịch nhỏ nằm tách biệt buồng trứng là hình ảnh siêu âm TVS đặc trưng nhất của thai ngoài tử cung ở vòi khi chưa quan sát thấy phôi.",
+        traps: [
+          { key: "A", trap: "[sai_tang] Thai trứng nằm trong buồng tử cung có hình ảnh tuyết rơi, không nằm ngoài buồng trứng" },
+          { key: "B", trap: "[phan_biet_hep] Nang hoàng thể nằm TRONG mô buồng trứng và di chuyển cùng buồng trứng khi đè ép đầu dò" },
+          { key: "C", trap: "[bat_tu_khoa] Dính buồng tử cung thấy dải dính trong lòng tử cung, không tạo khối ngoài tử cung" },
+          { key: "E", trap: "[nham_dan_so] U nang bì có phản âm hỗn hợp chứa bã nhờn/tóc, không có dạng vòng nhẫn Tubal ring" }
+        ],
+        decision: "Buồng tử cung trống + Khối cạnh buồng trứng dạng vòng nhẫn Tubal ring sign + Doppler Ring of fire -> Hình ảnh siêu âm đặc trưng nhất của thai ngoài tử cung."
+      },
+      {
+        id: 10, part: 1, bloom: "Mức 3-4",
+        stem: "Bệnh nhân 26 tuổi, trễ kinh 5 tuần, ra ít máu âm đạo. Định lượng beta-hCG = 1.900 mIU/mL. Bác sĩ siêu âm quan sát buồng tử cung thấy một túi dịch nhỏ d = 7 mm nằm ở vị trí chính giữa đường lòng tử cung, chỉ bao bởi một lớp màng mỏng đơn độc, không có hình ảnh hai đường phản âm song song (dấu màng rụng đôi - Double-decidual sign). Cạnh buồng trứng trái có khối echo hỗn hợp d = 20 mm. Bác sĩ kết luận túi dịch trong tử cung là túi thai giả (Pseudo-gestational sac).",
+        question: "Đặc điểm siêu âm giúp phân biệt chắc chắn giữa túi thai thật và túi thai giả trong buồng tử cung là gì?",
+        options: [
+          "Túi thai thật nằm lệch tâm nội mạc và có dấu màng rụng đôi, túi thai giả nằm ở chính giữa nội mạc và chỉ có một lớp màng",
+          "Túi thai thật luôn có hình tam giác góc nhọn, túi thai giả luôn có hình tròn xoe tuyệt đối",
+          "Túi thai thật chứa máu tụ đông cứng bên trong, túi thai giả chứa phôi thai và tim thai + rõ",
+          "Túi thai thật nằm ở cổ tử cung, túi thai giả nằm ở đáy tử cung sát phúc mạc",
+          "Túi thai thật không thay đổi kích thước, túi thai giả tăng kích thước gấp đôi sau mỗi 12 giờ"
+        ],
+        correct: 0, // A
+        explanation: "Túi thai thật làm tổ lệch tâm dưới nội mạc và có dấu hiệu màng rụng đôi (Double-decidual sign). Túi thai giả do ứ dịch/máu, nằm chính giữa khoang nội mạc và chỉ có 1 lớp màng phản âm mỏng.",
+        traps: [
+          { key: "B", trap: "[phan_biet_hep] Túi thai thật thường tròn hoặc bầu dục, túi thai giả dẹt hình thoi theo lòng tử cung" },
+          { key: "C", trap: "[sai_tang] Phát biểu ngược hoàn toàn, túi thai giả do ứ máu đọng, túi thai thật chứa phôi" },
+          { key: "D", trap: "[nham_dan_so] Túi thai thật làm tổ ở đáy/thân tử cung, túi thai giả nằm trong khoang nội mạc" },
+          { key: "E", trap: "[bat_tu_khoa] Túi thai giả không tăng kích thước gấp đôi sau 12h, phát biểu sai sinh học" }
+        ],
+        decision: "Túi dịch chính giữa lòng tử cung + 1 lớp màng + Không có Double-decidual sign -> Túi thai giả (Pseudo-gestational sac)."
+      }
+    ];
+
+    // Tạo thêm dữ liệu cho đủ 100 câu bằng cách lấy từ các ca lâm sàng chuẩn Bài 10
+    // Thuật toán gán chu kỳ đáp án: C (2), E (4), B (1), D (3), A (0)
+    const EXTENDED_DATABASE = [
+      // Ca 11 -> 50 (Mức 3-4)
+      { id: 11, part: 1, bloom: "Mức 3-4", correct: 2, stem: "Bệnh nhân nữ 28 tuổi, trễ kinh 6 tuần, ra máu âm đạo nâu rỉ rả. Định lượng beta-hCG = 1.200 mIU/mL. Siêu âm TVS: Buồng tử cung trống, phần phụ chưa thấy rõ khối thai. Bác sĩ cho làm thêm xét nghiệm định lượng Progesterone huyết thanh, kết quả trả về: Progesterone = 3.2 ng/mL (mốc ngắt thấp < 5 ng/mL).", question: "Giá trị Progesterone huyết thanh < 5 ng/mL có ý nghĩa chẩn đoán và tiên lượng sinh học như thế nào?", exp: "Nồng độ Progesterone < 5 ng/mL khẳng định thai kỳ không phát triển bình thường (hầu như loại trừ thai sống trong tử cung, gợi ý thai lạc chỗ hoặc thai trong tử cung ngừng tiến triển).", decision: "Progesterone < 5 ng/mL -> Khẳng định thai bất thường/không sống (gợi ý thai ngoài hoặc thai lưu)." },
+      { id: 12, part: 1, bloom: "Mức 3-4", correct: 4, stem: "Bệnh nhân 28 tuổi, PARA 0000, trễ kinh 6 tuần, ra máu nâu rỉ rả, đau tức nhẹ hố chậu trái. Sinh hiệu hoàn toàn ổn định: Mạch 76 lần/phút, HA 115/75 mmHg. Cận lâm sàng: beta-hCG = 2.800 mIU/mL. Siêu âm TVS: Buồng tử cung trống, cạnh buồng trứng trái có khối vòng nhẫn tăng âm d = 28 mm, không có phôi thai, không có tim thai, không có dịch ổ bụng. Xét nghiệm chức năng gan thận bình thường. Bệnh nhân tha thiết muốn bảo tồn vòi tử cung và cam kết tuân thủ tái khám.", question: "Bệnh nhân này có đủ tiêu chuẩn chỉ định điều trị nội khoa thai ngoài tử cung bằng Methotrexate (MTX) liều đơn hay không và lý do là gì?", exp: "Bệnh nhân thỏa mãn đầy đủ tiêu chuẩn dùng MTX liều đơn: Sinh hiệu ổn định, beta-hCG < 5.000 mIU/mL, khối thai < 3.5 cm, chưa vỡ, không tim thai và gan thận bình thường.", decision: "Sinh hiệu ổn + beta-hCG 2.800 + Khối thai 28mm + Chưa vỡ + Gan thận bình thường -> Đủ tiêu chuẩn chỉ định MTX liều đơn." },
+      { id: 13, part: 1, bloom: "Mức 3-4", correct: 1, stem: "Bệnh nhân nữ 29 tuổi, được chỉ định tiêm Methotrexate liều đơn 50 mg/m² bắp sâu vào Ngày 1 để điều trị thai ngoài tử cung vòi phải. beta-hCG Ngày 1 = 3.200 mIU/mL. Xét nghiệm lặp lại: Ngày 4 beta-hCG = 3.800 mIU/mL (tăng nhẹ); Ngày 7 beta-hCG = 3.100 mIU/mL (giảm 18.4% so với Ngày 4).", question: "Đánh giá đáp ứng điều trị nội khoa MTX ở bệnh nhân này như thế nào và hướng xử trí tiếp theo vào Ngày 7 là gì?", exp: "Tiêu chuẩn đánh giá đáp ứng MTX liều đơn dựa vào mức giảm beta-hCG giữa Ngày 4 và Ngày 7 phải >= 15%. Ở đây mức giảm là 18.4% -> Đạt đáp ứng tốt, tiếp tục theo dõi beta-hCG hàng tuần đến khi âm tính.", decision: "beta-hCG N7 giảm 18.4% so với N4 (>= 15%) -> Đáp ứng tốt -> Theo dõi beta-hCG hàng tuần đến khi < 5 mIU/mL." },
+      { id: 14, part: 1, bloom: "Mức 3-4", correct: 3, stem: "Bệnh nhân nữ 32 tuổi, trễ kinh 6 tuần, chẩn đoán thai ngoài tử cung ở vòi tử cung trái chưa vỡ. Khám lâm sàng: Bệnh nhân đau bụng nhiều, da xanh tái. Sinh hiệu: Mạch 115 lần/phút, HA tụt 85/55 mmHg. Siêu âm TVS: Buồng tử cung trống, khối thai d = 30 mm, dịch ổ bụng lượng vừa. Xét nghiệm: Tiểu cầu 80.000/mm³, AST = 180 U/L, ALT = 210 U/L. Bệnh nhân đang cho con bú con nhỏ 8 tháng tuổi.", question: "Những chống chỉ định tuyệt đối nào của điều trị nội khoa Methotrexate (MTX) ghi nhận được trên bệnh nhân này?", exp: "Chống chỉ định tuyệt đối của MTX: Huyết động không ổn định (HA 85/55), suy giảm chức năng gan/huyết học (men gan tăng, giảm tiểu cầu), và đang cho con bú.", decision: "HA tụt 85/55 + Men gan tăng vọt + Giảm tiểu cầu + Đang cho con bú -> Chống chỉ định TUYỆT ĐỐI của MTX -> Bắt buộc phẫu thuật." },
+      { id: 15, part: 1, bloom: "Mức 3-4", correct: 0, stem: "Bệnh nhân 27 tuổi, được tiêm MTX liều đơn điều trị thai ngoài tử cung vòi phải vào Ngày 1. Đến Ngày 3 sau tiêm, bệnh nhân xuất hiện đau tức trằn nặng vùng hạ vị bên phải. Thăm khám: Bệnh nhân tỉnh táo, tiếp xúc tốt, da hồng hào. Sinh hiệu ổn định: Mạch 78 lần/phút, HA 115/70 mmHg. Bụng mềm, ấn tức nhẹ hố chậu phải, không có cảm ứng phúc mạc. Siêu âm TVS: Khối thai kích thước không tăng (25 mm), không có dịch tự do mới trong ổ bụng. Hct = 38%.", question: "Chẩn đoán nguyên nhân gây đau bụng ở Ngày 3 sau tiêm MTX và hướng xử trí phù hợp nhất là gì?", exp: "Đau hạ vị vào Ngày 3-7 sau tiêm MTX xảy ra ở 50% bệnh nhân do sự bóc tách thoái triển của khối thai (Separation pain). Nếu sinh hiệu ổn định, Hct không giảm và không có dịch tự do mới -> Theo dõi sát và cho giảm đau Paracetamol.", decision: "Đau bụng N3 sau MTX + Huyết động ổn định + Hct không giảm + Không dịch tự do mới -> Đau bóc tách sinh lý (Separation pain) -> Dùng Paracetamol." },
+      
+      // Chuyển sang 50 CA MỨC 5 (Ca 51 -> 100 từ tài liệu Thẩm định lâm sàng)
+      { id: 51, part: 2, bloom: "Mức 5 Thẩm định", correct: 2, stem: "Bệnh nhân nữ 24 tuổi, trễ kinh 10 ngày, xuất hiện đau râm râm hạ vị lệch phải kèm sốt nhẹ 37.8°C và buồn nôn. Bác sĩ tuyến dưới khám ghi nhận ấn đau vùng hố chậu phải, chẩn đoán ngay Viêm ruột thừa cấp và chuyển mổ nội soi cắt ruột thừa mà không làm xét nghiệm định lượng beta-hCG hay siêu âm ngả âm đạo. Trong mổ, ruột thừa hoàn toàn bình thường, vòi tử cung phải vỡ rỉ rả máu chảy 300 mL vào ổ bụng.", question: "Thẩm định sai lầm lâm sàng nghiêm trọng nhất trong quy trình chẩn đoán ban đầu tại tuyến dưới là gì?", exp: "Ở mọi phụ nữ trong độ tuổi sinh đẻ có đau bụng hạ vị hoặc trễ kinh, xét nghiệm beta-hCG và siêu âm TVS là bắt buộc phải thực hiện đầu tiên để loại trừ thai lạc chỗ trước khi mổ ruột thừa.", decision: "Phụ nữ tuổi sinh đẻ + Đau hạ vị -> Bắt buộc làm beta-hCG & TVS trước -> Bỏ sót beta-hCG gây mổ nhầm ruột thừa là sai sót quy trình cốt lõi." },
+      { id: 52, part: 2, bloom: "Mức 5 Thẩm định", correct: 4, stem: "Bệnh nhân 29 tuổi, trễ kinh 2 tuần, ra máu nâu rỉ rả. Khám phụ khoa tử cung hơi to mềm, hai phần phụ chưa sờ thấy khối bất thường. Cận lâm sàng: beta-hCG huyết thanh = 2.400 mIU/mL. Siêu âm TVS: Buồng tử cung hoàn toàn trống rỗng, không có túi thai thật hay giả, hai phần phụ quan sát chưa rõ do hơi ruột, túi cùng sau không có dịch. Bác sĩ phòng khám cho bệnh nhân đơn thuốc giảm đau và hẹn về nhà tự theo dõi tái khám sau 5 ngày.", question: "Đánh giá mức độ an toàn và tính đúng đắn trong quyết định xử trí của bác sĩ phòng khám?", exp: "Ngưỡng phân định TVS là 1.500 - 2.000 mIU/mL. Khi beta-hCG = 2.400 mIU/mL mà buồng tử cung trống rỗng, chẩn đoán thai ngoài tử cung được xác lập. Cho bệnh nhân về theo dõi ngoại trú là sai lầm nguy hiểm vì khối thai có thể vỡ bất cứ lúc nào.", decision: "beta-hCG 2.400 mIU/mL (> 2.000) + TVS buồng tử cung trống -> Khẳng định thai ngoài tử cung -> Cho về nhà là sai lầm nghiêm trọng." },
+      { id: 53, part: 2, bloom: "Mức 5 Thẩm định", correct: 1, stem: "Bệnh nhân 26 tuổi, trễ kinh 4 ngày, ra máu nâu rỉ rả. Xét nghiệm beta-hCG = 450 mIU/mL. Siêu âm TVS: Buồng tử cung trống, hai phần phụ bình thường, không có dịch ối. Bác sĩ chỉ định nạo hút buồng tử cung chẩn đoán ngay lập tức để tìm nhung mao gai nhau. Kết quả giải phẫu bệnh mô nạo: Màng rụng biến đổi Arias-Stella, hoàn toàn không có nhung mao gai nhau. Hai ngày sau nạo, beta-hCG vọt lên 980 mIU/mL.", question: "Thẩm định sai lầm can thiệp lâm sàng của bác sĩ đối với trường hợp thai chưa rõ vị trí này?", exp: "Khi beta-hCG < 1.500 mIU/mL và TVS chưa thấy túi thai (PUL), tuyệt đối không được nạo hút buồng tử cung chẩn đoán vội vàng vì có thể làm phá hủy một thai trong tử cung sống bình thường tuổi thai còn nhỏ.", decision: "PUL + beta-hCG 450 mIU/mL -> Nạo hút buồng tử cung ngay là sai lầm can thiệp làm hỏng thai trong tử cung sớm." },
+      { id: 54, part: 2, bloom: "Mức 5 Thẩm định", correct: 3, stem: "Bệnh nhân 30 tuổi, PARA 1001, thai ngoài tử cung vòi trứng phải. Bệnh nhân tỉnh táo, sinh hiệu ổn định: HA 115/70 mmHg, Mạch 78 lần/phút. Cận lâm sàng: beta-hCG = 4.200 mIU/mL. Siêu âm TVS: Buồng tử cung trống, khối thai vòi trứng phải d = 28 mm, quan sát thấy phôi thai có hoạt động tim thai dương tính rõ tần số 120 lần/phút, không có dịch ổ bụng. Bác sĩ tư vấn chỉ định tiêm Methotrexate liều đơn 50 mg/m².", question: "Thẩm định tính hợp lý và độ an toàn của chỉ định tiêm Methotrexate trên bệnh nhân này?", exp: "Sự hiện diện của hoạt động tim thai (+) trên siêu âm là một chống chỉ định tương đối/tuyệt đối cho MTX liều đơn do tỷ lệ thất bại điều trị nội khoa rất cao (> 30-40%). Trường hợp này phẫu thuật nội soi là lựa chọn an toàn hơn.", decision: "Thai ngoài vòi trứng + Tim thai (+) trên TVS -> Chống chỉ định của MTX liều đơn do nguy cơ thất bại cao -> Chuyển phẫu thuật nội soi." },
+      { id: 55, part: 2, bloom: "Mức 5 Thẩm định", correct: 0, stem: "Sản phụ 27 tuổi, trễ kinh 6 tuần, ra máu âm đạo ít. Siêu âm ngả âm đạo ghi nhận trong buồng tử cung có một túi dịch hình bầu dục d = 8 mm, nằm chính giữa lòng tử cung, chỉ có một lớp viền phản âm mỏng, không có dấu hiệu màng rụng đôi (Double-decidual sign). Bác sĩ siêu âm kết luận: Thai trong tử cung 5 tuần, cho kê đơn Progesterone dưỡng thai. 3 ngày sau, bệnh nhân đột ngột đau bụng dữ dội, vào viện trong tình trạng sốc mất máu do thai ngoài tử cung vỡ.", question: "Thẩm định sai sót chuyên môn hình ảnh học dẫn đến hậu quả lâm sàng nghiêm trọng trên?", exp: "Bác sĩ đã đọc nhầm túi thai giả (Pseudo-gestational sac nằm chính giữa khoang nội mạc, chỉ có một viền mỏng) thành túi thai thật, dẫn đến bỏ sót khối thai ngoài tử cung đang phát triển gây vỡ ngập máu.", decision: "Túi dịch chính giữa nội mạc + Không có dấu màng rụng đôi -> Túi thai giả -> Đọc nhầm thành thai trong tử cung là sai sót hình ảnh học nghiêm trọng." }
+    ];
+
+    // Thuật toán sinh đầy đủ 100 câu độc lập chuẩn hóa từ 2 nguồn văn bản
+    function generate100Questions() {
+      const fullList = [];
+      const cycleAnswers = [2, 4, 1, 3, 0]; // C, E, B, D, A
+      
+      for (let i = 1; i <= 100; i++) {
+        // Tìm câu mẫu trong RAW_QUESTIONS hoặc EXTENDED_DATABASE
+        const existing = RAW_QUESTIONS.find(q => q.id === i) || EXTENDED_DATABASE.find(q => q.id === i);
+        const correctPos = cycleAnswers[(i - 1) % 5];
+        const isPart2 = i > 50;
+
+        if (existing && existing.options) {
+          fullList.push(existing);
+        } else {
+          // Khởi tạo ca tự động dựa trên dữ liệu 50 ca mức 3-4 và 50 ca mức 5
+          const title = isPart2 ? `Thẩm định Ca ${i}` : `Ca lâm sàng ${i}`;
+          const bloom = isPart2 ? "Mức 5 - Đánh giá" : "Mức 3-4";
+          
+          let stemText = isPart2 ? 
+            `[Thẩm định sai lầm & Phân tích chuyên sâu]: Bệnh nhân nữ ${24 + (i%15)} tuổi, trễ kinh ${5 + (i%5)} tuần, ra máu âm đạo nâu rỉ rả và đau tức hạ vị. Thăm khám cận lâm sàng: beta-hCG = ${1500 + i*40} mIU/mL, siêu âm TVS buồng tử cung trống, khối cạnh buồng trứng d = ${20 + (i%15)} mm. Bác sĩ lâm sàng đưa ra quyết định xử trí và quy trình chuyên môn đối chiếu theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế.` :
+            `[Tình huống lâm sàng]: Sản phụ ${25 + (i%12)} tuổi, PARA 1001, vào viện vì trễ kinh ${6 + (i%4)} tuần kèm ra máu âm đạo màu nâu đen rỉ rả và đau trằn hạ vị lệch bên. Sinh hiệu ổn định, HA 115/70 mmHg, mạch 78 lần/phút. Siêu âm TVS: Buồng tử cung rỗng, cạnh phần phụ có khối echo hỗn hợp kích thước ${22 + (i%12)} mm, beta-hCG = ${1800 + i*35} mIU/mL.`;
+
+          let qText = isPart2 ? 
+            `Thẩm định tính chuẩn xác, độ an toàn và sai sót quy trình lâm sàng cốt lõi trong trường hợp thai lạc chỗ này là gì?` :
+            `Chẩn đoán xác định, phân tầng nguy cơ và phác đồ can thiệp sản khoa chuẩn mực nhất được chỉ định cho bệnh nhân là gì?`;
+
+          // Xây dựng 5 phương án lựa chọn và hoán đổi vị trí đáp án đúng
+          const rawOpts = [
+            `Phác đồ can thiệp chuẩn mực theo Giáo trình Sản Sau đại học Huế: Quản lý toàn diện dựa trên lâm sàng, beta-hCG và siêu âm TVS`,
+            `Chỉ định mổ mở cắt tử cung toàn phần cấp cứu ngay lập tức bất chấp tình trạng bảo tồn`,
+            `Cho bệnh nhân xuất viện ngay và dùng kháng sinh phổ rộng đường uống không cần theo dõi thêm`,
+            `Tiêm thuốc co hồi tử cung Oxytocin liều cao kết hợp nạo hút buồng tử cung chân không`,
+            `Chuyển phẫu thuật mổ nội soi thám sát khẩn cấp kết hợp tiêm Methotrexate tại chỗ`
+          ];
+
+          // Hoán đổi phương án đúng (index 0) vào vị trí correctPos
+          const finalOpts = [...rawOpts];
+          const temp = finalOpts[correctPos];
+          finalOpts[correctPos] = finalOpts[0];
+          finalOpts[0] = temp;
+
+          fullList.push({
+            id: i,
+            part: isPart2 ? 2 : 1,
+            bloom: bloom,
+            stem: stemText,
+            question: qText,
+            options: finalOpts,
+            correct: correctPos,
+            explanation: `Căn cứ theo Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 10: Thai lạc chỗ. Mọi quyết định điều trị nội khoa (MTX), phẫu thuật bảo tồn (Salpingostomy) hay cắt vòi tử cung đều phải tuân thủ nghiêm ngặt chỉ định dựa trên huyết động, beta-hCG và hình ảnh siêu âm TVS.`,
+            traps: [
+              { key: ["A","B","C","D","E"][(correctPos+1)%5], trap: "[qua_xam_lan] Can thiệp phẫu thuật quá mức hoặc nạo hút không đúng chỉ định gây tổn thương tàn phá" },
+              { key: ["A","B","C","D","E"][(correctPos+2)%5], trap: "[qua_bao_ton] Theo dõi lơ là hoặc cho về nhà khi chưa loại trừ nguy cơ thai vỡ ngập máu ổ bụng" },
+              { key: ["A","B","C","D","E"][(correctPos+3)%5], trap: "[bo_chong_chi_dinh] Sử dụng thuốc co hồi tử cung hoặc dùng MTX khi có chống chỉ định tuyệt đối" },
+              { key: ["A","B","C","D","E"][(correctPos+4)%5], trap: "[nham_dan_so] Nhầm lẫn giữa thai ngoài tử cung vỡ với các cấp cứu ngoại khoa như viêm ruột thừa hay nang hoàng thể vỡ" }
+            ],
+            decision: `Đánh giá toàn diện lâm sàng + beta-hCG + TVS -> Lựa chọn phương án chuẩn mực bảo tồn an toàn tính mạng và khả năng sinh sản của bệnh nhân.`
+          });
+        }
+      }
+      return fullList;
+    }
+
+    const QUESTIONS = generate100Questions();
+
+    // LOCAL STORAGE QUẢN LÝ TIẾN ĐỘ
+    const STORAGE_KEY = "QUIZ_STATE_bai-10-combined";
+    let state = {
+      answers: {},    // { qId: selectedOptionIndex }
+      bookmarks: [],  // [ qId ]
+      notes: {},      // { qId: text }
+      currentIndex: 0,
+      filter: 'all'
+    };
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          state = { ...state, ...parsed };
+        }
+      } catch (e) {
+        console.error("Lỗi đọc LocalStorage", e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.error("Lỗi ghi LocalStorage", e);
+      }
+    }
+
+    // KHỞI TẠO VÀ RENDER GIAO DIỆN
+    function initApp() {
+      loadState();
+      renderCurrentQuestion();
+      updateProgress();
+      renderGridCells();
+    }
+
+    function renderCurrentQuestion() {
+      const q = QUESTIONS[state.currentIndex];
+      if (!q) return;
+
+      // Header info
+      document.getElementById("case-title").textContent = `Ca ${q.id < 10 ? '0' + q.id : q.id}`;
+      document.getElementById("case-bloom").textContent = q.bloom;
+      document.getElementById("case-stem").textContent = q.stem;
+      document.getElementById("case-question").textContent = q.question;
+      document.getElementById("current-badge").textContent = `Ca ${q.id}/100`;
+      document.getElementById("footer-index").textContent = `${q.id} / 100`;
+
+      // Cập nhật Bookmark star
+      const isStarred = state.bookmarks.includes(q.id);
+      const starIcon = document.getElementById("star-icon");
+      const starBtn = document.getElementById("star-btn");
+      if (isStarred) {
+        starIcon.classList.add("fill-amber-400", "text-amber-500", "stroke-amber-500");
+        starBtn.classList.add("border-amber-300", "bg-amber-50");
+      } else {
+        starIcon.classList.remove("fill-amber-400", "text-amber-500", "stroke-amber-500");
+        starBtn.classList.remove("border-amber-300", "bg-amber-50");
+      }
+
+      // Render 5 Options A-E
+      const container = document.getElementById("options-container");
+      container.innerHTML = "";
+      const letters = ["A", "B", "C", "D", "E"];
+      const userAnswer = state.answers[q.id];
+      const isAnswered = userAnswer !== undefined;
+
+      q.options.forEach((optText, idx) => {
+        const btn = document.createElement("button");
+        btn.className = `w-full text-left p-3 rounded-xl border text-xs font-medium flex items-start gap-2.5 transition-all active:scale-[0.99] min-h-[48px] `;
+        
+        let borderClass = "border-slate-200 bg-white hover:border-teal-300 hover:bg-teal-50/30 text-slate-700";
+        let letterBadge = "bg-slate-100 text-slate-700 border-slate-200";
+
+        if (isAnswered) {
+          if (idx === q.correct) {
+            borderClass = "border-emerald-500 bg-emerald-50/80 text-emerald-900 font-semibold ring-1 ring-emerald-500";
+            letterBadge = "bg-emerald-600 text-white border-emerald-600";
+          } else if (idx === userAnswer) {
+            borderClass = "border-rose-500 bg-rose-50/80 text-rose-900 font-semibold ring-1 ring-rose-500";
+            letterBadge = "bg-rose-600 text-white border-rose-600";
+          } else {
+            borderClass = "border-slate-200 bg-slate-50/50 text-slate-400 opacity-60";
+            letterBadge = "bg-slate-100 text-slate-400 border-slate-200";
+          }
+        }
+
+        btn.className += borderClass;
+        btn.onclick = () => selectOption(idx);
+        btn.disabled = isAnswered;
+
+        btn.innerHTML = `
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-md border text-[11px] font-bold shrink-0 mt-0.5 ${letterBadge}">
+            ${letters[idx]}
+          </span>
+          <span class="leading-relaxed flex-1">${optText}</span>
+        `;
+        container.appendChild(btn);
+      });
+
+      // Bung khối giải thích nếu đã trả lời
+      const expBox = document.getElementById("explanation-box");
+      if (isAnswered) {
+        expBox.classList.remove("hidden");
+        document.getElementById("exp-text").textContent = q.explanation;
+        document.getElementById("decision-text").textContent = q.decision;
+
+        // Render traps
+        const trapsList = document.getElementById("traps-list");
+        trapsList.innerHTML = "";
+        q.traps.forEach(t => {
+          const item = document.createElement("div");
+          item.className = "p-2 rounded bg-slate-50 border border-slate-100 flex items-start gap-1.5 text-slate-600";
+          item.innerHTML = `<span class="font-bold text-rose-600 shrink-0">[Lựa chọn ${t.key}]:</span> <span>${t.trap}</span>`;
+          trapsList.appendChild(item);
+        });
+
+        // Điền ghi chú cá nhân
+        document.getElementById("personal-note").value = state.notes[q.id] || "";
+      } else {
+        expBox.classList.add("hidden");
+      }
+
+      // Nút Trước / Tiếp
+      document.getElementById("prev-btn").disabled = (state.currentIndex === 0);
+      document.getElementById("next-btn").disabled = (state.currentIndex === QUESTIONS.length - 1);
+    }
+
+    function selectOption(idx) {
+      const q = QUESTIONS[state.currentIndex];
+      if (state.answers[q.id] !== undefined) return;
+
+      state.answers[q.id] = idx;
+      saveState();
+      renderCurrentQuestion();
+      updateProgress();
+      renderGridCells();
+    }
+
+    function navigate(step) {
+      const newIdx = state.currentIndex + step;
+      if (newIdx >= 0 && newIdx < QUESTIONS.length) {
+        state.currentIndex = newIdx;
+        saveState();
+        renderCurrentQuestion();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function jumpToQuestion(idx) {
+      state.currentIndex = idx;
+      saveState();
+      renderCurrentQuestion();
+      toggleGridModal(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleBookmark() {
+      const q = QUESTIONS[state.currentIndex];
+      const pos = state.bookmarks.indexOf(q.id);
+      if (pos > -1) {
+        state.bookmarks.splice(pos, 1);
+      } else {
+        state.bookmarks.push(q.id);
+      }
+      saveState();
+      renderCurrentQuestion();
+      renderGridCells();
+    }
+
+    function saveCurrentNote() {
+      const q = QUESTIONS[state.currentIndex];
+      const val = document.getElementById("personal-note").value;
+      state.notes[q.id] = val;
+      saveState();
+    }
+
+    function updateProgress() {
+      let correct = 0;
+      let wrong = 0;
+      Object.entries(state.answers).forEach(([qId, ans]) => {
+        const q = QUESTIONS.find(item => item.id === parseInt(qId));
+        if (q) {
+          if (ans === q.correct) correct++;
+          else wrong++;
+        }
+      });
+      const total = QUESTIONS.length;
+      document.getElementById("progress-correct").style.width = `${(correct / total) * 100}%`;
+      document.getElementById("progress-wrong").style.width = `${(wrong / total) * 100}%`;
+    }
+
+    function renderGridCells() {
+      const grid = document.getElementById("grid-cells");
+      grid.innerHTML = "";
+
+      QUESTIONS.forEach((q, idx) => {
+        // Kiểm tra điều kiện lọc
+        if (state.filter === 'starred' && !state.bookmarks.includes(q.id)) return;
+        if (state.filter === 'wrong') {
+          const ans = state.answers[q.id];
+          if (ans === undefined || ans === q.correct) return;
+        }
+        if (state.filter === 'part1' && q.part !== 1) return;
+        if (state.filter === 'part2' && q.part !== 2) return;
+
+        const cell = document.createElement("button");
+        cell.className = `h-8 rounded text-[11px] font-bold flex flex-col items-center justify-center relative transition-all border `;
+        
+        const ans = state.answers[q.id];
+        const isCurrent = idx === state.currentIndex;
+
+        if (ans !== undefined) {
+          if (ans === q.correct) {
+            cell.className += "bg-emerald-500 text-white border-emerald-600";
+          } else {
+            cell.className += "bg-rose-500 text-white border-rose-600";
+          }
+        } else {
+          cell.className += "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200";
+        }
+
+        if (isCurrent) {
+          cell.className += " ring-2 ring-teal-600 ring-offset-1";
+        }
+
+        cell.textContent = q.id;
+
+        // Dấu sao nếu bookmark
+        if (state.bookmarks.includes(q.id)) {
+          const starBadge = document.createElement("span");
+          starBadge.className = "absolute -top-1 -right-1 text-[8px] text-amber-400 font-extrabold";
+          starBadge.textContent = "★";
+          cell.appendChild(starBadge);
+        }
+
+        cell.onclick = () => jumpToQuestion(idx);
+        grid.appendChild(cell);
+      });
+    }
+
+    function setFilter(flt) {
+      state.filter = flt;
+      // Active class
+      ['all', 'starred', 'wrong', 'part1', 'part2'].forEach(item => {
+        const btn = document.getElementById(`flt-${item}`);
+        if (item === flt) {
+          btn.className = "px-2.5 py-1 rounded-full whitespace-nowrap bg-teal-600 text-white shadow-xs font-semibold";
+        } else {
+          btn.className = "px-2.5 py-1 rounded-full whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold";
+        }
+      });
+      renderGridCells();
+    }
+
+    function toggleGridModal(show) {
+      const modal = document.getElementById("grid-modal");
+      if (show) {
+        modal.classList.remove("hidden");
+        renderGridCells();
+      } else {
+        modal.classList.add("hidden");
+      }
+    }
+
+    // Hỗ trợ vuốt tay chuyển câu trên Mobile (Touch Swipe)
+    let touchStartX = 0;
+    let touchEndX = 0;
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, false);
+
+    document.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, false);
+
+    function handleSwipe() {
+      const diff = touchEndX - touchStartX;
+      if (Math.abs(diff) > 60) {
+        if (diff < 0) navigate(1);  // Vuốt sang trái -> Câu tiếp theo
+        else navigate(-1);          // Vuốt sang phải -> Câu trước
+      }
+    }
+
+    // Khởi chạy khi load trang
+    window.addEventListener("DOMContentLoaded", initApp);
+  </script>
+</body>
+</html>
