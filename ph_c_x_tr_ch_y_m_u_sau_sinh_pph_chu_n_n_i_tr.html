@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHÁC ĐỒ CHẢY MÁU SAU SINH (PPH) STEP-BY-STEP | Ôn Thi Bác Sĩ Nội Trú</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        crimson: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                            800: '#9f1239',
+                            900: '#881337',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* Flashcard 3D Flip */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        .flipped .transform-style-3d {
+            transform: rotateY(180deg);
+        }
+        /* Print Styles */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-block {
+                display: block !important;
+            }
+            body {
+                background: white;
+                font-size: 12pt;
+            }
+            .shadow-lg, .shadow-md, .shadow-sm {
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+        }
+        /* Pulse Alert Animation */
+        @keyframes pulse-border {
+            0%, 100% { border-color: rgba(225, 29, 72, 0.9); box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.4); }
+            50% { border-color: rgba(225, 29, 72, 0.3); box-shadow: 0 0 0 8px rgba(225, 29, 72, 0); }
+        }
+        .alert-pulse {
+            animation: pulse-border 2s infinite;
+        }
+        mark.search-highlight {
+            background-color: #fef08a;
+            color: #854d0e;
+            padding: 0 2px;
+            border-radius: 3px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-rose-600 selection:text-white">
+
+    <!-- ==================== STICKY TOP HEADER & GOLDEN HOUR TIMER ==================== -->
+    <header class="sticky top-0 z-50 bg-slate-900 text-white shadow-xl border-b border-slate-700/80 no-print">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                
+                <!-- Brand & Title -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500 to-red-700 flex items-center justify-center shadow-lg shadow-rose-600/30">
+                        <i class="fa-solid fa-heart-pulse text-xl text-white animate-pulse"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider bg-rose-600 text-white rounded-md">OB/GYN RESIDENCY</span>
+                            <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-400/30 rounded-md">ACOG • WHO E-MOTIVE • BYT</span>
+                        </div>
+                        <h1 class="text-sm sm:text-base md:text-lg font-extrabold tracking-tight text-white">
+                            PHÁC ĐỒ CHẢY MÁU SAU SINH (PPH) STEP-BY-STEP
+                        </h1>
+                    </div>
+                </div>
+
+                <!-- Golden Hour Timer Widget -->
+                <div id="timerContainer" class="flex items-center gap-2 sm:gap-3 bg-slate-800/90 border border-slate-600 px-3 py-1.5 rounded-xl transition-all duration-300">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold flex items-center gap-1">
+                            <i class="fa-regular fa-clock text-rose-400"></i> GOLDEN HOUR TIMER
+                        </span>
+                        <div class="flex items-baseline gap-2">
+                            <span id="timerDisplay" class="font-mono text-lg sm:text-xl font-bold text-emerald-400">00:00</span>
+                            <span id="timerPhaseBadge" class="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                Sẵn sàng (Phút 0)
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1 border-l border-slate-700 pl-2">
+                        <button onclick="toggleTimer()" id="timerStartBtn" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-bold transition flex items-center gap-1 shadow">
+                            <i class="fa-solid fa-play" id="timerIcon"></i> <span id="timerBtnText" class="hidden sm:inline">Bắt đầu</span>
+                        </button>
+                        <button onclick="jumpTime(5)" title="Tua nhanh +5 phút để mô phỏng" class="px-2 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-xs font-semibold text-slate-200 transition">
+                            +5p
+                        </button>
+                        <button onclick="resetTimer()" title="Reset đồng hồ" class="p-1.5 rounded-lg bg-slate-700 hover:bg-rose-600 text-xs text-slate-300 hover:text-white transition">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Actions & Search -->
+                <div class="flex items-center gap-2 w-full lg:w-auto justify-end">
+                    <div class="relative flex-1 sm:w-56 lg:w-60">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Tìm thuốc, B-Lynch, 2g/L, Sheehan..." 
+                            class="w-full pl-8 pr-7 py-1.5 text-xs bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-rose-500">
+                        <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    <button onclick="toggleCalculatorDrawer()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-xs font-bold flex items-center gap-1.5 shadow transition whitespace-nowrap">
+                        <i class="fa-solid fa-calculator"></i> <span>Công cụ tính & Chọn thuốc</span>
+                    </button>
+                    <button onclick="window.print()" title="In hoặc Xuất PDF" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs transition">
+                        <i class="fa-solid fa-print"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progress & Navigation Tabs -->
+            <div class="mt-2.5 pt-2 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 w-full sm:w-auto">
+                    <button onclick="switchTab('tab-protocol')" id="btn-tab-protocol" class="tab-btn active-tab px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 bg-rose-600 text-white shadow-sm transition whitespace-nowrap">
+                        <i class="fa-solid fa-list-check"></i> 1. Protocol 8 Bước (Giờ Vàng)
+                    </button>
+                    <button onclick="switchTab('tab-matrix')" id="btn-tab-matrix" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:bg-slate-700 transition whitespace-nowrap">
+                        <i class="fa-solid fa-capsules"></i> 2. Ma Trận 4T & Bảng Thuốc
+                    </button>
+                    <button onclick="switchTab('tab-mindmap')" id="btn-tab-mindmap" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:bg-slate-700 transition whitespace-nowrap">
+                        <i class="fa-solid fa-brain"></i> 3. Sơ Đồ Tư Duy & 15 Câu Chốt
+                    </button>
+                    <button onclick="switchTab('tab-quiz')" id="btn-tab-quiz" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:bg-slate-700 transition whitespace-nowrap">
+                        <i class="fa-solid fa-user-doctor"></i> 4. Tình Huống Lâm Sàng Nội Trú
+                    </button>
+                </div>
+
+                <!-- Checklist Progress Bar -->
+                <div class="flex items-center gap-2 text-xs w-full sm:w-auto justify-between sm:justify-end">
+                    <div class="flex items-center gap-2">
+                        <span class="text-slate-400 font-medium">Tiến độ Checklist:</span>
+                        <div class="w-28 h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                            <div id="checklistProgressBar" class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <span id="checklistProgressText" class="font-mono font-bold text-emerald-400">0/32</span>
+                    </div>
+                    <button onclick="resetChecklist()" class="text-[11px] text-slate-400 hover:text-rose-400 underline ml-2">Reset</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== INTERACTIVE BEDSIDE CALCULATOR & DRUG SELECTOR DRAWER ==================== -->
+    <section id="calculatorDrawer" class="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800 text-white border-b-2 border-indigo-500/60 shadow-2xl no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-indigo-400 animate-ping"></span>
+                    <h2 class="text-sm sm:text-base font-extrabold uppercase tracking-wide text-indigo-300">
+                        BẢNG ĐIỀU KHIỂN LÂM SÀNG TẠI GIƯỜNG (BEDSIDE DECISION SUPPORT)
+                    </h2>
+                </div>
+                <button onclick="toggleCalculatorDrawer()" class="text-xs text-slate-400 hover:text-white flex items-center gap-1 bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700">
+                    <span>Thu gọn</span> <i class="fa-solid fa-chevron-up"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                
+                <!-- Calculator 1: Shock Index + QBL (6 cols) -->
+                <div class="lg:col-span-6 bg-slate-800/90 border border-slate-700 rounded-2xl p-4 shadow-lg">
+                    <div class="flex items-center justify-between border-b border-slate-700 pb-2.5 mb-3">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-gauge-high text-rose-400"></i>
+                            1. Máy Tính Chỉ Số Sốc (Shock Index) & Lượng Máu Mất (QBL)
+                        </h3>
+                        <span class="text-[11px] font-mono text-slate-400">SI = Mạch / HA tâm thu</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+                        <div>
+                            <label class="block text-[11px] text-slate-300 font-semibold mb-1">Mạch (lần/phút)</label>
+                            <input type="number" id="inpHR" value="108" min="30" max="250" oninput="calculateBedside()"
+                                class="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-600 rounded-lg font-mono text-sm text-white focus:border-rose-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-300 font-semibold mb-1">HA Tâm thu (mmHg)</label>
+                            <input type="number" id="inpSBP" value="95" min="30" max="250" oninput="calculateBedside()"
+                                class="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-600 rounded-lg font-mono text-sm text-white focus:border-rose-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-300 font-semibold mb-1">Túi đo sau sinh (mL)</label>
+                            <input type="number" id="inpDrape" value="400" min="0" max="5000" step="50" oninput="calculateBedside()"
+                                class="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-600 rounded-lg font-mono text-sm text-white focus:border-rose-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-300 font-semibold mb-1" title="1g chênh lệch = 1mL máu">Gạc ướt trừ khô (gram)</label>
+                            <input type="number" id="inpGauze" value="180" min="0" max="5000" step="10" oninput="calculateBedside()"
+                                class="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-600 rounded-lg font-mono text-sm text-white focus:border-rose-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Output Card -->
+                    <div id="calcResultBox" class="rounded-xl p-3.5 bg-slate-900/90 border border-rose-500/50 flex flex-col justify-between gap-2">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex items-center gap-4">
+                                <div>
+                                    <span class="text-[10px] uppercase text-slate-400 block">Shock Index (SI)</span>
+                                    <span id="outSI" class="font-mono text-2xl font-extrabold text-amber-400">1.14</span>
+                                </div>
+                                <div class="h-8 w-px bg-slate-700"></div>
+                                <div>
+                                    <span class="text-[10px] uppercase text-slate-400 block">Tổng máu mất (QBL)</span>
+                                    <span id="outQBL" class="font-mono text-2xl font-extrabold text-rose-400">580 mL</span>
+                                </div>
+                            </div>
+                            <span id="outShockClass" class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-rose-600/20 text-rose-300 border border-rose-500/40">
+                                Sốc Độ II (Nhẹ - Trung bình)
+                            </span>
+                        </div>
+                        <div id="outActionAlert" class="text-xs text-slate-200 leading-relaxed pt-2 border-t border-slate-800">
+                            <!-- Filled dynamically by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculator 2: Smart Uterotonic Selector by Comorbidities (6 cols) -->
+                <div class="lg:col-span-6 bg-slate-800/90 border border-slate-700 rounded-2xl p-4 shadow-lg">
+                    <div class="flex items-center justify-between border-b border-slate-700 pb-2.5 mb-3">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+                            2. Bộ Lọc "Chọn Thuốc Tăng Co & Cầm Máu An Toàn" (Chống Bẫy Đề Thi)
+                        </h3>
+                        <span class="text-[11px] text-slate-400">Tick chọn bệnh nền của sản phụ</span>
+                    </div>
+
+                    <!-- Comorbidity Checkboxes -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+                        <label class="flex items-center gap-2 p-2 rounded-lg bg-slate-900 border border-slate-700 cursor-pointer hover:border-rose-400 transition select-none">
+                            <input type="checkbox" id="chkHTN" onchange="updateDrugFilter()" class="rounded text-rose-600 focus:ring-0">
+                            <span class="text-xs font-semibold text-slate-200">Tăng HA / Tiền sản giật</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg bg-slate-900 border border-slate-700 cursor-pointer hover:border-rose-400 transition select-none">
+                            <input type="checkbox" id="chkAsthma" onchange="updateDrugFilter()" class="rounded text-rose-600 focus:ring-0">
+                            <span class="text-xs font-semibold text-slate-200">Hen phế quản</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg bg-slate-900 border border-slate-700 cursor-pointer hover:border-rose-400 transition select-none">
+                            <input type="checkbox" id="chkCardiac" onchange="updateDrugFilter()" class="rounded text-rose-600 focus:ring-0">
+                            <span class="text-xs font-semibold text-slate-200">Bệnh mạch vành / Tim</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg bg-slate-900 border border-slate-700 cursor-pointer hover:border-rose-400 transition select-none">
+                            <input type="checkbox" id="chkLate3h" onchange="updateDrugFilter()" class="rounded text-rose-600 focus:ring-0">
+                            <span class="text-xs font-semibold text-slate-200">Sau sinh &gt; 3 giờ / Huyết khối</span>
+                        </label>
+                    </div>
+
+                    <!-- Filtered Drug Pills -->
+                    <div id="drugFilterContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <!-- Dynamically populated by JS -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== MAIN CONTENT CONTAINER ==================== -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-6">
+
+        <!-- ========================================================================= -->
+        <!-- TAB 1: PROTOCOL 8 BƯỚC STEP-BY-STEP (TRỤC THỜI GIAN GIỜ VÀNG)              -->
+        <!-- ========================================================================= -->
+        <div id="tab-protocol" class="tab-content space-y-6">
+            
+            <!-- Quick Jump Timeline Bar -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 no-print">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                        <i class="fa-solid fa-route text-rose-600"></i> TRỤC THỜI GIAN 8 BƯỚC XỬ TRÍ CHUẨN NỘI TRÚ (CLICK ĐỂ NHẢY NHANH)
+                    </span>
+                    <span class="text-xs text-slate-500 hidden sm:inline">Nguyên tắc: <strong>Hồi sức ABC</strong> + <strong>Tìm nguyên nhân 4T</strong> + <strong>Cầm máu theo bậc thang</strong></span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+                    <a href="#step-1" class="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 transition text-center group">
+                        <span class="block text-[10px] font-mono font-bold text-rose-600">PHÚT 0</span>
+                        <span class="text-xs font-bold text-slate-800 group-hover:text-rose-700">B1. Nhận diện</span>
+                    </a>
+                    <a href="#step-2" class="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 transition text-center group">
+                        <span class="block text-[10px] font-mono font-bold text-rose-600">PHÚT 0–5</span>
+                        <span class="text-xs font-bold text-slate-800 group-hover:text-rose-700">B2. Hồi sức ABC</span>
+                    </a>
+                    <a href="#step-3" class="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 transition text-center group">
+                        <span class="block text-[10px] font-mono font-bold text-rose-600">PHÚT 0–5</span>
+                        <span class="text-xs font-bold text-slate-800 group-hover:text-rose-700">B3. Oxytocin+TXA</span>
+                    </a>
+                    <a href="#step-4" class="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 transition text-center group">
+                        <span class="block text-[10px] font-mono font-bold text-amber-700">PHÚT 5–15</span>
+                        <span class="text-xs font-bold text-slate-800 group-hover:text-amber-800">B4. Duyệt 4T & Bậc 2</span>
+                    </a>
+                    <a href="#step-5" class="p-2 rounded-xl bg-orange-50 hover:bg-orange-100 border border-orange-200 transition text-center group">
+                        <span class="block text-[10px] font-mono font-bold text-orange-700">PHÚT 15–30</span>
+                        <span class="text-xs font-bold text-slate-800 group-hover:text-orange-800">B5. Bóng Bakri & MTP</span>
+                    </a>
+                    <a href="#step-6" class="p-2 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 transition text-center group">
+                        <span class="block text-[10px] font-mono font-bold text-purple-700">PHÚT 30–60</span>
+                        <span class="text-xs font-bold text-slate-800 group-hover:text-purple-800">B6. Khâu B-Lynch/Mạch</span>
+                    </a>
+                    <a href="#step-7" class="p-2 rounded-xl bg-red-50 hover:bg-red-100 border border-red-300 transition text-center group">
+                        <span class="block text-[10px] font-mono font-bold text-red-700">&gt; 60 PHÚT</span>
+                        <span class="text-xs font-bold text-slate-800 group-hover:text-red-800">B7. Cắt tử cung</span>
+                    </a>
+                    <a href="#step-8" class="p-2 rounded-xl bg-teal-50 hover:bg-teal-100 border border-teal-200 transition text-center group">
+                        <span class="block text-[10px] font-mono font-bold text-teal-700">HẬU PHẪU</span>
+                        <span class="text-xs font-bold text-slate-800 group-hover:text-teal-800">B8. Lộn TC & Sheehan</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- ==================== BƯỚC 1: PHÚT 0 ==================== -->
+            <article id="step-1" class="step-card bg-white rounded-2xl shadow-md border-l-8 border-rose-600 overflow-hidden transition-all">
+                <div class="bg-slate-900 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="px-3 py-1 rounded-lg bg-rose-600 font-mono text-xs font-extrabold uppercase tracking-wider">BƯỚC 1 • PHÚT 0</span>
+                        <h2 class="text-base sm:text-lg font-extrabold">NHẬN DIỆN SỚM, ĐO MÁU MẤT ĐỊNH LƯỢNG (QBL) & KÍCH HOẠT GÓI E-MOTIVE</h2>
+                    </div>
+                    <span class="text-xs font-semibold text-rose-300 bg-rose-950/80 border border-rose-700 px-2.5 py-1 rounded-full">
+                        Mục tiêu: Không bỏ sót mất máu ẩn & Kích hoạt Báo động đỏ
+                    </span>
+                </div>
+
+                <div class="p-5 grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Left Column: Clinical Actions -->
+                    <div class="lg:col-span-7 space-y-4">
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5">
+                            <i class="fa-solid fa-bolt"></i> HÀNH ĐỘNG LÂM SÀNG BẮT BUỘC & TIÊU CHUẨN CHẨN ĐOÁN
+                        </h3>
+
+                        <div class="space-y-2.5 text-sm">
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s1-1" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600 focus:ring-rose-500">
+                                <div>
+                                    <span class="font-bold text-slate-900">1. Áp dụng tiêu chuẩn kích hoạt sớm theo Gói E-MOTIVE (WHO 2023):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        Đặt <strong>túi thu máu sau sinh có vạch chia thể tích (calibrated drape)</strong> ngay sau khi sổ thai. Kích hoạt xử trí PPH ngay lập tức khi có <strong>1 trong 3 tiêu chuẩn</strong>:
+                                        <br>• Lượng máu mất định lượng <strong>&ge; 500 mL</strong> (sinh thường) hoặc <strong>&ge; 1000 mL</strong> (mổ lấy thai).
+                                        <br>• Hoặc máu mất mới chỉ <strong>&ge; 300 mL NHƯNG kèm bất kỳ dấu hiệu bất thường sinh hiệu nào</strong>: Mạch &gt; 100 l/p, HA tâm thu &lt; 100 mmHg, hoặc <strong>Chỉ số sốc (Shock Index = Mạch / HA tâm thu) &ge; 0.9</strong>.
+                                        <br>• Hoặc tốc độ chảy máu ồ ạt (&gt; 150 mL/phút) hay làm thay đổi huyết động mẹ.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s1-2" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600 focus:ring-rose-500">
+                                <div>
+                                    <span class="font-bold text-slate-900">2. Đo lượng máu mất khách quan (QBL - Quantitative Blood Loss):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        Cân toàn bộ gạc, săng thấm máu: <strong>1 gram trọng lượng tăng thêm (trừ trọng lượng gạc khô) = 1 mL máu mất</strong>. Nhớ trừ đi lượng nước ối và dịch rửa đã biết trước khi sổ nhau.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s1-3" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600 focus:ring-rose-500">
+                                <div>
+                                    <span class="font-bold text-slate-900">3. Gọi hỗ trợ khẩn cấp (Call for Help - Báo động đỏ nội viện):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        Huy động ngay: Bác sĩ Sản chính (Trưởng tua trực), Bác sĩ Gây mê hồi sức, Nữ hộ sinh (tối thiểu 2 người), thông báo Ngân hàng máu và Phòng mổ sẵn sàng. Phân công 1 người chuyên ghi chép bảng theo dõi theo trục thời gian.
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Pitfalls & Exam Pearls -->
+                    <div class="lg:col-span-5 space-y-3">
+                        <div class="p-4 rounded-xl bg-rose-50/80 border border-rose-200 space-y-2.5">
+                            <h4 class="text-xs font-extrabold uppercase tracking-wider text-rose-800 flex items-center gap-1.5">
+                                <i class="fa-solid fa-triangle-exclamation text-rose-600"></i> ĐIỀU DỄ SAI & BẪY ĐỀ THI NỘI TRÚ
+                            </h4>
+                            <div class="text-xs text-slate-700 space-y-2 leading-relaxed">
+                                <p>
+                                    <strong class="text-rose-700">• Bẫy định nghĩa ACOG 2017 vs BYT/WHO:</strong>
+                                    Giáo trình ĐHYD Huế & Bộ Y tế định nghĩa PPH khi máu mất <strong>&ge; 500 mL (sinh âm đạo)</strong> hoặc <strong>&ge; 1000 mL (mổ lấy thai)</strong>. Trong khi đó, <strong>ACOG (Practice Bulletin No. 183)</strong> thống nhất ngưỡng chẩn đoán là <strong>&ge; 1000 mL hoặc mất máu kèm triệu chứng giảm thể tích tuần hoàn bất kể đường sinh</strong>; tuy nhiên ACOG nhấn mạnh máu mất <strong>&gt; 500 mL sau sinh thường vẫn là bất thường (Action Line)</strong> phải can thiệp ngay!
+                                </p>
+                                <p>
+                                    <strong class="text-rose-700">• Sai lầm chết người "Đợi tụt huyết áp mới chẩn đoán sốc":</strong>
+                                    Thể tích máu mẹ tăng 40–50% (1500–2000 mL) khi mang thai. Hệ giao cảm bù trừ rất mạnh nên <strong>Huyết áp tâm thu chỉ bắt đầu tụt khi đã mất &ge; 1500 mL máu (25–30% thể tích tuần hoàn - Sốc độ II–III)</strong>. Dấu hiệu sớm nhất là <strong>Mạch nhanh (&gt; 100 l/p) và Shock Index &ge; 0.9</strong>.
+                                </p>
+                                <p>
+                                    <strong class="text-rose-700">• Sai lầm ước lượng bằng mắt (Visual Estimation):</strong>
+                                    Luôn đánh giá thấp hơn thực tế từ <strong>30% đến 50%</strong>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ==================== BƯỚC 2: PHÚT 0 - 5 (HỒI SỨC ABC) ==================== -->
+            <article id="step-2" class="step-card bg-white rounded-2xl shadow-md border-l-8 border-rose-600 overflow-hidden transition-all">
+                <div class="bg-slate-900 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="px-3 py-1 rounded-lg bg-rose-600 font-mono text-xs font-extrabold uppercase tracking-wider">BƯỚC 2 • PHÚT 0 – 5</span>
+                        <h2 class="text-base sm:text-lg font-extrabold">HỒI SỨC BAN ĐẦU (ABC), ĐƯỜNG TRUYỀN, XÉT NGHIỆM & LÀM TRỐNG BÀNG QUANG</h2>
+                    </div>
+                    <span class="text-xs font-semibold text-emerald-300 bg-emerald-950/80 border border-emerald-700 px-2.5 py-1 rounded-full">
+                        Thực hiện song song với Bước 3
+                    </span>
+                </div>
+
+                <div class="p-5 grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-7 space-y-4">
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5">
+                            <i class="fa-solid fa-kit-medical"></i> HÀNH ĐỘNG BẮT BUỘC & THÔNG SỐ HỒI SỨC
+                        </h3>
+
+                        <div class="space-y-2.5 text-sm">
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s2-1" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">1. Đảm bảo đường thở, Oxy liều cao & Giữ ấm:</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        Nằm đầu thấp (Trendelenburg nhẹ hoặc nâng cao 2 chân 30 độ để huy động máu tĩnh mạch chi dưới), thở Oxy qua mask có túi dự trữ <strong>10 – 15 L/phút</strong> (duy trì SpO₂ &ge; 95%). <strong>Ủ ấm sản phụ ngay lập tức</strong> (chăn ấm, làm ấm dịch truyền ở 37–39°C).
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s2-2" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">2. Thiết lập 2 đường truyền tĩnh mạch ngoại biên lớn (Kim 14G hoặc 16G):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        • <strong>Đường truyền 1 (Hồi sức thể tích):</strong> Truyền nhanh dịch tinh thể đẳng trương ấm (<strong>Ringer Lactate</strong> ưu tiên hơn NaCl 0.9% để tránh toan chuyển hóa tăng Clo). Tối đa <strong>1500 – 2000 mL</strong> trong khi chờ máu về.
+                                        <br>• <strong>Đường truyền 2 (Duy trì thuốc tăng co riêng biệt):</strong> Để chủ động điều chỉnh tốc độ truyền Oxytocin mà không bị phụ thuộc khi khóa/mở dịch hồi sức.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s2-3" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">3. Lấy máu xét nghiệm khẩn ngay khi đặt kim (Stat Labs):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        • Định nhóm máu ABO, Rh và <strong>đặt sẵn 2–4 đơn vị Hồng cầu lắng (PRBCs) + Huyết tương tươi đông lạnh (FFP)</strong>.
+                                        <br>• Công thức máu (Hb, Hct, Tiểu cầu), <strong>Đông máu toàn bộ (PT, aPTT, INR và bắt buộc có định lượng FIBRINOGEN)</strong>, Điện giải đồ (Ca²⁺ ion hóa, K⁺), Khí máu động mạch & Lactate, kèm 1 ống máu làm <strong>nghiệm pháp đông máu tại giường (Lee-White)</strong>.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s2-4" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">4. Đặt Sonde tiểu Foley lưu:</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        Tác dụng kép: <strong>(1) Làm xẹp bàng quang</strong> giúp tử cung không bị đẩy lệch và co hồi tốt; <strong>(2) Theo dõi sát lưu lượng nước tiểu mỗi giờ</strong> đánh giá tưới máu thận (Mục tiêu <strong>&ge; 30 mL/giờ</strong> hoặc &ge; 0.5 mL/kg/giờ).
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5 space-y-3">
+                        <div class="p-4 rounded-xl bg-rose-50/80 border border-rose-200 space-y-2.5">
+                            <h4 class="text-xs font-extrabold uppercase tracking-wider text-rose-800 flex items-center gap-1.5">
+                                <i class="fa-solid fa-triangle-exclamation text-rose-600"></i> ĐIỀU DỄ SAI & BẪY ĐỀ THI NỘI TRÚ
+                            </h4>
+                            <div class="text-xs text-slate-700 space-y-2 leading-relaxed">
+                                <p>
+                                    <strong class="text-rose-700">• Bẫy truyền dịch tinh thể quá mức (&gt; 2–3 Lít):</strong>
+                                    Quy tắc cũ "truyền dịch tinh thể gấp 3 lần lượng máu mất" đã bị loại bỏ trong PPH nặng vì gây <strong>rối loạn đông máu do pha loãng (dilutional coagulopathy)</strong>, làm bong cục máu đông mới hình thành và gây <strong>phù phổi cấp</strong> (đặc biệt trên nền Tiền sản giật có giảm áp lực keo). Giới hạn dịch tinh thể <strong>&le; 1.5 – 2 Lít</strong> và chuyển sang truyền máu sớm!
+                                </p>
+                                <p>
+                                    <strong class="text-rose-700">• Bẫy dịch cao phân tử (HES / Gelatin):</strong>
+                                    Không ưu tiên dùng dịch keo tổng hợp (Hydroxyethyl Starch - HES) liều cao vì làm <strong>rối loạn chức năng tiểu cầu, giảm yếu tố VIII/vWF</strong> và gây tổn thương thận cấp.
+                                </p>
+                                <p>
+                                    <strong class="text-rose-700">• Bẫy câu hỏi MCQ "Chỉ số đông máu nào giảm sớm nhất trong PPH?":</strong>
+                                    Đáp án luôn là <strong>FIBRINOGEN (Yếu tố I)</strong>! Bình thường cuối thai kỳ Fibrinogen tăng cao <strong>4 – 6 g/L (400–600 mg/dL)</strong>. Nếu Fibrinogen giảm xuống <strong>&le; 2.0 g/L</strong>, giá trị tiên đoán dương tính (PPV) tiến triển thành PPH nặng là <strong>100%</strong> (Nghiên cứu kinh điển của Charbit).
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ==================== BƯỚC 3: PHÚT 0 - 5 (ĐỜ TỬ CUNG & THUỐC BƯỚC 1) ==================== -->
+            <article id="step-3" class="step-card bg-white rounded-2xl shadow-md border-l-8 border-rose-600 overflow-hidden transition-all">
+                <div class="bg-slate-900 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="px-3 py-1 rounded-lg bg-rose-600 font-mono text-xs font-extrabold uppercase tracking-wider">BƯỚC 3 • PHÚT 0 – 5</span>
+                        <h2 class="text-base sm:text-lg font-extrabold">XOA BÓP ĐÁY TỬ CUNG, LẤY MÁU CỤC & THUỐC BƯỚC 1 (OXYTOCIN + TXA)</h2>
+                    </div>
+                    <span class="text-xs font-semibold text-amber-300 bg-amber-950/80 border border-amber-700 px-2.5 py-1 rounded-full">
+                        Đánh vào nguyên nhân số 1: Đờ tử cung (70–80%)
+                    </span>
+                </div>
+
+                <div class="p-5 grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-7 space-y-4">
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5">
+                            <i class="fa-solid fa-syringe"></i> PHÁC ĐỒ XỬ TRÍ CƠ HỌC & THUỐC HÀNG ĐẦU
+                        </h3>
+
+                        <div class="space-y-2.5 text-sm">
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s3-1" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">1. Xoa bóp đáy tử cung & Ấn đẩy máu cục (Giải phóng "Nút thắt sinh lý Pinard"):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        Động mạch xoắn tại giường nhau đã mất lớp cơ trơn nên không thể tự co mạch; cầm máu phụ thuộc 80–90% vào <strong>lớp cơ đan chéo (hình số 8)</strong> ở tầng giữa cơ tử cung thắt nghẹt mạch máu. Nếu buồng tử cung còn máu cục làm căng giãn, sợi cơ đan không thể khép kín! Phải lấy sạch máu cục trước tiên.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s3-2" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">2. Thuốc tăng co đầu tay (First-line Uterotonic): OXYTOCIN:</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        • <strong>Liều chuẩn:</strong> Pha <strong>10 – 40 IU Oxytocin trong 500 – 1000 mL Ringer Lactate</strong> truyền tĩnh mạch nhanh (tốc độ <strong>125 – 250 mL/giờ</strong>, tương đương <strong>10 – 20 mUI/phút</strong>; trong giai đoạn cấp có thể truyền 500 mL trong 30 phút đầu). Nếu chưa có đường truyền tĩnh mạch, tiêm bắp (IM) ngay <strong>10 IU</strong>.
+                                        <br>• <strong>Giới hạn liều:</strong> Không truyền quá <strong>60 – 80 IU</strong> tổng cộng (vì gây bão hòa thụ thể và ngộ độc nước).
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s3-3" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">3. [CẬP NHẬT BẮT BUỘC] ACID TRANEXAMIC (TXA) SỚM:</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        • <strong>Chỉ định:</strong> Dùng cho <strong>MỌI trường hợp PPH bất kể nguyên nhân</strong> (đờ tử cung hay chấn thương đường sinh dục).
+                                        <br>• <strong>Liều dùng:</strong> <strong>1 gram (10 mL dung dịch 100 mg/mL) pha trong 100 mL NaCl 0.9% truyền/tiêm tĩnh mạch chậm trong 10 phút</strong> (tốc độ ~ 1 mL/phút).
+                                        <br>• <strong>Liều lặp lại:</strong> Lặp lại liều thứ hai <strong>1 gram IV</strong> nếu sau <strong>30 phút</strong> máu vẫn còn chảy hoặc chảy tái phát trong vòng 24 giờ đầu.
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5 space-y-3">
+                        <div class="p-4 rounded-xl bg-rose-50/80 border border-rose-200 space-y-2.5">
+                            <h4 class="text-xs font-extrabold uppercase tracking-wider text-rose-800 flex items-center gap-1.5">
+                                <i class="fa-solid fa-triangle-exclamation text-rose-600"></i> ĐIỀU DỄ SAI & BẪY ĐỀ THI NỘI TRÚ
+                            </h4>
+                            <div class="text-xs text-slate-700 space-y-2 leading-relaxed">
+                                <p>
+                                    <strong class="text-rose-700">• TUYỆT ĐỐI CẤM tiêm tĩnh mạch trực tiếp (Bolus IV) Oxytocin liều cao (&ge; 5–10 IU):</strong>
+                                    Tiêm bolus nhanh Oxytocin làm giãn cơ trơn mạch máu ngoại biên đột ngột gây <strong>tụt huyết áp nặng, trụy tim mạch, thiếu máu cơ tim (ST chênh xuống) và nhịp nhanh phản xạ</strong>, cực kỳ nguy hiểm trên sản phụ đang giảm thể tích tuần hoàn!
+                                </p>
+                                <p>
+                                    <strong class="text-rose-700">• Bẫy hiện tượng "Bão hòa thụ thể Oxytocin" (Receptor Desensitization):</strong>
+                                    Ở sản phụ đã được tăng co chuyển dạ kéo dài bằng Oxytocin, các thụ thể G-protein trên màng tế bào cơ tử cung bị nội nhập và mất nhạy cảm. Nếu sau 5–10 phút truyền Oxytocin mà tử cung vẫn nhão, <strong>không được cứ tăng liều Oxytocin vô ích mà phải chuyển ngay sang thuốc bậc 2 có cơ chế thụ thể khác (Ergometrine / Prostaglandin)</strong>!
+                                </p>
+                                <p>
+                                    <strong class="text-rose-700">• Bẫy "Mốc 3 giờ" của Thử nghiệm WOMAN (Lancet 2017):</strong>
+                                    TXA giảm 31% tử vong do chảy máu nếu dùng trong vòng 3 giờ đầu. <strong>Mỗi 15 phút trì hoãn làm giảm 10% hiệu quả bảo vệ, và SAU 3 GIỜ thì không còn hiệu quả mà lại làm tăng nguy cơ biến cố tắc mạch!</strong> Không trộn chung TXA vào cùng chai dịch có Oxytocin hoặc máu.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ==================== BƯỚC 4: PHÚT 5 - 15 (DUYỆT 4T & THUỐC BẬC 2) ==================== -->
+            <article id="step-4" class="step-card bg-white rounded-2xl shadow-md border-l-8 border-amber-500 overflow-hidden transition-all">
+                <div class="bg-slate-900 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="px-3 py-1 rounded-lg bg-amber-500 text-slate-950 font-mono text-xs font-extrabold uppercase tracking-wider">BƯỚC 4 • PHÚT 5 – 15</span>
+                        <h2 class="text-base sm:text-lg font-extrabold">DUYỆT NHANH 4T, KIỂM SOÁT BUỒNG TỬ CUNG, ÉP TỬ CUNG 2 TAY & THUỐC BẬC 2</h2>
+                    </div>
+                    <span class="text-xs font-semibold text-amber-300 bg-amber-950/80 border border-amber-700 px-2.5 py-1 rounded-full">
+                        Không để lọt rách cổ tử cung / sót nhau / khối máu tụ
+                    </span>
+                </div>
+
+                <div class="p-5 grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-7 space-y-4">
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5">
+                            <i class="fa-solid fa-stethoscope"></i> QUY TRÌNH THĂM KHÁM 4T & CAN THIỆP BẬC 2
+                        </h3>
+
+                        <div class="space-y-2.5 text-sm">
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s4-1" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">1. Kiểm tra bánh nhau & Kiểm soát tử cung bằng tay (TISSUE):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        • Nếu nhau chưa bong: Thực hiện <strong>Bóc nhau nhân tạo</strong> (dưới giảm đau/gây mê tĩnh mạch + Kháng sinh dự phòng liều duy nhất: <strong>Cefazolin 1–2g IV hoặc Ampicillin 2g IV</strong>).
+                                        <br>• Nếu nhau đã sổ nhưng nghi sót nhau/màng nhau hoặc tử cung vẫn nhão: Tiến hành <strong>Kiểm soát buồng tử cung bằng tay (Manual exploration)</strong> lấy sạch máu cục, múi nhau sót và đồng thời kiểm tra tính toàn vẹn của thành tử cung (loại trừ vỡ tử cung).
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s4-2" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">2. Thủ thuật Ép tử cung bằng hai tay (Bimanual Compression - Thủ thuật Hamilton):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        Trong khi chờ thuốc bậc 2 tác dụng: Đưa 1 bàn tay vào âm đạo nắm thành <strong>nắm đấm đặt ở túi cùng trước</strong> đẩy thành trước tử cung lên, bàn tay kia trên thành bụng vòng qua sau đáy tử cung <strong>gập mạnh thân tử cung về phía trước</strong> ép chặt 2 thành tử cung vào nhau.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s4-3" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">3. Phối hợp ngay Thuốc tăng co tử cung bậc 2 (Second-line Uterotonics):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        • <strong>Ergometrine / Methylergonovine (Methergin 0.2 mg):</strong> Tiêm bắp (IM) <strong>0.2 mg</strong>, lặp lại mỗi 2–4 giờ (tối đa 5 liều = 1 mg/24h). <em>(Cấm dùng khi Tăng HA / Tiền sản giật / Bệnh mạch vành).</em>
+                                        <br>• <strong>Carboprost tromethamine (Hemabate - 15-methyl PGF₂α):</strong> Tiêm bắp sâu (IM) hoặc tiêm cơ tử cung <strong>250 mcg (0.25 mg)</strong>, lặp lại mỗi 15–90 phút (tối đa 8 liều = 2 mg). <em>(Cấm dùng khi có Hen phế quản).</em>
+                                        <br>• <strong>Misoprostol (Cytotec - PGE₁):</strong> Ngậm dưới lưỡi / áp má / đặt trực tràng <strong>600 – 800 mcg (3–4 viên 200 mcg)</strong> một liều duy nhất. <em>(An toàn cho cả Tăng HA và Hen phế quản).</em>
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s4-4" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">4. Đặt van âm đạo kiểm tra & Khâu phục hồi chấn thương đường sinh dục (TRAUMA):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        • Dùng 2 van âm đạo lớn + 2–3 kẹp hình tim (kẹp cổ tử cung không mấu) xoay vòng kiểm tra toàn bộ chu vi cổ tử cung, túi cùng âm đạo, thành âm đạo và tầng sinh môn.
+                                        <br>• <strong>Khâu rách cổ tử cung:</strong> Mũi khâu đầu tiên bắt buộc phải lấy <strong>trên đỉnh vết rách 0.5 cm</strong> bằng chỉ tiêu chậm (Vicryl 1.0/2.0).
+                                        <br>• <strong>Khối máu tụ âm đạo / tiểu khung (&gt; 3–5 cm hoặc đang lan rộng):</strong> Rạch mở khối máu tụ, lấy sạch máu cục, khâu cầm máu điểm chảy máu + khâu đóng khoảng chết nhiều lớp và chèn gạc âm đạo ép trong 12–24 giờ (lưu sonde tiểu).
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5 space-y-3">
+                        <div class="p-4 rounded-xl bg-amber-50/90 border border-amber-300 space-y-2.5">
+                            <h4 class="text-xs font-extrabold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
+                                <i class="fa-solid fa-triangle-exclamation text-amber-600"></i> ĐIỀU DỄ SAI & BẪY ĐỀ THI NỘI TRÚ
+                            </h4>
+                            <div class="text-xs text-slate-700 space-y-2 leading-relaxed">
+                                <p>
+                                    <strong class="text-amber-800">• Bẫy "Bánh nhau phụ" (Succenturiate lobe):</strong>
+                                    Khi kiểm tra bánh nhau sau sổ thấy mặt múi nguyên vẹn nhưng <strong>ở màng nhau có các mạch máu chạy ra rìa rồi bị đứt cụt</strong> &rarr; Chắc chắn còn <strong>sót bánh nhau phụ</strong> trong buồng tử cung! Phải kiểm soát tử cung bằng tay ngay.
+                                </p>
+                                <p>
+                                    <strong class="text-amber-800">• Bẫy Nhau cài răng lược (PAS) khi bóc nhau nhân tạo:</strong>
+                                    Khi đưa tay vào buồng tử cung bóc nhau mà <strong>không tìm thấy diện bóc tách (mặt phẳng phân cách giữa bánh nhau và cơ tử cung)</strong>, phải <strong>DỪNG BÓC NGAY LẬP TỨC</strong>! Cố tình cào bóc nhau cài răng lược sẽ gây chảy máu ồ ạt làm sản phụ tử vong trên bàn sinh; phải chuyển mổ ngay.
+                                </p>
+                                <p>
+                                    <strong class="text-amber-800">• Bẫy khâu rách cổ tử cung bỏ sót đỉnh:</strong>
+                                    Các nhánh động mạch cổ tử cung khi đứt có xu hướng co tụt lên trên đỉnh vết rách. Nếu khâu từ dưới lên mà <strong>không bắt trên đỉnh vết rách 0.5 cm</strong>, mạch máu tiếp tục chảy ngầm lên khoang sau phúc mạc tạo khối máu tụ dây chằng rộng khổng lồ!
+                                </p>
+                                <p>
+                                    <strong class="text-amber-800">• Bẫy "Sốc nặng + Tử cung co tốt + Không chảy máu ra ngoài + Đau tức hậu môn/mót rặn":</strong>
+                                    Đây là bệnh cảnh kinh điển của <strong>Khối máu tụ âm đạo – tiểu khung (Paravaginal/Pelvic Hematoma)</strong>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ==================== BƯỚC 5: PHÚT 15 - 30 (CHÈN BÓNG & MTP) ==================== -->
+            <article id="step-5" class="step-card bg-white rounded-2xl shadow-md border-l-8 border-orange-500 overflow-hidden transition-all">
+                <div class="bg-slate-900 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="px-3 py-1 rounded-lg bg-orange-500 text-slate-950 font-mono text-xs font-extrabold uppercase tracking-wider">BƯỚC 5 • PHÚT 15 – 30</span>
+                        <h2 class="text-base sm:text-lg font-extrabold">CHÈN BÓNG BUỒNG TỬ CUNG (TAMPONADE TEST) & TRUYỀN MÁU KHỐI LƯỢNG LỚN (MTP)</h2>
+                    </div>
+                    <span class="text-xs font-semibold text-orange-300 bg-orange-950/80 border border-orange-700 px-2.5 py-1 rounded-full">
+                        Chốt chặn cuối cùng trước khi mở bụng + Điều chỉnh THROMBIN
+                    </span>
+                </div>
+
+                <div class="p-5 grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-7 space-y-4">
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5">
+                            <i class="fa-solid fa-droplet"></i> KỸ THUẬT CHÈN BÓNG BAKRI & MỤC TIÊU ĐÔNG MÁU ĐÍCH
+                        </h3>
+
+                        <div class="space-y-2.5 text-sm">
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s5-1" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">1. Đặt bóng chèn buồng tử cung (Bóng Bakri hoặc Bóng Condom-Foley cải tiến):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        • <strong>Điều kiện bắt buộc trước khi đặt:</strong> Đã loại trừ rách đường sinh dục, vỡ tử cung, sót nhau và nhiễm trùng tử cung nặng.
+                                        <br>• <strong>Kỹ thuật:</strong> Đưa toàn bộ phần bóng qua lỗ trong cổ tử cung vào buồng tử cung (dưới hướng dẫn tay hoặc siêu âm). Bơm <strong>300 – 500 mL nước muối sinh lý ấm</strong> (tuyệt đối không bơm khí!). Chèn 1 cuộn gạc ở túi cùng âm đạo giữ bóng không tụt qua cổ tử cung. Nối kênh dẫn lưu của bóng Bakri ra túi thu máu và tiếp tục truyền duy trì Oxytocin + Kháng sinh dự phòng.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s5-2" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">2. Đánh giá "Tamponade Test" sau 10 – 15 phút:</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        • <strong>Test DƯƠNG TÍNH (Thành công ~ 80–85%):</strong> Máu ngưng chảy hoặc chảy &lt; 50 mL qua ống dẫn lưu &rarr; Không cần mổ mở bụng! Lưu bóng <strong>12 – 24 giờ</strong>, sau đó xả bóng từ từ (rút 50–100 mL mỗi giờ) trong khi vẫn duy trì truyền Oxytocin.
+                                        <br>• <strong>Test ÂM TÍNH (Thất bại):</strong> Máu vẫn chảy &gt; 100–200 mL qua ống dẫn lưu trong 10–15 phút &rarr; <strong>Chuyển phòng mổ mở bụng khẩn cấp ngay lập tức!</strong> (Vẫn giữ nguyên bóng trong lúc đẩy lên phòng mổ để hạn chế mất máu).
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s5-3" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">3. Kích hoạt Quy trình Truyền máu khối lượng lớn (MTP - Massive Transfusion Protocol):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        Khi mất máu &ge; 1500 mL hoặc Shock Index &ge; 1.4 hoặc máu vẫn chảy chưa kiểm soát được:
+                                        <br>• Truyền <strong>Hồng cầu lắng (PRBC) : Huyết tương tươi đông lạnh (FFP) : Tiểu cầu (Platelets)</strong> theo tỷ lệ <strong>1 : 1 : 1</strong> (hoặc 4 đv PRBC : 4 đv FFP : 1 pool Tiểu cầu máy). Nếu tối cấp chưa có máu cùng nhóm, dùng ngay hồng cầu nhóm <strong>O Rh(-)</strong>.
+                                        <br>• <strong>Bù FIBRINOGEN ĐÍCH (&gt; 2.0 g/L):</strong> Nếu Fibrinogen &lt; 2.0 g/L (200 mg/dL), bắt buộc truyền ngay <strong>Tủa lạnh (Cryoprecipitate: 10 đơn vị</strong> giúp tăng Fibrinogen thêm ~0.8–1.0 g/L) hoặc <strong>Fibrinogen cô đặc (2 – 4 gram IV)</strong>.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s5-4" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">4. Bảng "Mục tiêu Hồi sức Huyết học Đích" & Chống Tam chứng tử thần:</span>
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2 text-xs">
+                                        <div class="p-2 rounded bg-white border border-slate-200"><strong>Hb:</strong> &gt; 7–8 g/dL (Hct &gt; 24%)</div>
+                                        <div class="p-2 rounded bg-rose-50 border border-rose-300 text-rose-900"><strong>Fibrinogen:</strong> <strong>&gt; 2.0 g/L</strong></div>
+                                        <div class="p-2 rounded bg-white border border-slate-200"><strong>Tiểu cầu:</strong> &gt; 50.000–75.000/mm³</div>
+                                        <div class="p-2 rounded bg-white border border-slate-200"><strong>PT / aPTT:</strong> &lt; 1.5 lần chứng</div>
+                                        <div class="p-2 rounded bg-amber-50 border border-amber-300 text-amber-900"><strong>Ca²⁺ ion hóa:</strong> &gt; 1.1 mmol/L</div>
+                                        <div class="p-2 rounded bg-white border border-slate-200"><strong>Thân nhiệt &amp; pH:</strong> &gt; 36°C; pH &gt; 7.2</div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5 space-y-3">
+                        <div class="p-4 rounded-xl bg-orange-50/90 border border-orange-300 space-y-2.5">
+                            <h4 class="text-xs font-extrabold uppercase tracking-wider text-orange-900 flex items-center gap-1.5">
+                                <i class="fa-solid fa-triangle-exclamation text-orange-600"></i> ĐIỀU DỄ SAI & BẪY ĐỀ THI NỘI TRÚ
+                            </h4>
+                            <div class="text-xs text-slate-700 space-y-2 leading-relaxed">
+                                <p>
+                                    <strong class="text-orange-800">• Bẫy kinh điển: "Dùng FFP đơn thuần để nâng Fibrinogen khi Fibrinogen &lt; 2.0 g/L":</strong>
+                                    Nồng độ Fibrinogen trong Huyết tương tươi đông lạnh (FFP) chỉ khoảng ~2.0 g/L và thể tích lớn (200–250 mL/đơn vị). Do đó truyền FFP đơn thuần không thể nâng nhanh Fibrinogen vượt trên 2.0 g/L mà còn gây quá tải tuần hoàn. Bắt buộc phải dùng <strong>Tủa lạnh (Cryoprecipitate)</strong> hoặc <strong>Fibrinogen Concentrate</strong>!
+                                </p>
+                                <p>
+                                    <strong class="text-orange-800">• Bẫy Hạ Calci máu do ngộ độc Citrate khi truyền máu ồ ạt:</strong>
+                                    Chất chống đông Citrate trong túi máu dự trữ sẽ gắn kết với Calci ion hóa của sản phụ gây <strong>Hạ Calci máu cấp</strong>. Calci (Yếu tố đông máu IV) giảm vừa làm <strong>liệt con đường đông máu, giảm co bóp cơ tim, vừa làm CƠ TỬ CUNG ĐỜ KHÔNG ĐÁP ỨNG VỚI OXYTOCIN</strong>! Mỗi khi truyền 4 đơn vị máu, phải tiêm tĩnh mạch chậm <strong>1 ống Calcium Gluconate 10% (10 mL = 1g) hoặc Calcium Chloride 10%</strong> (qua đường truyền khác).
+                                </p>
+                                <p>
+                                    <strong class="text-orange-800">• Tại sao không khuyến cáo nhét gạc buồng tử cung (Uterine Packing) thường quy?</strong>
+                                    Nhét gạc kiểu cũ dễ gây <strong>chảy máu ẩn phía trên khối gạc</strong> (máu thấm ướt gạc mà không thoát ra ngoài làm chậm chẩn đoán) và nguy cơ nhiễm trùng cao; trong khi bóng Bakri có <strong>ống dẫn lưu trung tâm</strong> giúp theo dõi máu mất theo thời gian thực.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ==================== BƯỚC 6: PHÚT 30 - 60 (PHẪU THUẬT BẢO TỒN & DSA) ==================== -->
+            <article id="step-6" class="step-card bg-white rounded-2xl shadow-md border-l-8 border-purple-600 overflow-hidden transition-all">
+                <div class="bg-slate-900 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="px-3 py-1 rounded-lg bg-purple-600 font-mono text-xs font-extrabold uppercase tracking-wider">BƯỚC 6 • PHÚT 30 – 60</span>
+                        <h2 class="text-base sm:text-lg font-extrabold">PHẪU THUẬT BẢO TỒN TỬ CUNG (KHÂU ÉP, THẮT MẠCH) & NÚT MẠCH (DSA)</h2>
+                    </div>
+                    <span class="text-xs font-semibold text-purple-300 bg-purple-950/80 border border-purple-700 px-2.5 py-1 rounded-full">
+                        Trọng tâm câu hỏi Giải phẫu ngoại khoa Nội trú
+                    </span>
+                </div>
+
+                <div class="p-5 grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-7 space-y-4">
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider text-purple-800 bg-purple-50 border border-purple-200 px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5">
+                            <i class="fa-solid fa-scalpel"></i> CÁC KỸ THUẬT PHẪU THUẬT BẢO TỒN TỬ CUNG (THEO THỨ TỰ ƯU TIÊN)
+                        </h3>
+
+                        <div class="space-y-2.5 text-sm">
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s6-1" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">1. Các mũi khâu ép cơ học tử cung (Uterine Compression Sutures):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        • <strong>Mũi khâu B-Lynch (1997):</strong> Chuẩn vàng cho <strong>đờ tử cung trong mổ lấy thai</strong> (vì cần có đường mở ngang đoạn dưới tử cung). Phải làm <strong>"B-Lynch test"</strong> trước: Dùng 2 tay ép gập thân tử cung, nếu máu âm đạo ngưng chảy thì khâu B-Lynch mới hiệu quả (91%). Dùng chỉ tiêu chậm số 1 hoặc 2 (Vicryl/Chromic) đâm cách mép dưới vết mở tử cung 3 cm (bờ phải), lên mép trên 3 cm, vòng qua đáy tử cung (cách sừng 3–4 cm) ra mặt sau ngang mức dây chằng tử cung - cùng, xuyên ngang buồng tử cung sang trái rồi vòng ngược lên đáy về bờ trước bên trái để buộc chặt.
+                                        <br>• <strong>Mũi khâu Hayman (2002):</strong> Cải tiến từ B-Lynch nhưng <strong>KHÔNG cần mở đoạn dưới tử cung</strong> (rất ưu việt khi mở bụng vì PPH sau sinh thường). Khâu xuyên trực tiếp từ mặt trước ra mặt sau ở đoạn dưới rồi vòng qua đáy tử cung buộc trên đáy (2 mũi dọc hai bên + có thể thêm mũi ngang nối).
+                                        <br>• <strong>Mũi khâu Cho (Multiple Square Sutures - 2000):</strong> Khâu xuyên 4 điểm tạo hình vuông ép sát thành trước vào thành sau tại đúng vùng chảy máu. <strong>Ưu điểm:</strong> Cực kỳ hiệu quả cho chảy máu khu trú diện nhau bám ở <strong>đoạn dưới tử cung (Nhau tiền đạo / Nhau cài răng lược khu trú)</strong> nơi B-Lynch không ép tới được.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s6-2" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">2. Phẫu thuật thắt mạch máu (Surgical Devascularization):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        • <strong>Thắt động mạch tử cung 2 bên (Kỹ thuật O'Leary):</strong> Nhanh, an toàn, hiệu quả 80–90%. Đẩy bàng quang xuống thấp, dùng kim tròn lớn mang chỉ tiêu chậm xuyên qua <strong>vùng vô mạch dây chằng rộng</strong> và lấy <strong>2–3 cm bề dày cơ bờ bên tử cung</strong> (để ôm trọn nhánh lên ĐM tử cung đi sát bờ) ở vị trí <strong>dưới đường mở đoạn dưới tử cung 2 cm</strong>.
+                                        <br>• <strong>Thắt mạch từng bậc theo Tsirulnikov (Stepwise Devascularization - 3 bước):</strong> (1) Thắt nhánh lên ĐM tử cung 2 bên &rarr; (2) Thắt ĐM dây chằng tròn 2 bên &rarr; (3) Thắt nhánh nối tử cung - buồng trứng (trong mạc treo buồng trứng dưới dây chằng tử cung - buồng trứng). (Abdrabbo bổ sung bước 4–5: Thắt nhánh xuống cổ tử cung và ĐM chậu trong).
+                                        <br>• <strong>Thắt động mạch chậu trong (ĐM hạ vị - Internal Iliac Artery Ligation) 2 bên:</strong> Chỉ định khi các bước trên thất bại và phẫu thuật viên giàu kinh nghiệm. Mở phúc mạc thành chậu, nhận diện niệu quản (đi ở lá phúc mạc trong), tìm ngã ba ĐM chậu chung chia thành ĐM chậu ngoài và chậu trong. Luồn Dissecteur <strong>từ ngoài vào trong</strong> (tránh làm rách tĩnh mạch chậu trong và tĩnh mạch chậu ngoài) và thắt ĐM chậu trong ở vị trí <strong>dưới chỗ chia nhánh sau 2–3 cm (tức cách ngã ba ĐM chậu chung 4–5 cm)</strong>.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s6-3" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">3. Nút mạch tử cung chọn lọc dưới DSA (UAE - Uterine Artery Embolization):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        Sử dụng hạt Gelfoam tự tiêu (tái thông sau 2–4 tuần) để nút chọn lọc ĐM tử cung 2 bên. Thành công <strong>&gt; 90%</strong> và bảo tồn tử cung tốt nhất, nhưng <strong>chỉ thực hiện khi huyết động sản phụ đã tạm ổn định để vận chuyển sang phòng DSA</strong>.
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5 space-y-3">
+                        <div class="p-4 rounded-xl bg-purple-50/90 border border-purple-300 space-y-2.5">
+                            <h4 class="text-xs font-extrabold uppercase tracking-wider text-purple-900 flex items-center gap-1.5">
+                                <i class="fa-solid fa-triangle-exclamation text-purple-600"></i> ĐIỀU DỄ SAI & BẪY GIẢI PHẪU NỘI TRÚ
+                            </h4>
+                            <div class="text-xs text-slate-700 space-y-2 leading-relaxed">
+                                <p>
+                                    <strong class="text-purple-800">• Bẫy biến chứng của mũi khâu Cho (Hình vuông):</strong>
+                                    Do khâu áp chặt thành trước vào thành sau nhiều điểm nên nếu khâu bít hoàn toàn khoang tử cung sẽ gây <strong>ứ máu – ứ mủ buồng tử cung (Pyometra), dính buồng tử cung (Hội chứng Asherman) và hoại tử khu trú cơ tử cung</strong>. Luôn phải chừa kênh thoát sản dịch ở giữa!
+                                </p>
+                                <p>
+                                    <strong class="text-purple-800">• Bẫy giải phẫu Niệu quản khi thắt ĐM tử cung:</strong>
+                                    Tại nền dây chằng rộng, <strong>Động mạch tử cung bắt chéo phía TRƯỚC (phía trên) niệu quản</strong> ("Water under the bridge") ở vị trí cách bờ bên cổ tử cung (ngang mức lỗ trong CTC) chỉ <strong>1.5 – 2 cm</strong>. Nếu không đẩy bàng quang xuống thấp và thắt quá thấp + quá xa bờ tử cung sẽ khâu buộc vào niệu quản!
+                                </p>
+                                <p>
+                                    <strong class="text-purple-800">• Bẫy giải phẫu khi thắt ĐM chậu trong (ĐM hạ vị):</strong>
+                                    <strong>(1) Tại sao phải thắt dưới nguyên ủy bó sau 2–3 cm?</strong> Vì bó sau cho ĐM mông trên nuôi cơ vùng mông; nếu thắt ngay gốc ĐM chậu trong sẽ gây <strong>thiếu máu hoại tử vùng mông</strong>.
+                                    <br><strong>(2) Cơ chế cầm máu của thắt ĐM hạ vị 2 bên (Nghiên cứu của Burchell):</strong> Không phải làm ngừng dòng máu đến tử cung, mà là làm <strong>giảm áp lực mạch đập (pulse pressure) 85%</strong> và giảm lưu lượng máu 48%, biến dòng chảy động mạch áp lực cao thành dòng chảy giống tĩnh mạch để cục máu đông hình thành! Sau thắt, bắt buộc phải <strong>kiểm tra mạch ĐM đùi / ĐM chậu ngoài</strong> xem có thắt nhầm ĐM chậu ngoài không.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ==================== BƯỚC 7: SAU 60 PHÚT / NGUY KỊCH (CẮT TỬ CUNG) ==================== -->
+            <article id="step-7" class="step-card bg-white rounded-2xl shadow-md border-l-8 border-red-700 overflow-hidden transition-all">
+                <div class="bg-slate-900 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="px-3 py-1 rounded-lg bg-red-700 font-mono text-xs font-extrabold uppercase tracking-wider">BƯỚC 7 • &gt; 60 PHÚT / NGUY KỊCH</span>
+                        <h2 class="text-base sm:text-lg font-extrabold">CẮT TỬ CUNG CẤP CỨU CỨU MẸ (PERIPARTUM HYSTERECTOMY)</h2>
+                    </div>
+                    <span class="text-xs font-semibold text-red-300 bg-red-950/80 border border-red-700 px-2.5 py-1 rounded-full">
+                        Quyết định trước khi sản phụ rơi vào DIC không hồi phục
+                    </span>
+                </div>
+
+                <div class="p-5 grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-7 space-y-4">
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider text-red-800 bg-red-50 border border-red-200 px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5">
+                            <i class="fa-solid fa-Staff-snake"></i> CHỈ ĐỊNH & LỰA CHỌN KỸ THUẬT CẮT TỬ CUNG BÁN PHẦN VS HOÀN TOÀN
+                        </h3>
+
+                        <div class="space-y-2.5 text-sm">
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s7-1" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">1. Chỉ định Cắt tử cung cấp cứu không trì hoãn:</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        • Đờ tử cung không hồi phục sau khi đã thất bại với thuốc tăng co, bóng chèn, khâu ép B-Lynch và thắt mạch.
+                                        <br>• <strong>Nhau cài răng lược thể Increta / Percreta diện rộng</strong> hoặc chảy máu ồ ạt không có nhu cầu/khả năng bảo tồn.
+                                        <br>• <strong>Vỡ tử cung phức tạp</strong> (đường vỡ nham nhở bờ bên xé toạc bó mạch tử cung, không thể khâu phục hồi).
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s7-2" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">2. Phân biệt chỉ định: Cắt tử cung BÁN PHẦN vs Cắt tử cung HOÀN TOÀN (Câu hỏi thi trọng tâm):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        • <strong>Cắt tử cung bán phần (Subtotal / Supracervical Hysterectomy):</strong> Lựa chọn ưu tiên cho <strong>ĐỜ TỬ CUNG ĐƠN THUẦN</strong> (chảy máu từ thân tử cung). <em>Ưu điểm:</em> Thời gian mổ nhanh hơn, mất máu ít hơn và <strong>giảm tối đa nguy cơ phạm phải niệu quản và bàng quang</strong>.
+                                        <br>• <strong>Cắt tử cung hoàn toàn (Total Hysterectomy):</strong> <strong>BẮT BUỘC</strong> khi nguồn chảy máu xuất phát từ <strong>đoạn dưới tử cung và cổ tử cung</strong>, bao gồm: <strong>Nhau tiền đạo trung tâm, Nhau cài răng lược bám đoạn dưới xâm lấn cổ tử cung, hoặc Vỡ đoạn dưới lan xuống cổ tử cung</strong>.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s7-3" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">3. Kỹ thuật "Damage Control Surgery" (Chèn gạc tiểu khung - Pelvic Packing):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        Nếu sau khi đã cắt tử cung mà mỏm cắt và sàn chậu vẫn <strong>rỉ máu lan tỏa do rối loạn đông máu (DIC)</strong>: Không cố khâu chằng chịt gây rách tĩnh mạch đám rối chậu! Hãy <strong>chèn gạc tiểu khung áp lực (Pelvic packing / Bóng Bakri đặt tiểu khung kiểu nấm - Mushroom pack)</strong>, đóng bụng tạm thời, chuyển ICU hồi sức ấm + bù đủ Tủa lạnh/Tiểu cầu/pH trong 24–48 giờ rồi mới mở lại rút gạc.
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5 space-y-3">
+                        <div class="p-4 rounded-xl bg-red-50/90 border border-red-300 space-y-2.5">
+                            <h4 class="text-xs font-extrabold uppercase tracking-wider text-red-900 flex items-center gap-1.5">
+                                <i class="fa-solid fa-triangle-exclamation text-red-600"></i> ĐIỀU DỄ SAI & BẪY ĐỀ THI NỘI TRÚ
+                            </h4>
+                            <div class="text-xs text-slate-700 space-y-2 leading-relaxed">
+                                <p>
+                                    <strong class="text-red-800">• Bẫy chết người: "Cắt tử cung bán phần trong Nhau tiền đạo / Nhau cài răng lược":</strong>
+                                    Đoạn dưới và cổ tử cung được cấp máu bởi các nhánh xuống của ĐM tử cung và mạng lưới rất phong phú từ <strong>ĐM âm đạo, ĐM cổ tử cung, ĐM thẹn trong</strong>. Nếu chỉ cắt tử cung bán phần để lại cổ tử cung trong nhau tiền đạo, mỏm cụt cổ tử cung vẫn tiếp tục phun máu ồ ạt khiến phải mổ lại cắt mỏm cụt cực kỳ khó khăn!
+                                </p>
+                                <p>
+                                    <strong class="text-red-800">• Bẫy chuyển dạ đã mở hết cổ tử cung khi cắt tử cung hoàn toàn:</strong>
+                                    Ở sản phụ đã mở hết cổ tử cung (10 cm), ranh giới giữa cổ tử cung và túi cùng âm đạo rất mỏng và khó sờ thấy, rất dễ <strong>cắt cụt âm đạo quá sâu hoặc phạm vào tam giác bàng quang/niệu quản</strong>, hoặc ngược lại là cắt thiếu để sót rìa cổ tử cung.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ==================== BƯỚC 8: TÌNH HUỐNG ĐẶC BIỆT & HẬU PHẪU ==================== -->
+            <article id="step-8" class="step-card bg-white rounded-2xl shadow-md border-l-8 border-teal-600 overflow-hidden transition-all">
+                <div class="bg-slate-900 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="px-3 py-1 rounded-lg bg-teal-600 font-mono text-xs font-extrabold uppercase tracking-wider">BƯỚC 8 • ĐẶC BIỆT &amp; HẬU PHẪU</span>
+                        <h2 class="text-base sm:text-lg font-extrabold">XỬ TRÍ LỘN TỬ CUNG CẤP &amp; THEO DÕI BIẾN CHỨNG SỚM / MUỘN (SHEEHAN vs ASHERMAN)</h2>
+                    </div>
+                    <span class="text-xs font-semibold text-teal-300 bg-teal-950/80 border border-teal-700 px-2.5 py-1 rounded-full">
+                        Câu hỏi phân biệt kinh điển cuối bài thi
+                    </span>
+                </div>
+
+                <div class="p-5 grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-7 space-y-4">
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5">
+                            <i class="fa-solid fa-hospital-user"></i> LỘN TỬ CUNG CẤP &amp; THEO DÕI HỒI SỨC SAU CẦM MÁU
+                        </h3>
+
+                        <div class="space-y-2.5 text-sm">
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s8-1" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">1. Phác đồ 5 bước xử trí LỘN TỬ CUNG CẤP TÍNH (Acute Uterine Inversion):</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        • <strong>Chẩn đoán:</strong> Xảy ra do kéo dây rốn thô bạo khi nhau bám đáy chưa bong và tử cung chưa co. Sờ trên bụng <strong>mất khối cầu đáy tử cung</strong> (hoặc thấy lõm hình phễu), âm đạo có khối đỏ sẫm lấp ló, kèm <strong>SỐC RẤT NẶNG (Sốc thần kinh phế vị do căng kéo dây chằng rộng/buồng trứng + Sốc mất máu)</strong>.
+                                        <br>• <strong>Bước 1:</strong> <strong>NGƯNG NGAY LẬP TỨC mọi thuốc tăng co tử cung</strong> (Khóa ngay đường truyền Oxytocin!).
+                                        <br>• <strong>Bước 2:</strong> <strong>TUYỆT ĐỐI KHÔNG BÓC BÁNH NHAU</strong> nếu nhau còn đang bám trên đáy tử cung bị lộn.
+                                        <br>• <strong>Bước 3:</strong> Hồi sức chống sốc + Giảm đau/Mê + Cho <strong>thuốc giãn cơ tử cung (Tocolytics: Nitroglycerin 50–100 mcg IV, Terbutaline 0.25 mg, hoặc MgSO₄)</strong> để mở vòng cổ tử cung.
+                                        <br>• <strong>Bước 4:</strong> Thực hiện <strong>Thủ thuật Johnson</strong> đẩy tử cung về vị trí cũ: Bàn tay ôm đáy tử cung, nguyên tắc <strong>"Phần nào lộn ra sau cùng thì đẩy vào trước tiên"</strong> (đẩy phần sát cổ tử cung vào trước, đáy tử cung vào sau cùng, hướng lực đẩy lên phía rốn).
+                                        <br>• <strong>Bước 5:</strong> Khi tử cung đã về đúng vị trí, <strong>giữ nguyên nắm tay trong buồng tử cung</strong>, bắt đầu <strong>truyền Oxytocin mạnh trở lại</strong> (và bóc nhau lúc này nếu chưa bong), đợi tử cung co cứng ôm chặt tay mới rút tay ra! <em>(Nếu đẩy tay thất bại &rarr; Mổ bụng làm phẫu thuật <strong>Huntington</strong> kéo dây chằng tròn hoặc <strong>Haultain</strong> rạch vòng co thắt mặt sau cổ tử cung).</em>
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s8-2" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">2. Dự phòng Thuyên tắc huyết khối tĩnh mạch (VTE) sau khi đã cầm máu ổn định:</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        PPH nặng có truyền máu khối lượng lớn, dùng TXA và phẫu thuật là yếu tố nguy cơ rất cao gây VTE hậu sản. Ngay khi máu đã cầm hoàn toàn (12–24 giờ sau) và đông máu bình thường, bắt đầu <strong>mang tất áp lực/bơm hơi ngắt quãng và cân nhắc Heparin trọng lượng phân tử thấp (LMWH) dự phòng</strong>.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition">
+                                <input type="checkbox" data-check-id="s8-3" onchange="saveChecklist()" class="mt-1 w-4 h-4 rounded text-rose-600">
+                                <div>
+                                    <span class="font-bold text-slate-900">3. Tầm soát Biến chứng sớm &amp; muộn trước và sau xuất viện:</span>
+                                    <p class="text-slate-600 text-xs mt-1 leading-relaxed">
+                                        • <strong>Biến chứng sớm:</strong> Suy thận cấp trước thận chuyển thành <strong>Hoại tử ống thận cấp</strong> (theo dõi Ure, Creatinin, nước tiểu), Hội chứng suy hô hấp cấp (ARDS) / Quá tải tuần hoàn do truyền máu (TACO), Nhiễm trùng hậu sản.
+                                        <br>• <strong>Biến chứng muộn:</strong> <strong>Hội chứng Sheehan</strong> (Suy tuyến yên sau sinh) và <strong>Hội chứng Asherman</strong> (Dính buồng tử cung sau nạo sót nhau).
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5 space-y-3">
+                        <div class="p-4 rounded-xl bg-teal-50/90 border border-teal-300 space-y-2.5">
+                            <h4 class="text-xs font-extrabold uppercase tracking-wider text-teal-900 flex items-center gap-1.5">
+                                <i class="fa-solid fa-graduation-cap text-teal-600"></i> BẢNG PHÂN BIỆT SHEEHAN vs ASHERMAN (CỰC HAY THI)
+                            </h4>
+                            <div class="text-xs text-slate-700 space-y-2 leading-relaxed">
+                                <p>
+                                    <strong class="text-teal-800">1. Hội chứng SHEEHAN (Hoại tử thùy trước tuyến yên do thiếu máu cục bộ):</strong>
+                                    <br>• <em>Cơ chế:</em> Trong thai kỳ, thùy trước tuyến yên phì đại gấp đôi (tăng tiết Prolactin) nhưng hệ mạch cửa tuyến yên là hệ mạch áp lực thấp không tăng tương xứng &rarr; Khi sốc mất máu tụt HA nặng, mạch cửa co thắt và huyết khối gây hoại tử thùy trước.
+                                    <br>• <em>Triệu chứng sớm nhất:</em> <strong>MẤT SỮA HOÀN TOÀN (Agalactorrhea) ngay sau sinh</strong> do thiếu Prolactin!
+                                    <br>• <em>Triệu chứng muộn:</em> Vô kinh thứ phát (do giảm FSH, LH &rarr; vô kinh giảm Gonadotropin), rụng lông nách/lông mu, suy giáp thứ phát (lạnh, mệt), suy thượng thận thứ phát (hạ HA, hạ đường huyết). Test Progestin và Estrogen+Progestin: <strong>Có kinh trở lại</strong> (vì tử cung bình thường).
+                                </p>
+                                <p>
+                                    <strong class="text-teal-800">2. Hội chứng ASHERMAN (Dính buồng tử cung do chấn thương lớp đáy nội mạc):</strong>
+                                    <br>• <em>Cơ chế:</em> Thường xảy ra sau <strong>nạo buồng tử cung cầm máu PPH thứ phát (muộn)</strong> trên nền tử cung mềm, đang có <strong>viêm nội mạc tử cung</strong> làm mất lớp đáy nội mạc.
+                                    <br>• <em>Lâm sàng:</em> <strong>VẪN CÓ SỮA BÌNH THƯỜNG</strong>, không rụng lông, FSH/LH/Estradiol bình thường, nhưng <strong>vô kinh thứ phát hoặc thiểu kinh + vô sinh</strong>. Test Estrogen + Progestin: <strong>Âm tính (Không ra kinh)</strong>. Chẩn đoán xác định bằng <strong>Nội soi buồng tử cung (Hysteroscopy)</strong>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- TAB 2: MA TRẬN 4T & BẢNG THUỐC TƯƠNG TÁC                                  -->
+        <!-- ========================================================================= -->
+        <div id="tab-matrix" class="tab-content hidden space-y-6">
+            
+            <!-- Section A: Comprehensive Drug Comparison Table -->
+            <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-slate-900 text-white px-5 py-4 flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-rose-400">DƯỢC LÝ LÂM SÀNG SẢN KHOA</span>
+                        <h2 class="text-base sm:text-lg font-extrabold">BẢNG SO SÁNH 6 THUỐC TĂNG CO &amp; CẦM MÁU TRONG PPH (CHUẨN ÔN THI NỘI TRÚ)</h2>
+                    </div>
+                    <span class="text-xs bg-slate-800 border border-slate-700 px-3 py-1 rounded-lg text-slate-300">
+                        Học thuộc lòng Liều tối đa &amp; Chống chỉ định tuyệt đối
+                    </span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 border-b border-slate-200 font-extrabold uppercase text-[11px]">
+                                <th class="p-3.5">Tên thuốc &amp; Nhóm</th>
+                                <th class="p-3.5">Cơ chế &amp; Đặc điểm co cơ</th>
+                                <th class="p-3.5">Liều chuẩn &amp; Đường dùng</th>
+                                <th class="p-3.5">Thời gian khởi phát / T½</th>
+                                <th class="p-3.5 text-rose-700">Chống chỉ định tuyệt đối &amp; Bẫy đề thi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 text-xs">
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3.5 font-bold text-slate-900">
+                                    1. OXYTOCIN
+                                    <span class="block text-[10px] font-semibold text-emerald-600 mt-0.5">Hàng đầu (Dự phòng &amp; Điều trị)</span>
+                                </td>
+                                <td class="p-3.5 text-slate-700">
+                                    Gắn thụ thể Gq/11 trên cơ trơn tử cung &rarr; tăng IP₃/Ca²⁺ nội bào &rarr; Gây <strong>co bóp nhịp nhàng sinh lý</strong> ở đáy và thân trên tử cung.
+                                </td>
+                                <td class="p-3.5 font-mono text-slate-800">
+                                    • <strong>Dự phòng:</strong> 10 IU IM hoặc IV chậm.<br>
+                                    • <strong>Điều trị:</strong> 10–40 IU pha 500–1000 mL dịch tinh thể truyền 125–250 mL/h (Tối đa 60–80 IU).
+                                </td>
+                                <td class="p-3.5 text-slate-600">
+                                    • IV: Tức thì (&lt; 1p)<br>
+                                    • IM: 2–5 phút<br>
+                                    • T½: <strong>1 – 6 phút</strong>
+                                </td>
+                                <td class="p-3.5 text-slate-700 bg-rose-50/40">
+                                    • <strong class="text-rose-700">CẤM Bolus IV liều cao (&ge; 5–10 IU)</strong> vì gây tụt HA cấp, trụy mạch, thiếu máu cơ tim.<br>
+                                    • Liều cao kéo dài gây <strong>ngộ độc nước, hạ Na⁺ máu, co giật</strong> (tác dụng giống ADH) và <strong>bão hòa thụ thể</strong>.
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3.5 font-bold text-slate-900">
+                                    2. ERGOMETRINE / METHYLERGONOVINE
+                                    <span class="block text-[10px] font-semibold text-amber-600 mt-0.5">(Methergin 0.2 mg) - Bậc 2</span>
+                                </td>
+                                <td class="p-3.5 text-slate-700">
+                                    Chủ vận α-adrenergic &amp; 5-HT₂ &rarr; Gây <strong>co cứng liên tục (tetanic contraction) toàn bộ tử cung (cả thân và cổ tử cung)</strong> + co mạch ngoại vi.
+                                </td>
+                                <td class="p-3.5 font-mono text-slate-800">
+                                    • <strong>0.2 mg IM</strong> (hoặc tiêm cơ tử cung).<br>
+                                    • Lặp lại mỗi 2–4 giờ.<br>
+                                    • Tối đa: <strong>5 liều (1 mg / 24h)</strong>.
+                                </td>
+                                <td class="p-3.5 text-slate-600">
+                                    • IM: 2–5 phút<br>
+                                    • Kéo dài: 2–4 giờ<br>
+                                    • T½: 30–120 phút
+                                </td>
+                                <td class="p-3.5 text-slate-700 bg-rose-50/40">
+                                    • <strong class="text-rose-700">CHỐNG CHỈ ĐỊNH TUYỆT ĐỐI: Tăng huyết áp, Tiền sản giật / Sản giật, Bệnh mạch vành, Hội chứng Raynaud, HIV đang dùng Protease inhibitor</strong>.<br>
+                                    • Dùng trước khi sổ nhau gây đóng cổ tử cung làm <strong>cầm tù bánh nhau</strong>!
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3.5 font-bold text-slate-900">
+                                    3. CARBOPROST
+                                    <span class="block text-[10px] font-semibold text-amber-600 mt-0.5">(Hemabate - 15-methyl PGF₂α) - Bậc 2</span>
+                                </td>
+                                <td class="p-3.5 text-slate-700">
+                                    Đồng vận PGF₂α tác dụng mạnh và kéo dài trên cơ trơn tử cung, đồng thời gây co cơ trơn phế quản và đường tiêu hóa.
+                                </td>
+                                <td class="p-3.5 font-mono text-slate-800">
+                                    • <strong>250 mcg (0.25 mg) IM sâu</strong> hoặc tiêm trực tiếp cơ tử cung.<br>
+                                    • Lặp lại mỗi <strong>15–90 phút</strong>.<br>
+                                    • Tối đa: <strong>8 liều (2 mg / 24h)</strong>.
+                                </td>
+                                <td class="p-3.5 text-slate-600">
+                                    • IM: 1–2 phút<br>
+                                    • Đỉnh: 15–30 phút<br>
+                                    • Kéo dài: 2–3 giờ
+                                </td>
+                                <td class="p-3.5 text-slate-700 bg-rose-50/40">
+                                    • <strong class="text-rose-700">CHỐNG CHỈ ĐỊNH TUYỆT ĐỐI: HEN PHẾ QUẢN (Asthma)</strong>, tăng áp động mạch phổi, bệnh tim/gan/thận nặng.<br>
+                                    • <strong class="text-rose-700">CẤM tiêm tĩnh mạch</strong>.<br>
+                                    • Tác dụng phụ rất hay gặp: Tiêu chảy, nôn, sốt, đỏ bừng mặt.
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3.5 font-bold text-slate-900">
+                                    4. MISOPROSTOL
+                                    <span class="block text-[10px] font-semibold text-indigo-600 mt-0.5">(Cytotec 200 mcg - PGE₁) - Bậc 2</span>
+                                </td>
+                                <td class="p-3.5 text-slate-700">
+                                    Đồng vận Prostaglandin E₁, gây co cơ tử cung nhưng <strong>không gây co thắt phế quản và không gây tăng huyết áp</strong>.
+                                </td>
+                                <td class="p-3.5 font-mono text-slate-800">
+                                    • <strong>600 – 800 mcg</strong> (3–4 viên 200 mcg) <strong>ngậm dưới lưỡi</strong>, áp má hoặc đặt trực tràng (1 liều duy nhất).
+                                </td>
+                                <td class="p-3.5 text-slate-600">
+                                    • Dưới lưỡi: 3–5p (đỉnh 30p)<br>
+                                    • Trực tràng: 15–20p (kéo dài 3–4h)
+                                </td>
+                                <td class="p-3.5 text-slate-700 bg-emerald-50/50">
+                                    • <strong class="text-emerald-800">Lựa chọn cứu cánh duy nhất</strong> khi bệnh nhân vừa có <strong>Tiền sản giật vừa có Hen phế quản</strong>!<br>
+                                    • Tác dụng phụ điển hình: <strong>Sốt cao (&ge; 38.5–40°C) và rét run</strong> (do tác động trung tâm điều nhiệt vùng dưới đồi, tự hết sau 2–6 giờ).
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3.5 font-bold text-slate-900">
+                                    5. CARBETOCIN
+                                    <span class="block text-[10px] font-semibold text-purple-600 mt-0.5">(Duratocin 100 mcg)</span>
+                                </td>
+                                <td class="p-3.5 text-slate-700">
+                                    Chất đồng vận tổng hợp của Oxytocin có cấu trúc chống lại sự phân hủy của men aminopeptidase &rarr; tác dụng kéo dài gấp 4–10 lần Oxytocin.
+                                </td>
+                                <td class="p-3.5 font-mono text-slate-800">
+                                    • <strong>100 mcg (1 mL)</strong> tiêm tĩnh mạch chậm trong 1 phút hoặc IM, <strong>liều duy nhất</strong>.
+                                </td>
+                                <td class="p-3.5 text-slate-600">
+                                    • Khởi phát: 2 phút<br>
+                                    • T½: <strong>~ 40 phút</strong> (Co TC kéo dài 1–2 giờ)
+                                </td>
+                                <td class="p-3.5 text-slate-700 bg-rose-50/40">
+                                    • <strong class="text-rose-700">Chỉ dùng để DỰ PHÒNG PPH</strong> (đặc biệt trong mổ lấy thai có yếu tố nguy cơ cao hoặc sinh thường theo CHAMPION trial).<br>
+                                    • <strong>Không dùng để điều trị PPH đang diễn tiến</strong>. Chống chỉ định giống Oxytocin + Tiền sản giật nặng/Động kinh.
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3.5 font-bold text-slate-900">
+                                    6. ACID TRANEXAMIC
+                                    <span class="block text-[10px] font-semibold text-rose-600 mt-0.5">(TXA - Thuốc chống tiêu sợi huyết)</span>
+                                </td>
+                                <td class="p-3.5 text-slate-700">
+                                    Ức chế cạnh tranh gắn kết Lysine trên Plasminogen, ngăn chuyển thành Plasmin &rarr; <strong>Ổn định cục máu đông Fibrin</strong> tại giường nhau.
+                                </td>
+                                <td class="p-3.5 font-mono text-slate-800">
+                                    • <strong>1 g (10 mL)</strong> IV chậm trong <strong>10 phút</strong>.<br>
+                                    • Lặp lại <strong>1 g</strong> sau 30 phút nếu còn chảy máu (Tối đa 2 g).
+                                </td>
+                                <td class="p-3.5 text-slate-600">
+                                    • Khởi phát: 5–15 phút<br>
+                                    • T½: <strong>2 giờ</strong>
+                                </td>
+                                <td class="p-3.5 text-slate-700 bg-rose-50/40">
+                                    • <strong class="text-rose-700">Không phải thuốc tăng co!</strong> Phải dùng kèm Oxytocin.<br>
+                                    • Phải dùng <strong>trong vòng 3 giờ đầu sau sinh</strong> (WOMAN trial).<br>
+                                    • Chống chỉ định: Đang có huyết khối tĩnh mạch/động mạch cấp tính, tiền sử co giật, suy thận nặng.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Section B: 4T Differential Diagnosis Matrix -->
+            <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-slate-900 text-white px-5 py-4">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-amber-400">CHẨN ĐOÁN PHÂN BIỆT NHANH TẠI GIƯỜNG</span>
+                    <h2 class="text-base sm:text-lg font-extrabold">MA TRẬN NHẬN DIỆN NGUYÊN NHÂN CHẢY MÁU SAU SINH THEO QUY TẮC "4T"</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                    <!-- T1: TONE -->
+                    <div class="p-5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded-lg bg-rose-100 text-rose-800 font-extrabold text-xs">1. TONE (Đờ tử cung)</span>
+                            <span class="font-mono font-extrabold text-rose-600 text-sm">70 – 80%</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            <strong>Tính chất máu chảy:</strong> Máu đỏ sẫm lẫn nhiều máu cục, chảy ra âm đạo <strong>từng đợt mỗi khi ấn đáy tử cung</strong>.
+                        </p>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            <strong>Khám bụng:</strong> Đáy tử cung cao trên rốn, to bè, mật độ <strong>mềm nhão</strong>, không tạo khối cầu an toàn Pinard.
+                        </p>
+                        <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-[11px] text-slate-700">
+                            <strong>Phân thể trên lâm sàng:</strong><br>
+                            • <em>Đờ tử cung còn phục hồi:</em> Xoa bóp thì co cứng, buông tay ra lại nhão.<br>
+                            • <em>Đờ tử cung trơ (không phục hồi):</em> Xoa bóp và dùng thuốc vẫn hoàn toàn mềm nhão &rarr; Nguy cơ cắt tử cung rất cao!
+                        </div>
+                    </div>
+
+                    <!-- T2: TRAUMA -->
+                    <div class="p-5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-800 font-extrabold text-xs">2. TRAUMA (Chấn thương)</span>
+                            <span class="font-mono font-extrabold text-amber-600 text-sm">15 – 20%</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            <strong>Tính chất máu chảy:</strong> Máu <strong>đỏ tươi, chảy rỉ rả liên tục</strong> ngay sau khi sổ thai (trước cả khi sổ nhau).
+                        </p>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            <strong>Khám bụng:</strong> <strong>Tử cung co hồi rất tốt (khối cầu an toàn rắn chắc dưới rốn)</strong> nhưng máu đỏ tươi vẫn chảy!
+                        </p>
+                        <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-[11px] text-slate-700">
+                            <strong>3 thể đặc biệt cấm bỏ sót:</strong><br>
+                            1. Rách cổ tử cung / âm đạo sâu.<br>
+                            2. Khối máu tụ âm đạo – tiểu khung (Đau tức hậu môn + Sốc ẩn).<br>
+                            3. Vỡ tử cung / Lộn tử cung cấp.
+                        </div>
+                    </div>
+
+                    <!-- T3: TISSUE -->
+                    <div class="p-5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded-lg bg-indigo-100 text-indigo-800 font-extrabold text-xs">3. TISSUE (Bánh nhau)</span>
+                            <span class="font-mono font-extrabold text-indigo-600 text-sm">~ 10%</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            <strong>Bệnh cảnh:</strong> Nhau không bong sau <strong>30 phút</strong> hoặc sau sổ nhau tử cung co hồi kém và máu vẫn chảy từng đợt.
+                        </p>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            <strong>Kiểm tra bánh nhau:</strong> Mặt múi khuyết hoặc thấy <strong>mạch máu chạy ra rìa màng nhau bị đứt cụt</strong> (sót bánh nhau phụ).
+                        </p>
+                        <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-[11px] text-slate-700">
+                            <strong>Phân độ Nhau cài răng lược (PAS - FIGO):</strong><br>
+                            • <em>Accreta (Độ 1):</em> Bám trực tiếp bề mặt cơ TC.<br>
+                            • <em>Increta (Độ 2):</em> Xâm lấn vào trong lớp cơ TC.<br>
+                            • <em>Percreta (Độ 3):</em> Xuyên thủng thanh mạc xâm lấn bàng quang!
+                        </div>
+                    </div>
+
+                    <!-- T4: THROMBIN -->
+                    <div class="p-5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded-lg bg-purple-100 text-purple-800 font-extrabold text-xs">4. THROMBIN (Đông máu)</span>
+                            <span class="font-mono font-extrabold text-purple-600 text-sm">~ 1%</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            <strong>Tính chất máu chảy:</strong> Máu chảy ra âm đạo <strong>đỏ loãng, hoàn toàn KHÔNG CÓ MÁU CỤC</strong>; chảy máu chân kim tiêm truyền, sonde tiểu.
+                        </p>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            <strong>Bối cảnh sản khoa:</strong> Bong nhau non (Phong huyết TC-nhau), Tắc mạch ối, Thai lưu &gt; 3–4 tuần, Tiền sản giật nặng / HELLP, Nhiễm trùng huyết, hoặc hậu quả của PPH nặng kéo dài.
+                        </p>
+                        <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-[11px] text-slate-700">
+                            <strong>Xét nghiệm quyết định:</strong><br>
+                            • Lee-White tại giường &gt; 7–10 phút không đông.<br>
+                            • <strong>Fibrinogen &lt; 2.0 g/L</strong> (nhạy nhất), D-dimer tăng vọt, Tiểu cầu &lt; 50.000/mm³.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- TAB 3: SƠ ĐỒ TƯ DUY & 15 CÂU CHỐT PHẢI THUỘC (FLASHCARDS LẬT THẺ)          -->
+        <!-- ========================================================================= -->
+        <div id="tab-mindmap" class="tab-content hidden space-y-6">
+            
+            <!-- Mindmap Visual Flow Summary -->
+            <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-5">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3 mb-4">
+                    <div>
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-rose-600">TỔNG HỢP 1 TRANG TRƯỚC GIỜ THI</span>
+                        <h2 class="text-base sm:text-lg font-extrabold text-slate-900">SƠ ĐỒ TƯ DUY PHẢN XẠ XỬ TRÍ PPH THEO BẬC THANG</h2>
+                    </div>
+                    <span class="text-xs text-slate-500">Mỗi bậc chỉ đánh giá trong 5–15 phút, thất bại phải chuyển bậc ngay!</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs">
+                    <div class="p-3.5 rounded-xl bg-rose-50 border-2 border-rose-500 relative">
+                        <span class="font-mono font-extrabold text-rose-700 block mb-1">BẬC 1 (PHÚT 0–5)</span>
+                        <h4 class="font-extrabold text-slate-900 mb-1.5">Hồi sức + Thuốc Bước 1</h4>
+                        <ul class="space-y-1 text-slate-700 list-disc list-inside">
+                            <li>Báo động đỏ + Oxy 10–15L</li>
+                            <li>2 kim 14–16G + Sonde tiểu</li>
+                            <li>Xoa đáy TC + Lấy máu cục</li>
+                            <li><strong>Oxytocin 10–40 IU</strong> truyền TM</li>
+                            <li><strong>TXA 1g IV chậm 10p</strong> (&lt;3h)</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-3.5 rounded-xl bg-amber-50 border-2 border-amber-500">
+                        <span class="font-mono font-extrabold text-amber-800 block mb-1">BẬC 2 (PHÚT 5–15)</span>
+                        <h4 class="font-extrabold text-slate-900 mb-1.5">Duyệt 4T + Thuốc Bậc 2</h4>
+                        <ul class="space-y-1 text-slate-700 list-disc list-inside">
+                            <li>Bóc nhau / Kiểm soát TC</li>
+                            <li>Ép TC 2 tay (Hamilton)</li>
+                            <li>Đặt van khâu rách CTC/ÂĐ</li>
+                            <li><strong>Methergin 0.2mg IM</strong> (Cấm THA)</li>
+                            <li><strong>Carboprost 250mcg IM</strong> (Cấm Hen)</li>
+                            <li><strong>Misoprostol 600–800mcg</strong></li>
+                        </ul>
+                    </div>
+
+                    <div class="p-3.5 rounded-xl bg-orange-50 border-2 border-orange-500">
+                        <span class="font-mono font-extrabold text-orange-800 block mb-1">BẬC 3 (PHÚT 15–30)</span>
+                        <h4 class="font-extrabold text-slate-900 mb-1.5">Chèn bóng + MTP 1:1:1</h4>
+                        <ul class="space-y-1 text-slate-700 list-disc list-inside">
+                            <li><strong>Bóng Bakri 300–500mL</strong></li>
+                            <li>Tamponade Test (10–15p)</li>
+                            <li>Truyền HC : FFP : TC = 1:1:1</li>
+                            <li><strong>Fibrinogen &gt; 2.0 g/L</strong> (Tủa lạnh)</li>
+                            <li>Bù <strong>Ca²⁺</strong>, giữ ấm &gt;36°C</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-3.5 rounded-xl bg-purple-50 border-2 border-purple-500">
+                        <span class="font-mono font-extrabold text-purple-800 block mb-1">BẬC 4 (PHÚT 30–60)</span>
+                        <h4 class="font-extrabold text-slate-900 mb-1.5">Phẫu thuật bảo tồn / DSA</h4>
+                        <ul class="space-y-1 text-slate-700 list-disc list-inside">
+                            <li><strong>Khâu B-Lynch</strong> / Hayman / Cho</li>
+                            <li><strong>Thắt ĐM tử cung</strong> (O'Leary)</li>
+                            <li>Thắt mạch bậc thang Tsirulnikov</li>
+                            <li><strong>Thắt ĐM hạ vị</strong> (dưới nhánh sau 2–3cm)</li>
+                            <li>Nút mạch DSA (nếu HA ổn)</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-3.5 rounded-xl bg-red-50 border-2 border-red-700">
+                        <span class="font-mono font-extrabold text-red-800 block mb-1">BẬC 5 (&gt; 60 PHÚT)</span>
+                        <h4 class="font-extrabold text-slate-900 mb-1.5">Cắt tử cung cấp cứu</h4>
+                        <ul class="space-y-1 text-slate-700 list-disc list-inside">
+                            <li><strong>Cắt TC bán phần:</strong> Đờ tử cung đơn thuần</li>
+                            <li><strong>Cắt TC hoàn toàn:</strong> Nhau tiền đạo / Nhau cài răng lược / Vỡ đoạn dưới</li>
+                            <li>Chèn gạc tiểu khung nếu DIC</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 15 High-Yield Flashcards -->
+            <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-5">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                    <div>
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-600">ACTIVE RECALL FLASHCARDS</span>
+                        <h2 class="text-base sm:text-lg font-extrabold text-slate-900">15 CÂU CHỐT &amp; CON SỐ VÀNG BẮT BUỘC THUỘC LÒNG (CLICK VÀO THẺ ĐỂ LẬT ĐÁP ÁN)</h2>
+                    </div>
+                    <button onclick="flipAllCards()" class="px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs border border-indigo-200 transition">
+                        <i class="fa-solid fa-repeat mr-1"></i> Lật tất cả thẻ
+                    </button>
+                </div>
+
+                <div id="flashcardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- TAB 4: TÌNH HUỐNG LÂM SÀNG NỘI TRÚ (INTERACTIVE CLINICAL VIGNETTES)        -->
+        <!-- ========================================================================= -->
+        <div id="tab-quiz" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-5">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3 mb-5">
+                    <div>
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-rose-600">LUYỆN PHẢN XẠ ĐỀ THI BÁC SĨ NỘI TRÚ</span>
+                        <h2 class="text-base sm:text-lg font-extrabold text-slate-900">5 CA LÂM SÀNG KINH ĐIỂN HAY BẪY NHẤT TRONG ĐỀ THI</h2>
+                    </div>
+                    <button onclick="resetQuiz()" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+                        Làm lại từ đầu
+                    </button>
+                </div>
+
+                <div id="quizContainer" class="space-y-5">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-slate-900 text-slate-400 border-t border-slate-800 py-4 mt-8 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div>
+                <strong>PHÁC ĐỒ CHẢY MÁU SAU SINH (PPH) STEP-BY-STEP</strong> • Tài liệu học tập &amp; Ôn thi Bác sĩ Nội trú Sản Phụ khoa
+            </div>
+            <div>
+                Tổng hợp theo: Giáo trình ĐHYD Huế • Hướng dẫn Quốc gia Bộ Y tế • ACOG PB No. 183 • WHO E-MOTIVE 2023 • WOMAN Trial
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+    <script>
+        // =========================================================================
+        // 1. GOLDEN HOUR TIMER LOGIC
+        // =========================================================================
+        let timerSeconds = 0;
+        let timerInterval = null;
+        let isTimerRunning = false;
+
+        function updateTimerUI() {
+            const mins = Math.floor(timerSeconds / 60);
+            const secs = timerSeconds % 60;
+            const formatted = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+            const display = document.getElementById('timerDisplay');
+            const badge = document.getElementById('timerPhaseBadge');
+            const container = document.getElementById('timerContainer');
+
+            display.textContent = formatted;
+
+            // Phase logic by minutes
+            if (mins < 5) {
+                display.className = 'font-mono text-lg sm:text-xl font-bold text-emerald-400';
+                badge.className = 'text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+                badge.textContent = 'Phút 0–5: ABC + Oxytocin + TXA 1g';
+                container.classList.remove('alert-pulse');
+            } else if (mins < 15) {
+                display.className = 'font-mono text-lg sm:text-xl font-bold text-amber-400';
+                badge.className = 'text-[11px] font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30';
+                badge.textContent = 'Phút 5–15: Duyệt 4T + Thuốc Bậc 2';
+                container.classList.remove('alert-pulse');
+            } else if (mins < 30) {
+                display.className = 'font-mono text-lg sm:text-xl font-bold text-orange-400';
+                badge.className = 'text-[11px] font-bold px-2 py-0.5 rounded bg-orange-500/20 text-orange-300 border border-orange-500/30';
+                badge.textContent = 'Phút 15–30: Bóng Bakri + MTP 1:1:1';
+                container.classList.remove('alert-pulse');
+            } else if (mins < 60) {
+                display.className = 'font-mono text-lg sm:text-xl font-bold text-purple-400';
+                badge.className = 'text-[11px] font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30';
+                badge.textContent = 'Phút 30–60: Khâu B-Lynch / Thắt mạch';
+                container.classList.add('alert-pulse');
+            } else {
+                display.className = 'font-mono text-lg sm:text-xl font-bold text-rose-500';
+                badge.className = 'text-[11px] font-bold px-2 py-0.5 rounded bg-rose-600 text-white';
+                badge.textContent = '> 60 Phút: CẮT TỬ CUNG CỨU MẸ!';
+                container.classList.add('alert-pulse');
+            }
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('timerStartBtn');
+            const icon = document.getElementById('timerIcon');
+            const text = document.getElementById('timerBtnText');
+
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                btn.className = 'px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-bold transition flex items-center gap-1 shadow';
+                icon.className = 'fa-solid fa-play';
+                text.textContent = 'Tiếp tục';
+            } else {
+                isTimerRunning = true;
+                btn.className = 'px-2.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-xs font-bold transition flex items-center gap-1 shadow';
+                icon.className = 'fa-solid fa-pause';
+                text.textContent = 'Tạm dừng';
+                timerInterval = setInterval(() => {
+                    timerSeconds++;
+                    updateTimerUI();
+                }, 1000);
+            }
+        }
+
+        function jumpTime(minutesToAdd) {
+            timerSeconds += minutesToAdd * 60;
+            updateTimerUI();
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            timerSeconds = 0;
+            const btn = document.getElementById('timerStartBtn');
+            const icon = document.getElementById('timerIcon');
+            const text = document.getElementById('timerBtnText');
+            btn.className = 'px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-bold transition flex items-center gap-1 shadow';
+            icon.className = 'fa-solid fa-play';
+            text.textContent = 'Bắt đầu';
+            updateTimerUI();
+        }
+
+        // =========================================================================
+        // 2. BEDSIDE SHOCK INDEX & QBL CALCULATOR
+        // =========================================================================
+        function toggleCalculatorDrawer() {
+            const drawer = document.getElementById('calculatorDrawer');
+            drawer.classList.toggle('hidden');
+        }
+
+        function calculateBedside() {
+            const hr = parseFloat(document.getElementById('inpHR').value) || 0;
+            const sbp = parseFloat(document.getElementById('inpSBP').value) || 1;
+            const drape = parseFloat(document.getElementById('inpDrape').value) || 0;
+            const gauze = parseFloat(document.getElementById('inpGauze').value) || 0;
+
+            const si = (hr / sbp).toFixed(2);
+            const qbl = Math.round(drape + gauze);
+
+            const outSI = document.getElementById('outSI');
+            const outQBL = document.getElementById('outQBL');
+            const outShockClass = document.getElementById('outShockClass');
+            const outActionAlert = document.getElementById('outActionAlert');
+
+            outSI.textContent = si;
+            outQBL.textContent = qbl + ' mL';
+
+            // Classify Shock & Action
+            let shockText = '';
+            let badgeClass = '';
+            let actionHTML = '';
+
+            if (si >= 1.4 || qbl >= 1500 || sbp < 80) {
+                outSI.className = 'font-mono text-2xl font-extrabold text-rose-500';
+                outQBL.className = 'font-mono text-2xl font-extrabold text-rose-500';
+                shockText = 'Sốc Độ III – IV (Nguy kịch - Mất > 25–35%)';
+                badgeClass = 'px-2.5 py-1 rounded-lg text-xs font-extrabold bg-rose-600 text-white shadow';
+                actionHTML = `<strong class="text-rose-400"><i class="fa-solid fa-bell animate-bounce mr-1"></i> BÁO ĐỘNG ĐỎ TỐI CẤP:</strong> Kích hoạt ngay <strong>Quy trình truyền máu khối lượng lớn (MTP 1:1:1)</strong> + Bù Tủa lạnh giữ <strong>Fibrinogen &gt; 2.0 g/L</strong> + Bù Calcium gluconate + Chuyển phòng mổ (Bóng Bakri / Khâu B-Lynch / Cắt tử cung).`;
+            } else if (si >= 1.1 || qbl >= 1000) {
+                outSI.className = 'font-mono text-2xl font-extrabold text-orange-400';
+                outQBL.className = 'font-mono text-2xl font-extrabold text-orange-400';
+                shockText = 'Sốc Độ II (Trung bình - Đạt ngưỡng ACOG >= 1000mL)';
+                badgeClass = 'px-2.5 py-1 rounded-lg text-xs font-extrabold bg-orange-500/20 text-orange-300 border border-orange-500/40';
+                actionHTML = `<strong class="text-orange-300"><i class="fa-solid fa-triangle-exclamation mr-1"></i> CẢNH BÁO MẤT MÁU NẶNG:</strong> Đủ tiêu chuẩn PPH theo cả ACOG và BYT. Phối hợp ngay <strong>Thuốc tăng co bậc 2 + TXA 1g IV + Kiểm soát tử cung / Đặt van âm đạo + Chuẩn bị đặt Bóng Bakri &amp; Truyền Hồng cầu lắng</strong>.`;
+            } else if (qbl >= 500 || (qbl >= 300 && (si >= 0.9 || hr > 100 || sbp < 100)) || si >= 0.9) {
+                outSI.className = 'font-mono text-2xl font-extrabold text-amber-400';
+                outQBL.className = 'font-mono text-2xl font-extrabold text-amber-400';
+                shockText = 'Đạt ngưỡng kích hoạt E-MOTIVE / PPH Sớm (Độ I)';
+                badgeClass = 'px-2.5 py-1 rounded-lg text-xs font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/40';
+                actionHTML = `<strong class="text-amber-300"><i class="fa-solid fa-bolt mr-1"></i> KÍCH HOẠT NGAY GÓI E-MOTIVE (WHO 2023):</strong> (Do QBL &ge; 500 mL hoặc QBL &ge; 300 mL kèm SI &ge; 0.9). Thực hiện ngay trong 15 phút: <strong>Xoa đáy TC + Oxytocin 10–40 IU truyền TM + Acid Tranexamic 1g IV chậm 10 phút + Truyền dịch tinh thể ấm + Duyệt 4T</strong>.`;
+            } else {
+                outSI.className = 'font-mono text-2xl font-extrabold text-emerald-400';
+                outQBL.className = 'font-mono text-2xl font-extrabold text-emerald-400';
+                shockText = 'Sinh hiệu & Lượng máu mất trong giới hạn sinh lý';
+                badgeClass = 'px-2.5 py-1 rounded-lg text-xs font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+                actionHTML = `<span class="text-emerald-300"><i class="fa-solid fa-circle-check mr-1"></i> Tiếp tục theo dõi sát:</span> Duy trì dự phòng AMTSL (Oxytocin 10 IU IM), kiểm tra khối cầu an toàn Pinard và lượng máu qua túi đo mỗi 15 phút trong 2 giờ đầu sau sinh.`;
+            }
+
+            outShockClass.className = badgeClass;
+            outShockClass.textContent = shockText;
+            outActionAlert.innerHTML = actionHTML;
+        }
+
+        // =========================================================================
+        // 3. SMART DRUG FILTER BY COMORBIDITIES
+        // =========================================================================
+        function updateDrugFilter() {
+            const hasHTN = document.getElementById('chkHTN').checked;
+            const hasAsthma = document.getElementById('chkAsthma').checked;
+            const hasCardiac = document.getElementById('chkCardiac').checked;
+            const isLate3h = document.getElementById('chkLate3h').checked;
+
+            const drugs = [
+                {
+                    name: '1. Oxytocin (10–40 IU pha truyền)',
+                    safe: true,
+                    warning: hasCardiac ? 'Dùng được nhưng TUYỆT ĐỐI CẤM tiêm Bolus IV (phải truyền chậm bằng bơm tiêm điện/dịch truyền để tránh tụt HA & thiếu máu cơ tim).' : 'Thuốc đầu tay an toàn cho mọi sản phụ (Truyền TM nhanh 125–250 mL/h, cấm bolus IV).'
+                },
+                {
+                    name: '2. Ergometrine / Methergin (0.2 mg IM)',
+                    safe: !(hasHTN || hasCardiac),
+                    warning: (hasHTN || hasCardiac)
+                        ? 'CHỐNG CHỈ ĐỊNH TUYỆT ĐỐI! Gây co mạch α-adrenergic toàn thân làm vọt huyết áp kịch phát, xuất huyết não / sản giật / nhồi máu cơ tim.'
+                        : 'Được phép dùng (0.2 mg IM mỗi 2–4h, tối đa 5 liều).'
+                },
+                {
+                    name: '3. Carboprost / PGF₂α (250 mcg IM)',
+                    safe: !(hasAsthma || hasCardiac),
+                    warning: hasAsthma
+                        ? 'CHỐNG CHỈ ĐỊNH TUYỆT ĐỐI! PGF₂α gây co thắt cơ trơn phế quản cấp tính đe dọa tính mạng ở bệnh nhân Hen phế quản.'
+                        : (hasCardiac ? 'Chống chỉ định/Thận trọng tối đa vì làm tăng áp lực động mạch phổi và shunt nội phổi.' : 'Được phép dùng (250 mcg IM sâu mỗi 15–90p, tối đa 8 liều = 2mg).')
+                },
+                {
+                    name: '4. Misoprostol / PGE₁ (600–800 mcg dưới lưỡi)',
+                    safe: true,
+                    warning: (hasHTN && hasAsthma)
+                        ? 'LỰA CHỌN BẬC 2 DUY NHẤT AN TOÀN! Không gây co phế quản và không làm tăng huyết áp (Đáp án chuẩn cho câu hỏi TSG + Hen).'
+                        : 'An toàn (Ngậm dưới lưỡi/đặt trực tràng 600–800 mcg, lưu ý tác dụng phụ sốt cao & rét run).'
+                },
+                {
+                    name: '5. Acid Tranexamic - TXA (1 g IV chậm 10p)',
+                    safe: !isLate3h,
+                    warning: isLate3h
+                        ? 'CHỐNG CHỈ ĐỊNH! Sau sinh > 3 giờ hoặc đang có huyết khối cấp tính không được dùng TXA (Thử nghiệm WOMAN chứng minh mất hiệu quả và tăng nguy cơ tắc mạch).'
+                        : 'Bắt buộc dùng sớm trong vòng 3 giờ đầu sau sinh cho mọi nguyên nhân PPH.'
+                },
+                {
+                    name: '6. Bóng chèn Bakri / Khâu ép B-Lynch',
+                    safe: true,
+                    warning: 'Biện pháp cơ học an toàn tuyệt đối, không bị ảnh hưởng bởi bệnh lý nội khoa (Chuyển sang ngay nếu thuốc tăng co bị giới hạn!).'
+                }
+            ];
+
+            const container = document.getElementById('drugFilterContainer');
+            container.innerHTML = drugs.map(d => {
+                if (d.safe) {
+                    return `
+                        <div class="p-2.5 rounded-xl bg-emerald-950/70 border border-emerald-500/50 flex flex-col justify-between">
+                            <div class="flex items-center justify-between gap-1 font-bold text-emerald-300">
+                                <span><i class="fa-solid fa-circle-check mr-1 text-emerald-400"></i>${d.name}</span>
+                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-200">ĐƯỢC DÙNG</span>
+                            </div>
+                            <p class="text-[11px] text-slate-300 mt-1 leading-snug">${d.warning}</p>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="p-2.5 rounded-xl bg-rose-950/80 border border-rose-500 flex flex-col justify-between">
+                            <div class="flex items-center justify-between gap-1 font-bold text-rose-300 line-through decoration-rose-400">
+                                <span><i class="fa-solid fa-ban mr-1 text-rose-400"></i>${d.name}</span>
+                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-rose-600 text-white no-underline font-extrabold">CẤM DÙNG</span>
+                            </div>
+                            <p class="text-[11px] text-rose-200 mt-1 leading-snug font-medium">${d.warning}</p>
+                        </div>
+                    `;
+                }
+            }).join('');
+        }
+
+        // =========================================================================
+        // 4. FLASHCARDS DATA & RENDERING (15 HIGH-YIELD QUESTIONS)
+        // =========================================================================
+        const flashcardsData = [
+            {
+                q: "Câu 1: Sự khác biệt giữa ngưỡng chẩn đoán PPH của BYT/WHO và ACOG 2017 là gì?",
+                a: "• BYT/WHO/ĐHYD Huế: >= 500 mL (sinh thường) hoặc >= 1000 mL (mổ lấy thai).\n• ACOG (PB No. 183): >= 1000 mL hoặc mất máu kèm triệu chứng giảm thể tích tuần hoàn bất kể đường sinh (nhưng > 500 mL sinh thường vẫn là ngưỡng cảnh báo phải can thiệp!)."
+            },
+            {
+                q: "Câu 2: Tiêu chuẩn kích hoạt Gói E-MOTIVE (WHO 2023) tại giường gồm những gì?",
+                a: "Kích hoạt ngay khi:\n1. Máu mất qua túi đo >= 500 mL, HOẶC\n2. Máu mất >= 300 mL KÈM bất kỳ 1 dấu hiệu sinh hiệu bất thường: Mạch > 100 l/p, HA tâm thu < 100 mmHg, hoặc Shock Index (Mạch/HATT) >= 0.9."
+            },
+            {
+                q: "Câu 3: Cơ chế cầm máu quan trọng nhất tại giường nhau ngay sau sổ nhau là gì?",
+                a: "Cơ chế cơ học (quyết định 80–90%): Sự co rút của lớp cơ đan chéo (hình số 8) ở tầng giữa cơ tử cung tạo thành các 'nút thắt sinh lý của Pinard' kẹp chặt các động mạch xoắn (vốn đã mất lớp cơ trơn không thể tự co mạch)."
+            },
+            {
+                q: "Câu 4: Tại sao TUYỆT ĐỐI KHÔNG được tiêm tĩnh mạch trực tiếp (Bolus IV) Oxytocin liều cao (>= 5–10 IU)?",
+                a: "Vì gây giãn cơ trơn mạch máu ngoại biên đột ngột -> Tụt huyết áp cấp tính, trụy tim mạch, nhịp nhanh phản xạ và thiếu máu cơ tim (ST chênh xuống) cực kỳ nguy hiểm ở bệnh nhân đang mất máu."
+            },
+            {
+                q: "Câu 5: Quy tắc vàng về thời gian và liều lượng của Acid Tranexamic (TXA) theo thử nghiệm WOMAN?",
+                a: "• Liều: 1 gram (10 mL) tiêm/truyền TM chậm trong 10 phút; lặp lại 1g nếu sau 30 phút vẫn chảy máu.\n• Thời gian: Phải dùng TRONG VÒNG 3 GIỜ ĐẦU sau sinh (mỗi 15 phút trễ giảm 10% hiệu quả; sau 3 giờ không còn lợi ích mà tăng nguy cơ tắc mạch)."
+            },
+            {
+                q: "Câu 6: Sản phụ PPH do đờ tử cung có kèm Tiền sản giật VÀ Hen phế quản thì chọn thuốc tăng co bậc 2 nào?",
+                a: "• Cấm Methergin (vì Tiền sản giật/Tăng HA).\n• Cấm Carboprost - PGF2alpha (vì Hen phế quản).\n-> Đáp án duy nhất: MISOPROSTOL (PGE1) 600–800 mcg ngậm dưới lưỡi hoặc đặt trực tràng!"
+            },
+            {
+                q: "Câu 7: Chỉ số xét nghiệm đông máu nào giảm sớm nhất và có giá trị tiên lượng PPH nặng cao nhất?",
+                a: "FIBRINOGEN (Yếu tố I)! Bình thường cuối thai kỳ đạt 4–6 g/L. Khi Fibrinogen giảm xuống <= 2.0 g/L, giá trị tiên đoán dương tính (PPV) tiến triển thành PPH nặng là 100%. Phải bù bằng TỦA LẠNH (Cryoprecipitate), không phải FFP đơn thuần."
+            },
+            {
+                q: "Câu 8: Dấu hiệu đặc hiệu trên bánh nhau giúp chẩn đoán Sót bánh nhau phụ (Succenturiate lobe)?",
+                a: "Kiểm tra bánh nhau sau sổ thấy mặt múi bánh nhau chính nguyên vẹn nhưng ở rìa màng nhau có CÁC MẠCH MÁU CHẠY RA MÀNG NHAU RỒI BỊ ĐỨT CỤT -> Bắt buộc kiểm soát buồng tử cung bằng tay ngay."
+            },
+            {
+                q: "Câu 9: Nguyên tắc kỹ thuật quan trọng nhất khi khâu vết rách cổ tử cung để tránh tụ máu sau phúc mạc?",
+                a: "Mũi khâu đầu tiên BẮT BUỘC phải lấy TRÊN ĐỈNH VẾT RÁCH 0.5 cm! Vì các nhánh động mạch cổ tử cung khi đứt sẽ co tụt lên trên đỉnh; nếu khâu sót đỉnh, máu sẽ chảy ngầm lên dây chằng rộng và khoang sau phúc mạc."
+            },
+            {
+                q: "Câu 10: Sự khác biệt về chỉ định và biến chứng giữa mũi khâu B-Lynch, Hayman và Cho?",
+                a: "• B-Lynch: Cần mở đoạn dưới TC, dùng cho đờ TC trong mổ lấy thai.\n• Hayman: Không cần mở đoạn dưới TC.\n• Mũi Cho (khâu hình vuông 4 điểm): Tốt nhất cho chảy máu diện nhau bám đoạn dưới (nhau tiền đạo), nhưng dễ gây ứ mủ buồng TC (Pyometra) và dính buồng TC (Asherman)."
+            },
+            {
+                q: "Câu 11: Vị trí giải phẫu chính xác khi thắt Động mạch chậu trong (ĐM hạ vị) và cơ chế cầm máu của nó?",
+                a: "• Vị trí: Luồn từ ngoài vào trong, thắt ở DƯỚI NGUYÊN ỦY NHÁNH SAU 2–3 cm (cách ngã ba ĐM chậu chung 4–5 cm) để tránh hoại tử vùng mông.\n• Cơ chế (Burchell): Giảm áp lực mạch đập (pulse pressure) 85% và lưu lượng máu 48% giúp cục máu đông hình thành."
+            },
+            {
+                q: "Câu 12: Khi nào bắt buộc phải Cắt tử cung HOÀN TOÀN thay vì Cắt tử cung bán phần trong PPH?",
+                a: "Khi nguồn chảy máu nằm ở ĐOẠN DƯỚI TỬ CUNG & CỔ TỬ CUNG: Nhau tiền đạo trung tâm, Nhau cài răng lược xâm lấn cổ tử cung, hoặc Vỡ đoạn dưới lan xuống cổ tử cung (Cắt bán phần sẽ để lại mỏm cổ tử cung tiếp tục chảy máu!)."
+            },
+            {
+                q: "Câu 13: 2 điều CẤM TUYỆT ĐỐI trước khi đẩy tử cung về vị trí cũ (Thủ thuật Johnson) trong Lộn tử cung cấp?",
+                a: "1. CẤM truyền tiếp Oxytocin (Phải ngưng ngay mọi thuốc tăng co và cho thuốc giãn tử cung trước khi đẩy).\n2. CẤM bóc bánh nhau khi tử cung đang còn lộn ngoài âm đạo (Bóc lúc đó máu sẽ phun ồ ạt gây tử vong)."
+            },
+            {
+                q: "Câu 14: Tại sao truyền máu khối lượng lớn gây Đờ tử cung trơ và Rối loạn đông máu? Cách xử trí?",
+                a: "Do chất chống đông CITRATE trong máu dự trữ gắn kết với Calci máu gây HẠ CALCI ION HÓA (< 1.1 mmol/L). Thiếu Ca2+ làm liệt cả thác đông máu lẫn sự co cơ tử cung -> Phải tiêm tĩnh mạch chậm Calcium Gluconate 10% 10 mL (1g) mỗi 4 đơn vị máu."
+            },
+            {
+                q: "Câu 15: Phân biệt nhanh Hội chứng Sheehan và Hội chứng Asherman sau PPH?",
+                a: "• Sheehan (Hoại tử tuyến yên do sốc mất máu): MẤT SỮA ngay sau sinh + Vô kinh thứ phát + Rụng lông nách/mu + Suy giáp/thượng thận (FSH, LH thấp; Test E+P có kinh).\n• Asherman (Dính buồng TC sau nạo sót nhau nhiễm trùng): VẪN CÓ SỮA bình thường + Vô kinh (FSH, LH bình thường; Test E+P âm tính)."
+            }
+        ];
+
+        function renderFlashcards() {
+            const grid = document.getElementById('flashcardsGrid');
+            grid.innerHTML = flashcardsData.map((item, idx) => `
+                <div class="flashcard-item perspective-1000 h-52 cursor-pointer select-none" onclick="this.classList.toggle('flipped')">
+                    <div class="transform-style-3d relative w-full h-full">
+                        <!-- Front -->
+                        <div class="backface-hidden absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900 text-white rounded-2xl p-4 flex flex-col justify-between shadow-md border border-slate-700 hover:border-indigo-400 transition">
+                            <div class="flex items-center justify-between text-[11px] font-mono text-indigo-300">
+                                <span>THẺ ÔN THI #${idx + 1}</span>
+                                <span><i class="fa-solid fa-hand-pointer mr-1"></i>Click để lật</span>
+                            </div>
+                            <p class="text-sm font-bold leading-snug text-white my-auto">${item.q}</p>
+                            <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Câu hỏi cốt lõi Nội trú</div>
+                        </div>
+                        <!-- Back -->
+                        <div class="backface-hidden rotate-y-180 absolute inset-0 bg-indigo-50 text-slate-900 rounded-2xl p-4 flex flex-col justify-between shadow-md border-2 border-indigo-500 overflow-y-auto">
+                            <div class="flex items-center justify-between text-[11px] font-extrabold text-indigo-700 uppercase">
+                                <span><i class="fa-solid fa-check-double mr-1"></i>ĐÁP ÁN CHUẨN</span>
+                                <span>#${idx + 1}</span>
+                            </div>
+                            <p class="text-xs font-medium leading-relaxed text-slate-800 whitespace-pre-line my-auto">${item.a}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function flipAllCards() {
+            const cards = document.querySelectorAll('.flashcard-item');
+            const anyUnflipped = Array.from(cards).some(c => !c.classList.contains('flipped'));
+            cards.forEach(c => {
+                if (anyUnflipped) c.classList.add('flipped');
+                else c.classList.remove('flipped');
+            });
+        }
+
+        // =========================================================================
+        // 5. CLINICAL VIGNETTE QUIZ (5 RESIDENCY CASES)
+        // =========================================================================
+        const quizData = [
+            {
+                id: 1,
+                question: "Ca lâm sàng 1: Sản phụ PARA 2002, thai 39 tuần, tiền sản giật nặng đang truyền MgSO4, có tiền sử hen phế quản từ nhỏ. Sau sinh thường 10 phút, máu âm đạo chảy 700 mL, tử cung mềm nhão trên rốn. Đã xoa đáy tử cung, lấy máu cục, truyền Oxytocin 20 IU và tiêm Acid Tranexamic 1g nhưng tử cung vẫn mềm nhão. Thuốc tăng co bậc 2 nào được chỉ định tiếp theo?",
+                options: [
+                    "A. Tiêm bắp Methylergonovine (Methergin) 0.2 mg",
+                    "B. Tiêm bắp sâu Carboprost tromethamine (Hemabate) 250 mcg",
+                    "C. Đặt dưới lưỡi hoặc trực tràng Misoprostol 800 mcg",
+                    "D. Tiêm tĩnh mạch trực tiếp (Bolus) Oxytocin 10 IU"
+                ],
+                correct: 2,
+                explanation: "Đáp án C. Bệnh nhân có Tiền sản giật nặng (chống chỉ định tuyệt đối của Methergin vì gây vọt huyết áp/xuất huyết não) VÀ có Hen phế quản (chống chỉ định tuyệt đối của Carboprost/PGF2α vì gây co thắt phế quản cấp). Bolus Oxytocin bị cấm. Do đó Misoprostol (PGE1) là lựa chọn duy nhất an toàn."
+            },
+            {
+                id: 2,
+                question: "Ca lâm sàng 2: Sản phụ sinh hút vì thai to 4100g. Ngay sau sổ nhau 5 phút, máu đỏ tươi chảy liên tục ra âm đạo khoảng 600 mL. Khám bụng thấy đáy tử cung co hồi rất chắc dưới rốn (khối cầu an toàn rõ). Kiểm tra bánh nhau đủ múi và màng. Bước xử trí tiếp theo ĐÚNG NHẤT là gì?",
+                options: [
+                    "A. Tiêm bắp ngay Ergometrine 0.2 mg và tăng tốc độ truyền Oxytocin",
+                    "B. Đặt bóng Bakri buồng tử cung bơm 500 mL nước muối sinh lý",
+                    "C. Đặt van âm đạo dưới ánh sáng tốt kiểm tra toàn bộ cổ tử cung, âm đạo và khâu cầm máu",
+                    "D. Kiểm soát buồng tử cung bằng tay ngay lập tức"
+                ],
+                correct: 2,
+                explanation: "Đáp án C. Tử cung đã co hồi rất tốt (khối cầu an toàn rắn chắc), bánh nhau đủ nhưng máu đỏ tươi chảy liên tục ngay sau sinh thủ thuật thai to -> Nguyên nhân điển hình của TRAUMA (Rách cổ tử cung / âm đạo). Phải đặt van âm đạo kiểm tra và khâu phục hồi (bắt trên đỉnh vết rách 0.5 cm)."
+            },
+            {
+                id: 3,
+                question: "Ca lâm sàng 3: Sản phụ sau sinh thường 1 giờ, đột ngột kêu đau tức dữ dội vùng tầng sinh môn - hậu môn, cảm giác mót rặn liên tục. Khám thấy mạch 125 lần/phút, HA 80/50 mmHg, da xanh tái, đáy tử cung co chắc ngang rốn nhưng bị đẩy lệch sang phải, máu chảy ra ngoài âm đạo rất ít (< 100 mL). Chẩn đoán nghĩ đến đầu tiên là gì?",
+                options: [
+                    "A. Đờ tử cung thể ẩn trong buồng tử cung",
+                    "B. Lộn tử cung cấp tính độ I",
+                    "C. Khối máu tụ âm đạo – tiểu khung (Paravaginal/Pelvic hematoma)",
+                    "D. Tắc mạch ối thể rối loạn đông máu"
+                ],
+                correct: 2,
+                explanation: "Đáp án C. Tam chứng kinh điển của Khối máu tụ âm đạo – tiểu khung: (1) Đau tức dữ dội vùng tầng sinh môn/trực tràng (mót rặn) + (2) Dấu hiệu sốc mất máu nặng không tương xứng với lượng máu chảy ra ngoài + (3) Tử cung vẫn co chắc nhưng bị khối máu tụ đẩy lệch."
+            },
+            {
+                id: 4,
+                question: "Ca lâm sàng 4: Trong khi đỡ nhau ở một sản phụ nhau bám đáy, do kéo dây rốn mạnh khi tử cung chưa co, toàn bộ đáy tử cung bị lộn ngược ra ngoài âm đạo kèm bánh nhau vẫn còn đang bám chặt trên đáy tử cung. Sản phụ đau dữ dội, mạch 130 l/p, HA 75/40 mmHg. Xử trí nào sau đây là ĐÚNG?",
+                options: [
+                    "A. Bóc sạch bánh nhau ngay lập tức rồi đẩy đáy tử cung vào trong",
+                    "B. Tăng tốc độ truyền Oxytocin tối đa để tử cung tự co rút vào trong",
+                    "C. Ngưng ngay Oxytocin, KHÔNG bóc bánh nhau, hồi sức + giãn tử cung rồi đẩy tử cung về vị trí cũ theo thủ thuật Johnson",
+                    "D. Cắt tử cung đường âm đạo cấp cứu"
+                ],
+                correct: 2,
+                explanation: "Đáp án C. Trong lộn tử cung cấp tính: (1) Phải ngưng ngay Oxytocin và dùng thuốc giãn cơ tử cung để mở vòng cổ tử cung; (2) TUYỆT ĐỐI KHÔNG bóc nhau khi tử cung đang lộn ngoài âm đạo vì sẽ làm máu phun ồ ạt; (3) Đẩy tử cung về vị trí giải phẫu bằng thủ thuật Johnson rồi mới truyền lại Oxytocin và bóc nhau."
+            },
+            {
+                id: 5,
+                question: "Ca lâm sàng 5: Sản phụ PPH nặng đã mất 2200 mL máu. Kết quả xét nghiệm cấp cứu: Hb 6.5 g/dL, Tiểu cầu 65.000/mm³, PT 16 giây, Fibrinogen 1.1 g/L (110 mg/dL). Chế phẩm máu nào sau đây là QUAN TRỌNG NHẤT để nâng nhanh nồng độ Fibrinogen lên mục tiêu > 2.0 g/L?",
+                options: [
+                    "A. Huyết tương tươi đông lạnh (FFP) đơn thuần",
+                    "B. Tủa lạnh (Cryoprecipitate) hoặc Fibrinogen cô đặc",
+                    "C. Khối tiểu cầu máy (Apheresis Platelets)",
+                    "D. Dung dịch cao phân tử HES 6%"
+                ],
+                correct: 1,
+                explanation: "Đáp án B. Khi Fibrinogen giảm sâu < 2.0 g/L (đặc biệt < 1.5 g/L), truyền FFP đơn thuần không đủ nâng Fibrinogen vì FFP chỉ có nồng độ Fibrinogen thấp (~2 g/L). Bắt buộc phải truyền Tủa lạnh (Cryoprecipitate - 10 đơn vị) hoặc Fibrinogen cô đặc."
+            }
+        ];
+
+        function renderQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = quizData.map((q, qIdx) => `
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                    <p class="text-sm font-bold text-slate-900 leading-relaxed">${q.question}</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        ${q.options.map((opt, oIdx) => `
+                            <button onclick="answerQuiz(${qIdx}, ${oIdx})" id="q${qIdx}-opt${oIdx}"
+                                class="text-left p-3 rounded-xl bg-white hover:bg-indigo-50 border border-slate-200 text-xs font-semibold text-slate-800 transition">
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="q${qIdx}-exp" class="hidden p-3 rounded-xl text-xs leading-relaxed"></div>
+                </div>
+            `).join('');
+        }
+
+        function answerQuiz(qIdx, selectedIdx) {
+            const q = quizData[qIdx];
+            const expBox = document.getElementById(`q${qIdx}-exp`);
+
+            q.options.forEach((_, oIdx) => {
+                const btn = document.getElementById(`q${qIdx}-opt${oIdx}`);
+                if (oIdx === q.correct) {
+                    btn.className = "text-left p-3 rounded-xl bg-emerald-600 text-white border border-emerald-700 text-xs font-bold shadow transition";
+                } else if (oIdx === selectedIdx) {
+                    btn.className = "text-left p-3 rounded-xl bg-rose-600 text-white border border-rose-700 text-xs font-bold shadow transition";
+                } else {
+                    btn.className = "text-left p-3 rounded-xl bg-white opacity-60 border border-slate-200 text-xs font-semibold text-slate-500";
+                }
+            });
+
+            expBox.classList.remove('hidden');
+            if (selectedIdx === q.correct) {
+                expBox.className = "p-3 rounded-xl text-xs leading-relaxed bg-emerald-50 border border-emerald-300 text-emerald-950";
+                expBox.innerHTML = `<strong class="text-emerald-700"><i class="fa-solid fa-circle-check mr-1"></i>CHÍNH XÁC!</strong> ${q.explanation}`;
+            } else {
+                expBox.className = "p-3 rounded-xl text-xs leading-relaxed bg-rose-50 border border-rose-300 text-rose-950";
+                expBox.innerHTML = `<strong class="text-rose-700"><i class="fa-solid fa-circle-xmark mr-1"></i>CHƯA ĐÚNG!</strong> ${q.explanation}`;
+            }
+        }
+
+        function resetQuiz() {
+            renderQuiz();
+        }
+
+        // =========================================================================
+        // 6. TABS, CHECKLIST PERSISTENCE & SEARCH FILTER
+        // =========================================================================
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = 'tab-btn px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 bg-slate-800 text-slate-300 hover:bg-slate-700 transition whitespace-nowrap';
+            });
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.className = 'tab-btn active-tab px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 bg-rose-600 text-white shadow-sm transition whitespace-nowrap';
+            }
+        }
+
+        const STORAGE_KEY = 'pph_protocol_checklist_v1';
+
+        function saveChecklist() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"][data-check-id]');
+            const state = {};
+            let checkedCount = 0;
+
+            checkboxes.forEach(cb => {
+                const id = cb.getAttribute('data-check-id');
+                state[id] = cb.checked;
+                if (cb.checked) checkedCount++;
+            });
+
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch (e) {}
+
+            updateProgressUI(checkedCount, checkboxes.length);
+        }
+
+        function loadChecklist() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"][data-check-id]');
+            let saved = {};
+            try {
+                saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            } catch (e) {}
+
+            let checkedCount = 0;
+            checkboxes.forEach(cb => {
+                const id = cb.getAttribute('data-check-id');
+                if (saved[id]) {
+                    cb.checked = true;
+                    checkedCount++;
+                }
+            });
+            updateProgressUI(checkedCount, checkboxes.length);
+        }
+
+        function resetChecklist() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"][data-check-id]');
+            checkboxes.forEach(cb => cb.checked = false);
+            try {
+                localStorage.removeItem(STORAGE_KEY);
+            } catch (e) {}
+            updateProgressUI(0, checkboxes.length);
+        }
+
+        function updateProgressUI(checked, total) {
+            const pct = total > 0 ? Math.round((checked / total) * 100) : 0;
+            document.getElementById('checklistProgressBar').style.width = pct + '%';
+            document.getElementById('checklistProgressText').textContent = `${checked}/${total}`;
+        }
+
+        function handleSearch(query) {
+            const clearBtn = document.getElementById('clearSearchBtn');
+            const trimmed = query.trim().toLowerCase();
+
+            if (trimmed.length > 0) {
+                clearBtn.classList.remove('hidden');
+                // Switch to protocol tab so all steps are visible
+                switchTab('tab-protocol');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+
+            const cards = document.querySelectorAll('.step-card');
+            cards.forEach(card => {
+                if (!trimmed) {
+                    card.classList.remove('hidden');
+                    return;
+                }
+                const text = card.innerText.toLowerCase();
+                if (text.includes(trimmed)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        function clearSearch() {
+            const input = document.getElementById('searchInput');
+            input.value = '';
+            handleSearch('');
+        }
+
+        // Initialize everything on page load
+        window.onload = function () {
+            calculateBedside();
+            updateDrugFilter();
+            renderFlashcards();
+            renderQuiz();
+            loadChecklist();
+            updateTimerUI();
+        };
+    </script>
+</body>
+</html>
