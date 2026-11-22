@@ -1,0 +1,2302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Bài 18: Đái Tháo Đường Thai Kỳ — 30 Ca Lâm Sàng Trắc Nghiệm</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          colors: {
+            clinical: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              200: '#99f6e4',
+              600: '#0d9488',
+              700: '#0f766e',
+              800: '#115e59',
+              900: '#134e4a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: contain;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    @keyframes revealUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-reveal {
+      animation: revealUp 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .option-btn {
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+    }
+    .option-btn:not(:disabled):active {
+      transform: scale(0.99);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 pb-24">
+
+  <!-- Sticky Top Header -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200/90 shadow-xs">
+    <div class="max-w-3xl mx-auto px-3 sm:px-5 pt-3 pb-2.5">
+      <!-- Top Row -->
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="shrink-0 inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-extrabold tracking-wide bg-clinical-700 text-white shadow-xs">
+            BÀI 18
+          </span>
+          <div class="min-w-0">
+            <h1 class="text-sm sm:text-base font-bold text-slate-900 truncate leading-tight">
+              Đái Tháo Đường Thai Kỳ
+            </h1>
+            <p class="text-[11px] sm:text-xs text-slate-500 truncate">
+              30 Ca Lâm Sàng Độc Lập • ĐH Y Dược Huế
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-1.5 shrink-0">
+          <!-- Bookmark Button -->
+          <button
+            id="btnBookmark"
+            type="button"
+            onclick="toggleBookmarkCurrent()"
+            title="Đánh dấu nhớ câu này (Phím S)"
+            class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-amber-50 hover:border-amber-300 text-xs font-semibold transition-colors"
+          >
+            <span id="bookmarkIcon" class="text-sm leading-none">☆</span>
+            <span class="hidden sm:inline">Nhớ</span>
+          </button>
+
+          <!-- Drawer Trigger Button -->
+          <button
+            id="btnHeaderGrid"
+            type="button"
+            onclick="openDrawer()"
+            title="Mở bảng 30 câu hỏi (Phím G)"
+            class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-clinical-200 bg-clinical-50 text-clinical-800 hover:bg-clinical-100 text-xs font-bold transition-colors"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h4v4H4V6zm6 0h4v4h-4V6zm6 0h4v4h-4V6zM4 14h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" />
+            </svg>
+            <span id="headerCounter">Ca 1/30</span>
+          </button>
+
+          <!-- Reset Button -->
+          <button
+            type="button"
+            onclick="openResetModal()"
+            title="Làm lại từ đầu"
+            class="p-1.5 rounded-lg border border-slate-200 bg-white text-slate-500 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 transition-colors"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Dual Progress Bar -->
+      <div class="mt-2.5">
+        <div class="flex items-center justify-between text-[11px] font-medium text-slate-600 mb-1">
+          <div class="flex items-center gap-3">
+            <span class="inline-flex items-center gap-1 text-emerald-700 font-semibold">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              Đúng: <strong id="statCorrect">0</strong>
+            </span>
+            <span class="inline-flex items-center gap-1 text-rose-600 font-semibold">
+              <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+              Sai: <strong id="statWrong">0</strong>
+            </span>
+          </div>
+          <span class="text-slate-500 font-semibold" id="statPercent">Hoàn thành 0% (0/30)</span>
+        </div>
+        <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden flex">
+          <div id="barCorrect" class="h-full bg-emerald-500 transition-all duration-300" style="width: 0%"></div>
+          <div id="barWrong" class="h-full bg-rose-500 transition-all duration-300" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="mt-2.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5" id="filterTabs">
+        <button data-filter="all" onclick="setFilter('all')" class="filter-tab shrink-0 px-3 py-1 rounded-full text-xs font-semibold transition-colors">
+          Tất cả (<span id="cntAll">30</span>)
+        </button>
+        <button data-filter="bookmarked" onclick="setFilter('bookmarked')" class="filter-tab shrink-0 px-3 py-1 rounded-full text-xs font-semibold transition-colors">
+          ★ Đã nhớ (<span id="cntBookmarked">0</span>)
+        </button>
+        <button data-filter="wrong" onclick="setFilter('wrong')" class="filter-tab shrink-0 px-3 py-1 rounded-full text-xs font-semibold transition-colors">
+          Làm sai (<span id="cntWrong">0</span>)
+        </button>
+        <button data-filter="unanswered" onclick="setFilter('unanswered')" class="filter-tab shrink-0 px-3 py-1 rounded-full text-xs font-semibold transition-colors">
+          Chưa làm (<span id="cntUnanswered">30</span>)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="quizContainer" class="flex-1 w-full max-w-3xl mx-auto px-3 sm:px-5 pt-4 pb-6">
+    <!-- Rendered dynamically -->
+  </main>
+
+  <!-- Floating Bottom Navigation Bar -->
+  <nav class="fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-slate-200 shadow-[0_-2px_10px_rgba(15,23,42,0.05)]">
+    <div class="max-w-3xl mx-auto px-3 sm:px-5 py-2.5 flex items-center justify-between gap-2">
+      <button
+        id="btnPrev"
+        type="button"
+        onclick="navigate(-1)"
+        class="flex-1 sm:flex-none sm:min-w-[116px] inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-semibold text-sm hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+      >
+        <span>←</span>
+        <span>Trước</span>
+      </button>
+
+      <button
+        id="btnBottomGrid"
+        type="button"
+        onclick="openDrawer()"
+        class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-800 font-bold text-sm tabular-nums transition-colors"
+      >
+        1 / 30
+      </button>
+
+      <button
+        id="btnNext"
+        type="button"
+        onclick="navigate(1)"
+        class="flex-1 sm:flex-none sm:min-w-[116px] inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-clinical-700 hover:bg-clinical-800 text-white font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-xs"
+      >
+        <span>Tiếp</span>
+        <span>→</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Modal Drawer: 30 Question Grid -->
+  <div id="drawerOverlay" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-slate-900/45 backdrop-blur-[2px]" onclick="closeDrawer()"></div>
+    <div class="absolute inset-x-0 bottom-0 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 w-full sm:max-w-xl bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl border border-slate-200 max-h-[85vh] flex flex-col overflow-hidden">
+      <!-- Drawer Header -->
+      <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-bold text-slate-900">Danh sách 30 Ca Lâm Sàng</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Chạm vào ô số bất kỳ để chuyển nhanh</p>
+        </div>
+        <button
+          type="button"
+          onclick="closeDrawer()"
+          class="p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+          aria-label="Đóng"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Legend -->
+      <div class="px-5 py-2.5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-600">
+        <span class="inline-flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded bg-emerald-500"></span> Đúng
+        </span>
+        <span class="inline-flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded bg-rose-500"></span> Sai
+        </span>
+        <span class="inline-flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded bg-slate-200 border border-slate-300"></span> Chưa làm
+        </span>
+        <span class="inline-flex items-center gap-1.5">
+          <span class="text-amber-500 font-bold leading-none">★</span> Đã nhớ
+        </span>
+      </div>
+
+      <!-- 30 Number Cells Grid -->
+      <div class="p-5 overflow-y-auto">
+        <div id="drawerGrid" class="grid grid-cols-5 sm:grid-cols-6 gap-2.5"></div>
+      </div>
+
+      <!-- Drawer Footer -->
+      <div class="px-5 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+        <span id="drawerSummary">Đã làm 0/30 câu</span>
+        <button
+          type="button"
+          onclick="closeDrawer(); openResetModal();"
+          class="text-rose-600 hover:text-rose-700 font-semibold"
+        >
+          Xóa tiến độ làm lại
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Reset Confirmation Modal (iframe / Notion embed safe) -->
+  <div id="resetModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/45 backdrop-blur-[2px]" onclick="closeResetModal()"></div>
+    <div class="relative w-full max-w-sm bg-white rounded-2xl shadow-2xl border border-slate-200 p-5">
+      <div class="flex items-start gap-3">
+        <div class="shrink-0 w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Làm lại toàn bộ bài thi?</h3>
+          <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+            Lựa chọn đáp án của 30 câu sẽ được xóa để bạn luyện tập lại từ đầu. Danh sách đánh dấu nhớ (★) và ghi chú cá nhân có thể tùy chọn giữ lại.
+          </p>
+        </div>
+      </div>
+      <div class="mt-4 flex flex-col gap-2">
+        <button
+          type="button"
+          onclick="confirmReset(false)"
+          class="w-full py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-colors"
+        >
+          Chỉ xóa đáp án (Giữ lại ★ và Ghi chú)
+        </button>
+        <button
+          type="button"
+          onclick="confirmReset(true)"
+          class="w-full py-2.5 px-4 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition-colors"
+        >
+          Xóa toàn bộ (Đáp án, ★ và Ghi chú)
+        </button>
+        <button
+          type="button"
+          onclick="closeResetModal()"
+          class="w-full py-2 px-4 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-semibold transition-colors"
+        >
+          Hủy bỏ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'quiz_bai18_dai_thao_duong_thai_ky_v54';
+    const LETTERS = ['A', 'B', 'C', 'D', 'E'];
+
+    const QUESTIONS = [
+  {
+    "id": 1,
+    "title": "CA LÂM SÀNG 01",
+    "topic": "Sản khoa - Đái tháo đường",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Đa khoa Tỉnh",
+    "stem": "Sản phụ 34 tuổi, PARA 1011, thai 9 tuần 3 ngày theo ngày đầu kỳ kinh cuối và siêu âm quý 1, đến khám thai định kỳ tại Bệnh viện Đa khoa Tỉnh. Tiền sử ghi nhận lần sinh trước cách 4 năm sinh con nặng 4150 gram, bản thân có mẹ ruột mắc đái tháo đường típ 2 điều trị insulin. Hiện tại sản phụ ăn uống bình thường, không buồn nôn nhiều, không khát nước quá mức, không tiểu buốt dắt và không ra máu âm đạo.\n\nThăm khám lâm sàng: Sản phụ tỉnh táo, thể trạng béo phì với chiều cao 155 cm, cân nặng 72 kg, chỉ số khối cơ thể BMI 30,0 kg/m2. Dấu hiệu sinh tồn: Mạch 78 lần/phút, Huyết áp 115/75 mmHg, Nhịp thở 18 lần/phút, Thân nhiệt 36,8°C. Khám thực thể tim phổi bình thường, bụng mềm, bề cao tử cung ngang bờ trên xương vệ, âm đạo sạch không có dịch bất thường.\n\nXét nghiệm cận lâm sàng ban đầu: Hemoglobin 126 g/L, Bạch cầu 8,2 G/L, Tiểu cầu 235 G/L. Nước tiểu que nhúng không có protein và không có ceton. Nồng độ glucose huyết tương tĩnh mạch lúc đói ghi nhận là 7,4 mmol/L, nồng độ HbA1c huyết thanh đo được là 6,8%.",
+    "question": "Chẩn đoán phân loại rối loạn đường huyết phù hợp nhất là gì?",
+    "options": [
+      "Chẩn đoán tăng đường huyết phản ứng do nghén.",
+      "Chẩn đoán giảm bài tiết insulin sinh lý sớm.",
+      "Chẩn đoán đái tháo đường trước khi mang thai.",
+      "Chẩn đoán rối loạn dung nạp glucose thoáng qua.",
+      "Chẩn đoán đái tháo đường thai kỳ mắc phải."
+    ],
+    "correct": 2,
+    "correctReason": "Glucose đói >= 7.0 mmol/L hoặc HbA1c >= 6.5% ở quý 1 xác định ĐTĐ trước mang thai.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "bat_tu_khoa",
+        "codeLabel": "Bắt từ khóa",
+        "trap": "Đổ lỗi cho ốm nghén trong khi HbA1c 6.8% phản ánh đường huyết tăng mạn tính."
+      },
+      {
+        "key": "B",
+        "code": "guideline_cu",
+        "codeLabel": "Guideline cũ / Sai sinh lý",
+        "trap": "Sinh lý quý 1 là tăng nhạy cảm insulin chứ không giảm bài tiết insulin."
+      },
+      {
+        "key": "D",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Coi là rối loạn thoáng qua làm chậm trễ quản lý ĐTĐ thực sự có biến chứng mạch máu."
+      },
+      {
+        "key": "E",
+        "code": "phan_biet_hep",
+        "codeLabel": "Phân biệt hẹp",
+        "trap": "Nhầm với ĐTĐ thai kỳ vốn chỉ chẩn đoán ở quý 2 hoặc quý 3 khi chưa có ĐTĐ trước đó."
+      }
+    ],
+    "decision": "1. Thai 9 tuần + Glucose đói 7.4 mmol/L (>= 7.0 mmol/L) và HbA1c 6.8% (>= 6.5%) -> Tiêu chuẩn ĐTĐ trước mang thai (Pre-existing/Overt Diabetes).\n2. Phân biệt với ĐTĐ thai kỳ (GDM) chỉ chẩn đoán từ 24-28 tuần hoặc ở mức đường huyết thấp hơn ngưỡng ĐTĐ thực sự.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18) và Hướng dẫn Bộ Y tế/ADA: Ở lần khám thai đầu tiên cho phụ nữ nguy cơ cao, nếu Glucose máu đói >= 126 mg/dL (7.0 mmol/L) hoặc HbA1c >= 6.5% hoặc Glucose ngẫu nhiên >= 200 mg/dL (11.1 mmol/L) kèm triệu chứng kinh điển, người bệnh được chẩn đoán là Đái tháo đường trước khi mang thai (Overt diabetes), chứ không phải Đái tháo đường thai kỳ (GDM). GDM là tình trạng rối loạn dung nạp glucose xuất hiện hoặc được phát hiện lần đầu tiên trong thai kỳ (thường ở quý 2-3).",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 275-279)."
+  },
+  {
+    "id": 2,
+    "title": "CA LÂM SÀNG 02",
+    "topic": "Sản khoa - Đái tháo đường",
+    "bloom": "Vận dụng / Phân tích",
+    "facility": "BV Đa khoa Huyện",
+    "stem": "Sản phụ 28 tuổi, PARA 0000, thai 25 tuần 4 ngày theo siêu âm quý 1, đến khám thai định kỳ tại Bệnh viện Đa khoa Huyện. Quá trình mang thai 3 tháng đầu không ghi nhận bất thường, đường huyết lúc đói tuần thứ 10 là 4,6 mmol/L. Tiền sử gia đình không có người mắc đái tháo đường. Hiện tại sản phụ khỏe, không mệt mỏi, không sút cân, không đau bụng và không ra máu âm đạo.\n\nKhám lâm sàng: Cân nặng 58 kg, chiều cao 158 cm, chỉ số BMI 23,2 kg/m2. Dấu hiệu sinh tồn: Mạch 76 lần/phút, Huyết áp 110/70 mmHg, Nhịp thở 18 lần/phút, Thân nhiệt 36,7°C. Bề cao tử cung 22 cm, tim thai rõ 144 lần/phút, cử động thai tốt.\n\nSản phụ được nhịn ăn từ 22 giờ đêm hôm trước và thực hiện nghiệm pháp dung nạp 75g glucose một bước vào sáng nay. Kết quả đo glucose huyết tương tĩnh mạch: Nồng độ lúc đói là 5,4 mmol/L; nồng độ sau uống 1 giờ là 9,2 mmol/L; nồng độ sau uống 2 giờ là 8,1 mmol/L.",
+    "question": "Quyết định chẩn đoán và xử trí ban đầu phù hợp nhất là gì?",
+    "options": [
+      "Yêu cầu làm lại nghiệm pháp sau 1 tuần.",
+      "Chỉ định làm nghiệm pháp dung nạp 100g glucose.",
+      "Khởi động ngay phác đồ tiêm insulin phối hợp.",
+      "Kết luận bình thường và tiếp tục dưỡng thai.",
+      "Chẩn đoán đái tháo đường thai kỳ điều trị."
+    ],
+    "correct": 4,
+    "correctReason": "Glucose đói 5.4 mmol/L (>= 5.1 mmol/L) đủ tiêu chuẩn xác định ĐTĐ thai kỳ, bắt đầu tiết chế.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Nghiệm pháp 75g đã đủ tiêu chuẩn chẩn đoán, lặp lại làm chậm trễ can thiệp."
+      },
+      {
+        "key": "B",
+        "code": "guideline_cu",
+        "codeLabel": "Guideline cũ / Sai sinh lý",
+        "trap": "Tiếp cận 1 bước 75g không cần làm tiếp test 100g như quy trình 2 bước của Carpenter-Coustan."
+      },
+      {
+        "key": "C",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "GDM mới phát hiện chưa điều trị tiết chế dinh dưỡng mà vội tiêm insulin ngay."
+      },
+      {
+        "key": "D",
+        "code": "bat_tu_khoa",
+        "codeLabel": "Bắt từ khóa",
+        "trap": "Thấy 2 chỉ số sau 1h và 2h bình thường liền bỏ qua mẫu đường đói vượt ngưỡng."
+      }
+    ],
+    "decision": "1. Nghiệm pháp 75g glucose 1 bước theo IADPSG/Bộ Y tế: Đói >= 5.1 mmol/L (92 mg/dL), 1h >= 10.0 mmol/L (180 mg/dL), 2h >= 8.5 mmol/L (153 mg/dL).\n2. Chỉ cần 1 mẫu vượt ngưỡng (đói 5.4 mmol/L) -> Xác định ĐTĐ thai kỳ (GDM) -> Bắt đầu liệu pháp dinh dưỡng và vận động.",
+    "explanation": "Theo tiêu chuẩn IADPSG và Hướng dẫn quốc gia của Bộ Y tế Việt Nam, nghiệm pháp dung nạp 75g glucose thực hiện ở tuần 24-28 (tiếp cận 1 bước): Đường huyết lúc đói >= 5.1 mmol/L (92 mg/dL); sau 1 giờ >= 10.0 mmol/L (180 mg/dL); sau 2 giờ >= 8.5 mmol/L (153 mg/dL). Chỉ cần 1 trong 3 mẫu máu vượt ngưỡng là đủ tiêu chuẩn chẩn đoán ĐTĐ thai kỳ. Bệnh nhân có đường đói 5.4 mmol/L -> Xác lập chẩn đoán ĐTĐ thai kỳ và tiến hành điều trị liệu pháp dinh dưỡng tiết chế.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 278-280)."
+  },
+  {
+    "id": 3,
+    "title": "CA LÂM SÀNG 03",
+    "topic": "Sản khoa - Đái tháo đường",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Phụ sản Thành phố",
+    "stem": "Sản phụ 30 tuổi, PARA 1001, thai 29 tuần 2 ngày, được chẩn đoán đái tháo đường thai kỳ cách 3 tuần và đang áp dụng chế độ dinh dưỡng tiết chế kết hợp đi bộ nhẹ nhàng 30 phút mỗi ngày. Tiền sử không có bệnh lý nội khoa mạn tính, lần sinh trước con nặng 3300 gram. Hiện tại sản phụ tuân thủ ăn 3 bữa chính và 2 bữa phụ, không có biểu hiện đói lả vã mồ hôi, không run tay và thai máy tốt.\n\nKhám lâm sàng: Cân nặng tăng 0,8 kg trong 3 tuần qua, hiện tại 62 kg, BMI 24,1 kg/m2. Dấu hiệu sinh tồn: Mạch 80 lần/phút, Huyết áp 115/70 mmHg, Thân nhiệt 36,8°C. Bề cao tử cung 26 cm, ngôi đầu, tim thai 140 lần/phút. Siêu âm thai ước lượng cân nặng ở bách phân vị thứ 50, chỉ số ối bình thường.\n\nNhật ký theo dõi đường huyết mao mạch 7 ngày qua ghi nhận: Glucose trước ăn sáng dao động 4,8 đến 5,1 mmol/L; glucose sau ăn 1 giờ dao động 6,8 đến 7,4 mmol/L; glucose sau ăn 2 giờ dao động 5,8 đến 6,4 mmol/L. Xét nghiệm HbA1c là 5,4%.",
+    "question": "Bước can thiệp điều trị tiếp theo phù hợp nhất là gì?",
+    "options": [
+      "Bắt đầu tiêm bổ sung insulin nền buổi tối.",
+      "Tiếp tục duy trì chế độ dinh dưỡng hiện tại.",
+      "Cho dùng metformin viên uống liều thấp hàng ngày.",
+      "Tăng thêm lượng tinh bột vào các bữa chính.",
+      "Chỉ định nhập viện theo dõi đường huyết liên tục."
+    ],
+    "correct": 1,
+    "correctReason": "Đường đói < 5.3 mmol/L, 1h < 7.8 mmol/L, 2h < 6.7 mmol/L và HbA1c < 6% -> Đạt mục tiêu.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Đường huyết đã đạt mục tiêu hoàn hảo, tiêm insulin gây nguy cơ hạ đường huyết nguy hiểm."
+      },
+      {
+        "key": "C",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Thuốc viên uống chưa được Bộ Y tế chấp thuận cho phụ nữ mang thai tại Việt Nam."
+      },
+      {
+        "key": "D",
+        "code": "sai_thu_tu",
+        "codeLabel": "Sai thứ tự / Sai hướng",
+        "trap": "Tăng tinh bột bữa chính làm phá vỡ cân bằng đường huyết sau ăn."
+      },
+      {
+        "key": "E",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Nhập viện không cần thiết khi người bệnh kiểm soát ngoại trú rất tốt."
+      }
+    ],
+    "decision": "1. Mục tiêu glucose theo Bộ Y tế/ACOG/ADA: Đói < 5.3 mmol/L (95 mg/dL), sau ăn 1h < 7.8 mmol/L (140 mg/dL), sau ăn 2h < 6.7 mmol/L (120 mg/dL), HbA1c < 6.0%.\n2. Các chỉ số của sản phụ hoàn toàn nằm trong mục tiêu -> Tiếp tục duy trì chế độ dinh dưỡng và vận động hiện tại.",
+    "explanation": "Mục tiêu kiểm soát đường huyết trong thai kỳ theo Bộ Y tế và ACOG/ADA: Glucose lúc đói < 5.3 mmol/L (95 mg/dL); sau ăn 1 giờ < 7.8 mmol/L (140 mg/dL); sau ăn 2 giờ < 6.7 mmol/L (120 mg/dL); HbA1c < 6.0%. Nhật ký theo dõi của sản phụ đạt mục tiêu xuất sắc ở 100% các thời điểm và thai nhi phát triển bình thường. Do đó, xử trí chuẩn mực là tiếp tục duy trì chế độ dinh dưỡng tiết chế và vận động thể lực hiện tại, không có chỉ định dùng thuốc.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 281-284)."
+  },
+  {
+    "id": 4,
+    "title": "CA LÂM SÀNG 04",
+    "topic": "Sản khoa - Đái tháo đường",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Đa khoa Tỉnh",
+    "stem": "Sản phụ 32 tuổi, con so, thai 28 tuần 1 ngày, theo dõi đái tháo đường thai kỳ tại Phòng khám Tiền sản Bệnh viện Đa khoa Tỉnh. Bệnh nhân đã được tư vấn và tuân thủ nghiêm ngặt chế độ ăn giảm glucid chia 3 bữa chính và 3 bữa phụ phối hợp tập thể dục nhẹ nhàng trong 2 tuần qua. Bệnh nhân không sốt, không nôn, không đau bụng, không phù và cử động thai máy bình thường.\n\nKhám thực thể: Thể trạng thừa cân, BMI 27,4 kg/m2, Mạch 82 lần/phút, Huyết áp 120/75 mmHg, Thân nhiệt 36,9°C. Bề cao tử cung 27 cm, tim thai 142 lần/phút. Siêu âm thai cho thấy chu vi vòng bụng thai nhi AC ở bách phân vị thứ 85 so với tuổi thai, thể tích nước ối ở giới hạn trên bình thường với xoang ối lớn nhất 6,8 cm.\n\nKết quả kiểm tra nhật ký đường huyết 14 ngày qua ghi nhận: Có 6 trên 14 mẫu glucose lúc đói vượt ngưỡng dao động 5,6 đến 6,1 mmol/L; các mẫu sau ăn 2 giờ có 5 mẫu vượt ngưỡng dao động 7,2 đến 7,6 mmol/L.",
+    "question": "Quyết định can thiệp điều trị tiếp theo phù hợp nhất là gì?",
+    "options": [
+      "Tiếp tục kéo dài chế độ tiết chế thêm.",
+      "Chỉ định chọc hút bớt thể tích nước ối.",
+      "Chỉ định phẫu thuật mổ lấy thai chủ động.",
+      "Bắt đầu điều trị bằng thuốc tiêm insulin.",
+      "Kê đơn thuốc hạ đường huyết đường uống ngay."
+    ],
+    "correct": 3,
+    "correctReason": "Chỉ định insulin khi > 20% mẫu không đạt mục tiêu sau 1-2 tuần dinh dưỡng tiết chế.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Tiết chế thất bại sau 2 tuần với > 20% mẫu vượt ngưỡng, kéo dài làm thai to và đa ối nặng."
+      },
+      {
+        "key": "B",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Xoang ối 6.8 cm chưa phải đa ối nặng và chọc ối không điều trị được căn nguyên đường huyết."
+      },
+      {
+        "key": "C",
+        "code": "sai_thu_tu",
+        "codeLabel": "Sai thứ tự / Sai hướng",
+        "trap": "Thai mới 28 tuần chưa có chỉ định mổ lấy thai khi chưa điều trị nội khoa."
+      },
+      {
+        "key": "E",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Thuốc viên uống chưa được Bộ Y tế phê duyệt điều trị GDM tại Việt Nam."
+      }
+    ],
+    "decision": "1. Tiêu chuẩn chỉ định insulin: Đường huyết không đạt mục tiêu sau 1-2 tuần dinh dưỡng tiết chế (trên 20% số mẫu vượt mục tiêu) hoặc thai to hơn tuổi thai.\n2. Sản phụ có 6/14 mẫu đói (43%) và 5/14 mẫu sau ăn (36%) vượt ngưỡng -> Bắt buộc khởi đầu điều trị bằng insulin.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế và Hướng dẫn Bộ Y tế/ACOG: Chỉ định điều trị insulin ở thai phụ đái tháo đường thai kỳ khi: (1) Glucose huyết tương không đạt mục tiêu sau 1 - 2 tuần áp dụng liệu pháp dinh dưỡng và vận động (trên 20% số mẫu xét nghiệm không đạt mục tiêu); hoặc (2) Mức glucose lúc đói >= 5.6 - 5.8 mmol/L hoặc sau ăn >= 7.8 mmol/L; hoặc (3) Có dấu hiệu thai to. Tại Việt Nam, thuốc viên uống chưa được Bộ Y tế chấp thuận; do đó Insulin là thuốc duy nhất được lựa chọn.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 284-285)."
+  },
+  {
+    "id": 5,
+    "title": "CA LÂM SÀNG 05",
+    "topic": "Sản khoa - Đái tháo đường",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Đa khoa Tỉnh",
+    "stem": "Sản phụ 31 tuổi, PARA 2002, thai 30 tuần 0 ngày, mắc đái tháo đường thai kỳ đang được theo dõi tại Bệnh viện Đa khoa Tỉnh. Sau 2 tuần tuân thủ chế độ ăn tiết chế dưới sự hướng dẫn của chuyên gia dinh dưỡng, sản phụ tự kiểm tra đường huyết 4 lần mỗi ngày bằng máy đo cá nhân đã được hiệu chuẩn. Bệnh nhân không có tiền sử bệnh lý tim mạch, không sốt, không đau bụng và thai máy đều đặn.\n\nKhám lâm sàng: Thể trạng trung bình, cân nặng 64 kg, BMI 25,6 kg/m2. Dấu hiệu sinh tồn: Mạch 78 lần/phút, Huyết áp 110/70 mmHg, Thân nhiệt 36,8°C. Bề cao tử cung 28 cm, ngôi đầu, tim thai 138 lần/phút. Siêu âm thai phát triển tương đương tuổi thai, chỉ số ối bình thường.\n\nKết quả nhật ký đường huyết 7 ngày gần nhất ghi nhận: Nồng độ glucose lúc đói buổi sáng thường xuyên cao dao động 5,8 đến 6,3 mmol/L; trong khi đó toàn bộ các mẫu glucose sau ăn 1 giờ và sau ăn 2 giờ của cả 3 bữa chính đều đạt mục tiêu tốt dưới 6,5 mmol/L.",
+    "question": "Lựa chọn phác đồ insulin khởi đầu phù hợp nhất cho sản phụ là gì?",
+    "options": [
+      "Tiêm insulin nền trước khi đi ngủ tối.",
+      "Tiêm insulin hỗn hợp 2 lần mỗi ngày.",
+      "Tiêm tĩnh mạch insulin liên tục qua bơm tiêm.",
+      "Tiêm insulin nhanh trước cả 3 bữa chính.",
+      "Tiêm bắp insulin bán chậm vào buổi sáng."
+    ],
+    "correct": 0,
+    "correctReason": "Chỉ tăng đường đói -> Chỉ định tiêm insulin nền NPH hoặc Detemir trước ngủ tối 0.1-0.2 UI/kg.",
+    "traps": [
+      {
+        "key": "B",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Insulin trộn chứa thành phần nhanh sẽ làm hạ đường sau ăn vốn đang bình thường."
+      },
+      {
+        "key": "C",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Truyền tĩnh mạch liên tục chỉ dùng trong cấp cứu toan ceton hoặc trong chuyển dạ."
+      },
+      {
+        "key": "D",
+        "code": "sai_thu_tu",
+        "codeLabel": "Sai thứ tự / Sai hướng",
+        "trap": "Đường huyết sau ăn bình thường, tiêm insulin nhanh trước ăn sẽ gây hạ đường huyết nặng."
+      },
+      {
+        "key": "E",
+        "code": "sai_thu_tu",
+        "codeLabel": "Sai thứ tự / Sai hướng",
+        "trap": "Tiêm NPH buổi sáng không kiểm soát được đường huyết lúc đói sáng hôm sau và sai đường tiêm bắp."
+      }
+    ],
+    "decision": "1. Người bệnh chỉ bị tăng glucose máu buổi sáng lúc đói (5.8 - 6.3 mmol/L) trong khi đường sau ăn hoàn toàn bình thường.\n2. Phác đồ khuyến cáo: Tiêm insulin nền (Basal: NPH hoặc Detemir) trước khi đi ngủ tối liều khởi đầu 0.1 - 0.2 UI/kg.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 284): Nếu người bệnh chỉ bị tăng glucose máu lúc đói buổi sáng thì phác đồ sử dụng insulin nền (basal) tác dụng bán chậm (NPH) hoặc kéo dài (Detemir) tiêm dưới da trước khi đi ngủ tối được khuyến cáo. Liều khởi đầu 0.1 - 0.2 IU/kg/ngày, chỉnh liều 2 - 3 ngày/lần. Tiêm insulin tác dụng nhanh trước ăn là sai lầm nguy hiểm vì đường sau ăn của bệnh nhân hoàn toàn bình thường, sẽ dẫn đến hạ đường huyết trầm trọng.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 284-285)."
+  },
+  {
+    "id": 6,
+    "title": "CA LÂM SÀNG 06",
+    "topic": "Sản khoa - Cấp cứu",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Đa khoa Huyện",
+    "stem": "Sản phụ 27 tuổi, PARA 0000, thai 31 tuần 3 ngày, đang điều trị đái tháo đường thai kỳ bằng phác đồ tiêm insulin NPH buổi tối kết hợp insulin Aspart trước ăn sáng tại Bệnh viện Đa khoa Huyện. Sáng nay sau khi tiêm insulin, do có việc bận nên sản phụ ăn sáng muộn hơn 45 phút. Sau đó bệnh nhân xuất hiện cảm giác hoa mắt, cồn cào ruột, vã mồ hôi lạnh, run rẩy hai tay và hồi hộp đánh trống ngực. Sản phụ không sốt, không đau bụng, không co giật và không mất ý thức.\n\nKhám lâm sàng tại phòng khám: Sản phụ tỉnh táo, tiếp xúc tốt, da niêm tái nhợt và vã mồ hôi nhiều. Dấu hiệu sinh tồn: Mạch 108 lần/phút nhanh đều, Huyết áp 105/65 mmHg, Nhịp thở 20 lần/phút, Thân nhiệt 36,5°C. Khám tim phổi bình thường, bụng mềm, bề cao tử cung 29 cm, tim thai nghe rõ 146 lần/phút.\n\nXét nghiệm bấm mao mạch đầu ngón tay khẩn cấp ghi nhận nồng độ glucose huyết tương là 2,8 mmol/L (tương đương 50 mg/dL).",
+    "question": "Bước xử trí cấp cứu ưu tiên hàng đầu ngay lúc này là gì?",
+    "options": [
+      "Tiêm bắp ngay lập tức 1 ống glucagon.",
+      "Tạm thời ngưng theo dõi và cho về nhà.",
+      "Cho uống ngay 15g carbohydrate hấp thu nhanh.",
+      "Truyền tĩnh mạch dung dịch muối đẳng trương ngay.",
+      "Cho sản phụ ăn bữa cơm chính đầy đủ."
+    ],
+    "correct": 2,
+    "correctReason": "Hạ đường huyết tỉnh táo (2.8 mmol/L) -> Uống ngay 15g carbohydrate hấp thu nhanh theo Quy tắc 15.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Glucagon tiêm bắp chỉ dùng khi bệnh nhân hôn mê, co giật hoặc không thể uống được."
+      },
+      {
+        "key": "B",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Cho về nhà khi đang hạ đường huyết 2.8 mmol/L đe dọa hôn mê và suy thai."
+      },
+      {
+        "key": "D",
+        "code": "sai_thu_tu",
+        "codeLabel": "Sai thứ tự / Sai hướng",
+        "trap": "Muối đẳng trương không cung cấp glucose để giải quyết hạ đường huyết cấp tính."
+      },
+      {
+        "key": "E",
+        "code": "sai_thu_tu",
+        "codeLabel": "Sai thứ tự / Sai hướng",
+        "trap": "Ăn thức ăn phức hợp hấp thu chậm, không giải cứu kịp thời tình trạng tụt đường não."
+      }
+    ],
+    "decision": "1. Sản phụ dùng insulin có biểu hiện cường giao cảm + Glucose mao mạch 2.8 mmol/L (< 3.3 mmol/L) -> Cơn hạ đường huyết cấp tính.\n2. Sản phụ còn tỉnh táo -> Quy tắc 15: Cho uống ngay 15g carbohydrate hấp thu nhanh (nước đường, nước ngọt, 3 viên đường), đo lại sau 15 phút.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 282, 286): Hạ glucose huyết tương là biến chứng nguy hiểm thường gặp khi dùng insulin do quá liều hoặc ăn chậm sau tiêm. Khi có biểu hiện hạ đường huyết (< 3.3 mmol/L hoặc < 60 mg/dL) mà người bệnh còn tỉnh táo, xử trí ưu tiên hàng đầu là áp dụng Quy tắc 15: Cho uống ngay 15g carbohydrate hấp thu nhanh (1/2 lon nước ngọt, 3 muỗng cà phê đường pha nước, hoặc 150 mL nước hoa quả), nghỉ ngơi và thử lại đường huyết sau 15 phút. Chỉ dùng Glucagon tiêm bắp hoặc Glucose ưu trương tĩnh mạch khi bệnh nhân mất ý thức hoặc không thể nuốt.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 282-286)."
+  },
+  {
+    "id": 7,
+    "title": "CA LÂM SÀNG 07",
+    "topic": "Sản khoa - Cấp cứu",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Phụ sản Tỉnh",
+    "stem": "Sản phụ 29 tuổi, PARA 0000, thai 30 tuần 4 ngày, có tiền sử đái tháo đường thai kỳ đang điều trị insulin NPH 16 UI/ngày, nhập viện Bệnh viện Phụ sản Tỉnh vì đau bụng từng cơn và tức nặng vùng hạ vị. Bệnh nhân không sốt, không nôn, không khó thở, không ra máu âm đạo và không có nước ối chảy ra ngoài.\n\nKhám lâm sàng: Sản phụ mệt mỏi do đau bụng. Dấu hiệu sinh tồn: Mạch 84 lần/phút, Huyết áp 115/75 mmHg, Nhịp thở 18 lần/phút, Thân nhiệt 36,8°C. Khám sản khoa ghi nhận cơn co tử cung tần số 3 cơn trong 10 phút, thời gian co 35 giây. Khám âm đạo: Cổ tử cung mở 2 cm, xóa 60%, đầu ối còn nguyên vẹn, đầu thai nhi cao. Siêu âm đo chiều dài kênh cổ tử cung là 18 mm.\n\nXét nghiệm cấp cứu: Glucose huyết tương mao mạch lúc vào viện là 6,8 mmol/L; xét nghiệm nước tiểu que nhúng không có bạch cầu và không có ceton. Bác sĩ chẩn đoán dọa sinh non và quyết định dùng thuốc giảm co để chuẩn bị tiêm corticosteroid.",
+    "question": "Lựa chọn thuốc giảm co tử cung phù hợp và an toàn nhất là gì?",
+    "options": [
+      "Tiêm tĩnh mạch thuốc giảm co nhóm papaverine.",
+      "Truyền tĩnh mạch dung dịch chứa thuốc salbutamol.",
+      "Tiêm bắp thuốc giảm co nhóm terbutaline sulfat.",
+      "Đặt hậu môn viên đạn chứa hoạt chất indomethacin.",
+      "Cho uống thuốc ức chế kênh canxi nifedipine."
+    ],
+    "correct": 4,
+    "correctReason": "Nifedipine hoặc Atosiban là thuốc giảm co được lựa chọn an toàn hàng đầu trên bệnh nhân ĐTĐ.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Papaverine hiệu lực giảm co cơ tử cung rất yếu, không ngăn được chuyển dạ sinh non."
+      },
+      {
+        "key": "B",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Nhóm đồng vận beta-2 như Salbutamol kích thích ly giải glycogen gây tăng đường máu và toan ceton."
+      },
+      {
+        "key": "C",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Terbutaline là đồng vận beta-2 chống chỉ định tuyệt đối trên thai phụ đái tháo đường."
+      },
+      {
+        "key": "D",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Indomethacin dùng ở tuần 30 gây nguy cơ đóng sớm ống động mạch và thiểu ối."
+      }
+    ],
+    "decision": "1. Dọa sinh non ở tuần 30 trên nền ĐTĐ đang điều trị insulin.\n2. CHỐNG CHỈ ĐỊNH nhóm đồng vận beta-2 (Salbutamol, Terbutaline) vì gây tăng đường huyết cấp và toan ceton (DKA) -> Thuốc giảm co chọn lựa ưu tiên là Nifedipine hoặc Atosiban.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế và Hướng dẫn Bộ Y tế/ACOG: Các thuốc đồng vận beta-adrenergic (Salbutamol, Terbutaline) chống chỉ định ở phụ nữ mang thai mắc đái tháo đường vì thuốc kích thích phân giải glycogen tại gan và cơ, làm tăng vọt glucose máu, kích hoạt tình trạng nhiễm toan ceton cấp tính đe dọa tính mạng mẹ và thai. Thuốc ức chế kênh calci (Nifedipine) hoặc đối kháng thụ thể oxytocin (Atosiban) là những lựa chọn giảm co hàng đầu an toàn, hiệu quả và không ảnh hưởng đến chuyển hóa carbohydrate.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18 (tr. 280) & Bài 14: Sinh non (tr. 211)."
+  },
+  {
+    "id": 8,
+    "title": "CA LÂM SÀNG 08",
+    "topic": "Sản khoa - Đái tháo đường",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Đa khoa Tỉnh",
+    "stem": "Sản phụ 33 tuổi, PARA 1001, thai 29 tuần 5 ngày, mắc đái tháo đường trước mang thai típ 2 đang điều trị phác đồ insulin Basal-Bolus với tổng liều 42 UI/ngày tại Bệnh viện Đa khoa Tỉnh. Do xuất hiện triệu chứng dọa sinh non, sản phụ được chỉ định tiêm bắp liều thứ nhất Betamethasone 12 mg vào sáng nay để kích thích trưởng thành phổi thai nhi. Sản phụ không sốt, không nôn, bụng mềm và cơn co tử cung đã tạm giảm sau dùng nifedipine.\n\nKhám lâm sàng: Thể trạng trung bình, Mạch 80 lần/phút, Huyết áp 115/70 mmHg, Thân nhiệt 36,7°C, Nhịp thở 18 lần/phút. Tim thai nghe đều rõ 142 lần/phút.\n\nBác sĩ điều trị giải thích cho sản phụ về tác dụng phụ tăng đường huyết của thuốc corticosteroid và sự cần thiết phải giám sát chặt chẽ đường huyết trong 72 giờ tới để phòng ngừa biến chứng toan ceton.",
+    "question": "Kế hoạch theo dõi và điều chỉnh insulin phù hợp nhất trong 3 ngày tới là gì?",
+    "options": [
+      "Chủ động giảm 50% tổng liều tiêm insulin.",
+      "Tăng liều insulin và theo dõi đường huyết.",
+      "Giữ nguyên phác đồ liều insulin như trước.",
+      "Chuyển sang dùng thuốc viên hạ đường huyết.",
+      "Ngừng tạm thời insulin và chuyển truyền đường."
+    ],
+    "correct": 1,
+    "correctReason": "Betamethasone gây tăng đường huyết đỉnh ngày 2-3 -> Tăng liều insulin 20-40% và thử đường mỗi 2-4h.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Giảm liều insulin trong khi đường huyết đang bị đẩy lên cao là sai lầm nguy kịch."
+      },
+      {
+        "key": "C",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Corticoid gây kháng insulin mạnh, giữ nguyên liều sẽ làm tăng vọt đường huyết và toan ceton."
+      },
+      {
+        "key": "D",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Thuốc viên không đủ kiểm soát đỉnh tăng đường huyết do corticoid và chưa được cấp phép."
+      },
+      {
+        "key": "E",
+        "code": "sai_thu_tu",
+        "codeLabel": "Sai thứ tự / Sai hướng",
+        "trap": "Ngừng insulin và truyền đường sẽ đẩy bệnh nhân vào hôn mê nhiễm toan ceton cấp."
+      }
+    ],
+    "decision": "1. Betamethasone gây tăng đề kháng insulin mạnh mẽ, làm tăng đường huyết đạt đỉnh trong 24 - 72 giờ sau tiêm.\n2. Xử trí chuẩn: Tăng liều insulin (thường tăng 20 - 40% tổng liều hàng ngày) và theo dõi sát đường huyết mao mạch mỗi 2 - 4 giờ để kịp thời điều chỉnh, phòng ngừa nhiễm toan ceton.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 281): Corticoides giúp trưởng thành phổi (Betamethasone, Dexamethasone) gây tăng đề kháng insulin và kích thích tân tạo đường tại gan, làm tăng mạnh nồng độ glucose huyết tương, đạt đỉnh sau 24 - 72 giờ. Do vậy, trên bệnh nhân đang điều trị insulin, bắt buộc phải tăng tần suất theo dõi đường huyết và chủ động tăng liều insulin (thường tăng từ 20 - 40% tổng liều) để duy trì đường huyết trong khoảng mục tiêu và ngăn ngừa nguy cơ nhiễm toan ceton.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 280-281)."
+  },
+  {
+    "id": 9,
+    "title": "CA LÂM SÀNG 09",
+    "topic": "Sản khoa - Cấp cứu Hồi sức",
+    "bloom": "Đánh giá / Phân tích",
+    "facility": "BV Đa khoa Tỉnh",
+    "stem": "Sản phụ 26 tuổi, PARA 0000, thai 27 tuần 2 ngày, có tiền sử đái tháo đường típ 1 được đưa đến Khoa Cấp cứu Bệnh viện Đa khoa Tỉnh trong tình trạng lơ mơ và thở nhanh sâu. Hai ngày trước bệnh nhân bị sốt, nôn ói nhiều và tự ý bỏ tiêm các mũi insulin vì không ăn được cơm. Người nhà phát hiện hơi thở bệnh nhân có mùi táo thối. Bệnh nhân không co giật, không đau đầu kiểu tiền sản giật, không ra máu âm đạo.\n\nKhám thực thể: Bệnh nhân lơ mơ, trả lời lẫn lộn, thở kiểu Kussmaul sâu và nhanh, da khô nhăn nheo, mắt trũng. Dấu hiệu sinh tồn: Mạch 122 lần/phút nhanh nhỏ, Huyết áp 85/55 mmHg, Nhịp thở 32 lần/phút, Thân nhiệt 37,2°C, SpO2 96%. Bụng mềm chướng nhẹ, bề cao tử cung 25 cm, tim thai 165 lần/phút.\n\nXét nghiệm cấp cứu: Glucose huyết tương 19,2 mmol/L; Khí máu động mạch có pH 7,16, HCO3- 9,0 mmol/L, PaCO2 24 mmHg; Ceton huyết thanh dương tính mạnh 4,2 mmol/L; Kali máu 4,8 mmol/L, Natri 130 mmol/L.",
+    "question": "Bước can thiệp hồi sức cấp cứu ưu tiên hàng đầu ngay lúc này là gì?",
+    "options": [
+      "Tiêm tĩnh mạch bolus natri bicarbonat thể tích lớn.",
+      "Tiêm bắp ngay lập tức 1 liều insulin nhanh.",
+      "Cho uống thuốc chống nôn và tiếp tục theo dõi.",
+      "Truyền tĩnh mạch dịch muối đẳng trương tốc độ nhanh.",
+      "Chỉ định mổ lấy thai cấp cứu ngay lập tức."
+    ],
+    "correct": 3,
+    "correctReason": "Bù dịch Natri Clorid 0.9% tốc độ nhanh là bước cứu mạng số 1 trong cấp cứu toan ceton DKA.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Bicarbonat không dùng thường quy, chỉ xem xét khi pH < 6.9 vì gây toan dịch não tủy nghịch lý."
+      },
+      {
+        "key": "B",
+        "code": "sai_thu_tu",
+        "codeLabel": "Sai thứ tự / Sai hướng",
+        "trap": "Tiêm insulin trước khi bù dịch sẽ làm tụt thể tích nội mạch và trụy tim mạch nặng hơn."
+      },
+      {
+        "key": "C",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Trì hoãn cấp cứu toan ceton nặng làm mẹ và thai tử vong nhanh chóng."
+      },
+      {
+        "key": "E",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Mổ lấy thai khi mẹ đang toan chuyển hóa nặng và tụt huyết áp sẽ gây tử vong mẹ trên bàn mổ."
+      }
+    ],
+    "decision": "1. Glucose 19.2 mmol/L + pH 7.16 + HCO3- 9.0 mmol/L + Ceton máu dương tính mạnh -> Cấp cứu Nhiễm toan ceton đái tháo đường (DKA).\n2. Hồi sức tuần hoàn bằng bù dịch muối đẳng trương Natri Clorid 0.9% tốc độ nhanh là bước ưu tiên số 1 trước khi truyền insulin tĩnh mạch.",
+    "explanation": "Nhiễm toan ceton do đái tháo đường (DKA) trong thai kỳ là cấp cứu nội sản khoa tối khẩn. Nguyên tắc hồi sức cốt lõi hàng đầu là: Bù dịch tinh thể Natri Clorid 0.9% tốc độ nhanh (1000 - 1500 mL trong giờ đầu) để khôi phục thể tích tuần hoàn hiệu dụng và tưới máu mô, sau đó mới khởi động truyền tĩnh mạch insulin liên tục và bù kali. Mổ lấy thai cấp cứu khi mẹ chưa được hồi sức thăng bằng toan kiềm và huyết động là chống chỉ định nguy hiểm, nhịp tim thai bất thường thường sẽ tự hồi phục khi tình trạng toan hóa của mẹ được cải thiện.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 276, 280)."
+  },
+  {
+    "id": 10,
+    "title": "CA LÂM SÀNG 10",
+    "topic": "Sản khoa - Chẩn đoán trước sinh",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Phụ sản Tuyến cuối",
+    "stem": "Sản phụ 28 tuổi, con so, thai 21 tuần 2 ngày, có tiền sử đái tháo đường típ 1 được phát hiện từ năm 16 tuổi, đến khám tại Trung tâm Chẩn đoán Trước sinh Bệnh viện Phụ sản Tuyến cuối. Xét nghiệm ở tuần thai thứ 8 ghi nhận nồng độ HbA1c là 8,6% do bệnh nhân kiểm soát đường huyết kém trong giai đoạn thụ thai. Kết quả sàng lọc lệch bội quý 1 bình thường với độ mờ da gáy 1,4 mm. Sản phụ không sốt, không đau bụng, không ra máu âm đạo.\n\nKhám thực thể: Sinh hiệu ổn định, Mạch 76 lần/phút, Huyết áp 110/70 mmHg, Thân nhiệt 36,7°C. Bề cao tử cung 19 cm, tim thai nghe đều 142 lần/phút. Hiện tại đường huyết được kiểm soát khá ổn định bằng phác đồ tiêm insulin với HbA1c giảm còn 6,2%.\n\nBác sĩ giải thích cho sản phụ rằng tình trạng tăng đường huyết trong 8 tuần đầu thai kỳ làm tăng nguy cơ dị tật cấu trúc bẩm sinh, đặc biệt là hệ tim mạch và hệ thần kinh xương.",
+    "question": "Thăm dò hình thái chuyên sâu ưu tiên hàng đầu lúc này là gì?",
+    "options": [
+      "Chỉ định siêu âm tim thai chi tiết chuyên sâu.",
+      "Chỉ định chụp cộng hưởng từ toàn thân thai nhi.",
+      "Chỉ định chụp cắt lớp vi tính lồng ngực thai.",
+      "Chỉ định xét nghiệm tế bào tự do trong máu.",
+      "Chỉ định chọc hút nước ối làm nhiễm sắc thể."
+    ],
+    "correct": 0,
+    "correctReason": "HbA1c quý 1 > 8% -> Siêu âm tim thai chi tiết chuyên sâu ở tuần 20-22 để tầm soát dị tật tim bẩm sinh.",
+    "traps": [
+      {
+        "key": "B",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "MRI toàn thân không phải thăm dò sàng lọc đầu tay ở tuần 21 khi chưa có dị tật phát hiện."
+      },
+      {
+        "key": "C",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "CT-scan có tia xạ nguy hại cho thai và chống chỉ định khảo sát tim thai định kỳ."
+      },
+      {
+        "key": "D",
+        "code": "sai_thu_tu",
+        "codeLabel": "Sai thứ tự / Sai hướng",
+        "trap": "NIPT chỉ sàng lọc bất thường số lượng NST, không phát hiện được dị tật tim do đái tháo đường."
+      },
+      {
+        "key": "E",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Tăng đường huyết gây dị tật cấu trúc hình thái chứ không làm tăng nguy cơ lệch bội nhiễm sắc thể."
+      }
+    ],
+    "decision": "1. Mẹ ĐTĐ trước mang thai kiểm soát kém trong 8 tuần đầu (HbA1c 8.6%) -> Nguy cơ dị tật tim bẩm sinh tăng gấp 4 - 5 lần (chuyển gốc đại động mạch, thông liên thất...).\n2. Thăm dò chuyên sâu bắt buộc ở mốc 20 - 22 tuần là Siêu âm tim thai chi tiết chuyên sâu (Fetal Echocardiography).",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 277, 279): Nguy cơ dị dạng thai nhi ở mẹ đái tháo đường tăng tỷ lệ thuận với mức tăng HbA1c trong 8 tuần đầu của thai kỳ. Các dị tật phổ biến nhất là dị tật tim mạch (thông liên thất, chuyển gốc đại động mạch, hẹp eo động mạch chủ) và hội chứng thoái lui vùng đuôi. Khuyến cáo của ACOG/ADA: Tất cả phụ nữ mang thai có đái tháo đường trước thai kỳ hoặc được chẩn đoán đái tháo đường thực sự trong quý 1 cần được chỉ định Siêu âm tim thai chi tiết chuyên sâu (Fetal echocardiography) ở tuổi thai 20 - 22 tuần.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 277-279)."
+  },
+  {
+    "id": 11,
+    "title": "CA LÂM SÀNG 11",
+    "topic": "Sản khoa - Tiền sản",
+    "bloom": "Vận dụng / Phân tích",
+    "facility": "BV Đa khoa Tỉnh",
+    "stem": "Sản phụ 32 tuổi, con rạ PARA 1001, thai 36 tuần 2 ngày, được theo dõi đái tháo đường thai kỳ tại Bệnh viện Đa khoa Tỉnh. Quá trình kiểm soát đường huyết bằng chế độ ăn không đạt mục tiêu nhưng sản phụ từ chối tiêm insulin trong suốt 6 tuần qua. Bệnh nhân không có triệu chứng đau đầu, không nhìn mờ, không đau thượng vị, không ra máu âm đạo và thai cử động rất mạnh.\n\nKhám thực thể: Bệnh nhân tăng 19 kg trong thai kỳ, BMI hiện tại 31,5 kg/m2. Dấu hiệu sinh tồn: Mạch 84 lần/phút, Huyết áp 125/80 mmHg, Thân nhiệt 36,8°C. Bề cao tử cung đo được 37 cm, vòng bụng 104 cm, sờ nắn thấy thai rất to, đầu cao bập bềnh trên xương vệ.\n\nSiêu âm sản khoa ghi nhận: Đường kính lưỡng đỉnh BPD tương đương thai 36 tuần, nhưng chu vi vòng bụng thai nhi AC vượt trên bách phân vị thứ 97 so với tuổi thai. Trọng lượng thai ước tính hiện tại là 4150 gram, chỉ số nước ối AFI là 21 cm.",
+    "question": "Đặc điểm phân bố sinh trắc học này cảnh báo nguy cơ tai biến chu sinh nào cao nhất?",
+    "options": [
+      "Nguy cơ đứt dây rốn ngắn tuyệt đối khi sinh.",
+      "Nguy cơ tắc mạch ối cấp tính trước chuyển dạ.",
+      "Nguy cơ tai biến kẹt vai khi sổ thai.",
+      "Nguy cơ vỡ tử cung tự phát trong mang thai.",
+      "Nguy cơ thai suy dinh dưỡng mạn trong buồng tử cung."
+    ],
+    "correct": 2,
+    "correctReason": "Thai to do ĐTĐ tăng chu vi vòng bụng và ngực/đầu -> Nguy cơ kẹt vai cao độc lập với cân nặng.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "bat_tu_khoa",
+        "codeLabel": "Bắt từ khóa",
+        "trap": "Đứt dây rốn là tai biến cơ học do dây rốn ngắn, không liên quan đến sinh trắc học thai to."
+      },
+      {
+        "key": "B",
+        "code": "bat_tu_khoa",
+        "codeLabel": "Bắt từ khóa",
+        "trap": "Tắc mạch ối xảy ra trong chuyển dạ hoặc sau sinh, không phải biến chứng do thai to đơn thuần."
+      },
+      {
+        "key": "D",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Tử cung không có sẹo mổ cũ, vỡ tử cung tự phát trước chuyển dạ là cực kỳ hiếm."
+      },
+      {
+        "key": "E",
+        "code": "phan_biet_hep",
+        "codeLabel": "Phân biệt hẹp",
+        "trap": "Thai 4150 gram là thai to do tăng insulin, hoàn toàn trái ngược với suy dinh dưỡng mạn."
+      }
+    ],
+    "decision": "1. Thai to ở mẹ ĐTĐ có đặc điểm: Vòng bụng AC và kích thước vai/ngực phát triển vượt trội so với kích thước đầu (BPD).\n2. Tỷ lệ ngực/đầu và vai/đầu tăng cao dẫn đến tai biến cơ học nguy hiểm nhất khi sinh ngả âm đạo là Kẹt vai (Shoulder dystocia).",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 277, 287) và Bài 31 (tr. 484): Thai nhi của mẹ đái tháo đường bị kích thích tăng tiết insulin nội sinh (do glucose mẹ qua nhau thai), dẫn đến tăng tích tụ mỡ chọn lọc ở vùng thân, vai và các cơ quan nội tạng nhưng không làm tăng kích thước đầu. Do đó, chu vi vòng bụng (AC) và đường kính liên gai vai tăng vượt trội so với đường kính lưỡng đỉnh (BPD). Mất cân xứng này khiến đầu thai lọt dễ dàng nhưng vai bị kẹt lại phía sau xương vệ, gây tai biến Kẹt vai (Shoulder dystocia) và liệt đám rối cánh tay Erb-Duchenne.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 277, 287)."
+  },
+  {
+    "id": 12,
+    "title": "CA LÂM SÀNG 12",
+    "topic": "Sản khoa - Tiền sản",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Phụ sản Tỉnh",
+    "stem": "Sản phụ 29 tuổi, con so, thai 33 tuần 4 ngày, mắc đái tháo đường thai kỳ đang điều trị insulin tại Bệnh viện Phụ sản Tỉnh. Khoảng 2 tuần nay, sản phụ thấy bụng to nhanh rõ rệt, cảm giác căng tức tức bụng và khó thở nhẹ khi nằm ngửa. Sản phụ không sốt, không nôn, không có cơn co tử cung chuyển dạ, không đau đầu và không rỉ nước ối âm đạo.\n\nKhám thực thể: Sản phụ tỉnh táo, nằm nghiêng trái dễ thở hơn. Dấu hiệu sinh tồn: Mạch 86 lần/phút, Huyết áp 115/75 mmHg, Nhịp thở 20 lần/phút, Thân nhiệt 36,8°C. Bề cao tử cung đo được 36 cm (vượt tuổi thai khoảng 4 cm), bụng căng bóng, sờ nắn các phần thai nhi khó khăn, dấu hiệu sóng vỗ dương tính, tim thai nghe xa xăm 142 lần/phút.\n\nSiêu âm sản khoa ghi nhận: Bánh nhau bám mặt sau độ 2, xoang ối lớn nhất đo được là 9,2 cm, chỉ số ối AFI là 26 cm. Các cấu trúc giải phẫu học cơ bản của thai nhi không thấy dị tật bẩm sinh hẹp tắc đường tiêu hóa.",
+    "question": "Cơ chế chính dẫn đến tình trạng đa ối ở sản phụ này là gì?",
+    "options": [
+      "Giảm thể tích tuần hoàn hiệu dụng của mẹ.",
+      "Tắc nghẽn cơ học đường tiêu hóa trên thai.",
+      "Nhiễm trùng bào thai do vi khuẩn kỵ khí.",
+      "Rối loạn bài tiết dịch màng đệm bánh nhau.",
+      "Tăng bài niệu thẩm thấu ở thận thai nhi."
+    ],
+    "correct": 4,
+    "correctReason": "Đường huyết mẹ cao -> Đường huyết thai cao -> Tăng bài niệu thẩm thấu ở thận thai nhi gây đa ối.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "bat_tu_khoa",
+        "codeLabel": "Bắt từ khóa",
+        "trap": "Giảm thể tích mẹ thường dẫn đến giảm tưới máu nhau thai gây thiểu ối chứ không gây đa ối."
+      },
+      {
+        "key": "B",
+        "code": "phan_biet_hep",
+        "codeLabel": "Phân biệt hẹp",
+        "trap": "Hẹp teo tá tràng gây đa ối nhưng siêu âm đã loại trừ bất thường cấu trúc tiêu hóa."
+      },
+      {
+        "key": "C",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Nhiễm trùng ối thường gây vỡ ối hoặc chuyển dạ sinh non chứ không đơn thuần tăng ối mạn tính."
+      },
+      {
+        "key": "D",
+        "code": "guideline_cu",
+        "codeLabel": "Guideline cũ / Sai sinh lý",
+        "trap": "Màng đệm bài tiết lượng dịch không đáng kể so với nước tiểu thai nhi ở quý 3."
+      }
+    ],
+    "decision": "1. Thai 33 tuần + ĐTĐ thai kỳ + Xoang ối lớn nhất 9.2 cm (>= 8 cm) và AFI 26 cm (>= 24 cm) -> Chẩn đoán Đa ối (Polyhydramnios).\n2. Cơ chế sinh bệnh: Glucose mẹ tăng qua nhau thai làm tăng glucose máu thai nhi, gây tăng bài niệu thẩm thấu ở thận thai nhi dẫn đến tăng tiết nước tiểu vào buồng ối.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 277, 288): Đa ối là biến chứng thường gặp trong đái tháo đường thai kỳ khi kiểm soát đường huyết chưa tối ưu. Cơ chế là do glucose từ mẹ khuếch tán thụ động qua bánh nhau sang thai nhi, kích thích thai sản xuất nhiều insulin nội sinh và gây tăng nồng độ glucose trong máu thai. Thận thai nhi tăng mức lọc cầu thận và bài niệu thẩm thấu (Osmotic diuresis), làm bài tiết một lượng lớn nước tiểu vào khoang ối, dẫn đến tăng thể tích nước ối bệnh lý (AFI >= 24 cm hoặc SDP >= 8 cm).",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 277, 288)."
+  },
+  {
+    "id": 13,
+    "title": "CA LÂM SÀNG 13",
+    "topic": "Sản khoa - Tiền sản",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Đa khoa Tỉnh",
+    "stem": "Sản phụ 35 tuổi, PARA 1011, thai 12 tuần 4 ngày theo siêu âm quý 1, đến khám tại Phòng khám Tiền sản Bệnh viện Đa khoa Tỉnh. Tiền sử bản thân mắc đái tháo đường típ 2 trước mang thai 3 năm đang điều trị insulin. Lần sinh trước cách 5 năm phải mổ lấy thai do thai to 4200 gram. Hiện tại sản phụ ăn uống tốt, không đau đầu, không nhìn mờ, không đau thượng vị và không ra máu âm đạo.\n\nKhám lâm sàng: Cân nặng 68 kg, chiều cao 156 cm, chỉ số BMI 27,9 kg/m2. Dấu hiệu sinh tồn: Mạch 78 lần/phút, Huyết áp động mạch đo cả hai tay là 125/80 mmHg, Thân nhiệt 36,8°C. Khám tim phổi bình thường, bụng mềm. Đo huyết áp động mạch trung bình MAP là 95 mmHg.\n\nXét nghiệm cận lâm sàng quý 1: Nồng độ HbA1c là 6,4%, protein niệu que nhúng âm tính, creatinin huyết thanh 58 micromol/L. Siêu âm Doppler ghi nhận chỉ số xung động mạch tử cung UtA-PI ở bách phân vị thứ 92 so với tuổi thai.",
+    "question": "Can thiệp điều trị dự phòng biến chứng sản khoa tối ưu nhất là gì?",
+    "options": [
+      "Bổ sung viên uống canxi liều 500 mg.",
+      "Chỉ định dùng aspirin liều thấp mỗi buổi tối.",
+      "Chỉ định tiêm heparin trọng lượng phân tử thấp.",
+      "Cho uống thuốc hạ áp methyldopa phòng ngừa sớm.",
+      "Chỉ định ăn chế độ nhạt tuyệt đối không muối."
+    ],
+    "correct": 1,
+    "correctReason": "ĐTĐ trước mang thai là yếu tố nguy cơ cao -> Bắt buộc dùng Aspirin 81-150 mg/ngày từ tuần 12 đến 36.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Canxi 500 mg liều quá thấp và chỉ dùng hỗ trợ khi khẩu phần ăn thiếu canxi, không thay thế được aspirin."
+      },
+      {
+        "key": "C",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "LMWH không có chỉ định dự phòng tiền sản giật đơn thuần khi không có hội chứng kháng phospholipid."
+      },
+      {
+        "key": "D",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Không dùng thuốc hạ áp để dự phòng tiên phát tiền sản giật khi huyết áp chưa tăng."
+      },
+      {
+        "key": "E",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Ăn nhạt tuyệt đối bị cấm trong thai kỳ vì gây giảm thể tích tuần hoàn và giảm tưới máu nhau."
+      }
+    ],
+    "decision": "1. Đái tháo đường trước mang thai (hoặc GDM) làm tăng nguy cơ Tiền sản giật lên gấp 4 lần (thuộc nhóm nguy cơ cao theo FIGO/ACOG/Bộ Y tế).\n2. Chỉ định dự phòng chuẩn: Dùng Aspirin liều thấp 81 - 150 mg uống mỗi ngày vào buổi tối, bắt đầu từ tuần 12 - 16 kéo dài đến tuần 36.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 276; Bài 17, tr. 250, 258) và Khuyến cáo của ACOG, FIGO, Bộ Y tế: Thai phụ mắc đái tháo đường trước mang thai (típ 1 hoặc típ 2) thuộc nhóm NGUY CƠ CAO tiến triển thành tiền sản giật (nguy cơ tăng gấp 4 lần do tổn thương nội mạc mạch máu). Do đó, chỉ định bắt buộc là điều trị dự phòng bằng Aspirin liều thấp (81 - 150 mg/ngày, uống vào buổi tối), bắt đầu từ tuần thứ 12 đến 16 và duy trì liên tục đến tuần thứ 36 của thai kỳ.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18 (tr. 276) & Bài 17: Tăng huyết áp và thai kỳ (tr. 258)."
+  },
+  {
+    "id": 14,
+    "title": "CA LÂM SÀNG 14",
+    "topic": "Sản khoa - Tiền sản",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Phụ sản Tuyến cuối",
+    "stem": "Sản phụ 34 tuổi, con so, thai 32 tuần 0 ngày, có tiền sử đái tháo đường típ 1 kéo dài 16 năm kèm biến chứng bệnh võng mạc đái tháo đường giai đoạn tăng sinh đã quang đông laser, khám tại Bệnh viện Phụ sản Tuyến cuối. Bệnh nhân điều trị insulin tích cực nhưng kiểm soát đường huyết dao động. Bệnh nhân không sốt, không đau bụng, không đau đầu, không phù và thai cử động yếu hơn 2 ngày qua.\n\nKhám thực thể: Thể trạng gầy nhỏ, cân nặng chỉ tăng 4,5 kg từ đầu thai kỳ, BMI 19,2 kg/m2. Huyết áp đo được 135/85 mmHg, Mạch 82 lần/phút. Bề cao tử cung chỉ đạt 25 cm (nhỏ hơn tuổi thai 4 cm).\n\nSiêu âm sản khoa chi tiết: Ước lượng cân nặng thai nhi chỉ đạt 1280 gram, nằm dưới bách phân vị thứ 3 so với tuổi thai. Khảo sát Doppler màu: Động mạch rốn ghi nhận chỉ số xung UtA-PI tăng cao trên bách phân vị 95, phổ sóng tâm trương động mạch rốn bị thiếu vắng hoàn toàn.",
+    "question": "Bước theo dõi và can thiệp sản khoa phù hợp nhất là gì?",
+    "options": [
+      "Chỉ định chọc ối xét nghiệm nhiễm sắc thể.",
+      "Cho về nhà tiếp tục ăn nhiều tinh bột.",
+      "Chỉ định cho xuất viện và hẹn khám sau 2 tuần.",
+      "Nhập viện theo dõi sát và tiêm corticoid ngay.",
+      "Chỉ định khởi phát chuyển dạ sinh đường âm đạo."
+    ],
+    "correct": 3,
+    "correctReason": "FGR nặng + Mất sóng tâm trương ĐM rốn ở tuần 32 -> Nhập viện, tiêm corticoid, chuẩn bị mổ lấy thai.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Chậm tăng trưởng khởi phát muộn do suy mạch máu mẹ, chọc ối ở tuần 32 tăng nguy cơ vỡ ối và sinh non."
+      },
+      {
+        "key": "B",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Ăn tinh bột không giải quyết được suy bánh nhau do tổn thương vi mạch mà làm tăng đường máu mẹ."
+      },
+      {
+        "key": "C",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Hẹn tái khám sau 2 tuần khi đã mất sóng tâm trương ĐM rốn sẽ dẫn đến thai chết lưu trong tử cung."
+      },
+      {
+        "key": "E",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Mất sóng tâm trương ĐM rốn không chịu được cơn co chuyển dạ, khởi phát đẻ sẽ gây thai chết trong chuyển dạ."
+      }
+    ],
+    "decision": "1. ĐTĐ lâu năm có biến chứng vi mạch (White class R) -> Suy thoái tưới máu bánh nhau gây Thai chậm tăng trưởng (FGR) nặng < bách phân vị thứ 3.\n2. Doppler ĐM rốn mất sóng tâm trương (AEDV) ở tuần 32 -> Chỉ định nhập viện theo dõi monitor tim thai hàng ngày, tiêm Betamethasone trưởng thành phổi và chuẩn bị mổ lấy thai chủ động ở tuần 32 - 34.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 276, 279) và Bài 13: Thai chậm tăng trưởng: Khác với ĐTĐ thai kỳ thường gây thai to, ở phụ nữ mắc đái tháo đường lâu năm có tổn thương vi mạch (bệnh võng mạc, bệnh thận đái tháo đường - phân loại White F, R, RF), tình trạng viêm nội mạc và xơ hóa mạch máu tử cung - bánh nhau làm suy giảm tưới máu trầm trọng, dẫn đến Thai chậm tăng trưởng trong tử cung (FGR) và thiểu ối. Khi Doppler động mạch rốn có hiện tượng mất sóng tâm trương (AEDV) ở tuổi thai 32 tuần, nguy cơ thai chết lưu rất cao; bắt buộc phải nhập viện theo dõi sát, tiêm corticosteroid trưởng thành phổi và mổ lấy thai chủ động ở mốc 32 - 34 tuần.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18 (tr. 276) & Bài 13: Thai chậm tăng trưởng (tr. 196, 199)."
+  },
+  {
+    "id": 15,
+    "title": "CA LÂM SÀNG 15",
+    "topic": "Sản khoa - Thăm dò chức năng",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Phụ sản Tỉnh",
+    "stem": "Sản phụ 31 tuổi, PARA 1001, thai 34 tuần 1 ngày, mắc đái tháo đường thai kỳ đang được kiểm soát đường huyết bằng phác đồ tiêm insulin NPH 22 UI/ngày tại Bệnh viện Phụ sản Tỉnh. Tiền sử sản khoa lần trước sinh con bình thường 3200 gram. Hiện tại sản phụ cảm thấy khỏe khoắn, không có cơn co tử cung, không đau đầu, không phù chân và hàng ngày vẫn tự đếm cử động thai thấy thai máy trên 10 lần trong 2 giờ sau ăn.\n\nKhám thực thể: Sinh hiệu hoàn toàn ổn định, Mạch 78 lần/phút, Huyết áp 115/75 mmHg, Thân nhiệt 36,8°C. Bề cao tử cung 31 cm, ngôi đầu, tim thai nghe rõ 140 lần/phút. Siêu âm thai ước lượng cân nặng ở bách phân vị thứ 60, xoang ối lớn nhất đo được 5,2 cm.\n\nSản phụ đến khám thai định kỳ theo lịch hẹn và được bác sĩ tư vấn về quy trình giám sát sức khỏe thai nhi trước sinh chuyên biệt cho nhóm thai kỳ đái tháo đường phải dùng insulin.",
+    "question": "Kế hoạch thực hiện thử nghiệm không đả kích NST phù hợp nhất là gì?",
+    "options": [
+      "Đo định kỳ 2 lần trong mỗi tuần lễ.",
+      "Đo liên tục 24 giờ mỗi ngày tại viện.",
+      "Đo định kỳ 1 tháng 1 lần tại viện.",
+      "Chỉ đo 1 lần duy nhất trước khi sinh.",
+      "Chỉ đo khi sản phụ thấy thai ngừng máy."
+    ],
+    "correct": 0,
+    "correctReason": "ĐTĐ điều trị insulin -> Đo NST định kỳ 2 lần/tuần từ tuần 32 để giám sát suy thai mạn.",
+    "traps": [
+      {
+        "key": "B",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Monitoring 24/24 chỉ dùng trong phòng sinh chuyển dạ hoặc khi suy thai cấp tính."
+      },
+      {
+        "key": "C",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Khoảng cách 1 tháng quá thưa thớt đối với thai kỳ ĐTĐ dùng insulin ở 3 tháng cuối."
+      },
+      {
+        "key": "D",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Chỉ đo 1 lần sẽ bỏ sót suy thai mạn tính tiềm ẩn dẫn đến thai chết đột ngột trong tử cung."
+      },
+      {
+        "key": "E",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Chờ thai ngừng máy mới đo thì thai nhi có thể đã tử vong hoặc tổn thương não không hồi phục."
+      }
+    ],
+    "decision": "1. Thai phụ ĐTĐ thai kỳ (hoặc ĐTĐ có sẵn) phải điều trị bằng insulin có nguy cơ suy tuần hoàn nhau thai và đột tử thai nhi vào những tuần cuối.\n2. Khuyến cáo của Bộ Y tế và ACOG: Thực hiện thử nghiệm không đả kích (Non-stress test - NST) định kỳ 2 lần mỗi tuần bắt đầu từ tuần thứ 32 cho đến khi sinh.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 280, 289) và Hướng dẫn Bộ Y tế/ACOG: Đối với thai phụ mắc đái tháo đường thai kỳ phải điều trị bằng insulin hoặc kiểm soát đường huyết không ổn định, nguy cơ suy thai và đột tử thai nhi trong tử cung tăng cao trong những tuần cuối thai kỳ do chuyển hóa yếm khí và toan hóa máu thai. Khuyến cáo chuẩn: Bắt đầu theo dõi sức khỏe thai định kỳ bằng Non-stress test (NST) kết hợp siêu âm đánh giá thể tích nước ối với tần suất 2 lần mỗi tuần từ mốc 32 tuần (hoặc sớm hơn từ 28 - 30 tuần nếu kiểm soát kém/kèm tăng huyết áp).",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 280-281, 289)."
+  },
+  {
+    "id": 16,
+    "title": "CA LÂM SÀNG 16",
+    "topic": "Sản khoa - Chuyển dạ",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Đa khoa Huyện",
+    "stem": "Sản phụ 28 tuổi, con so, thai 39 tuần 0 ngày theo siêu âm quý 1, được chẩn đoán đái tháo đường thai kỳ từ tuần 26 và kiểm soát hoàn toàn ổn định bằng chế độ dinh dưỡng tiết chế tại Bệnh viện Đa khoa Huyện. Quá trình theo dõi ghi nhận đường huyết đói luôn dưới 5,0 mmol/L, đường huyết sau ăn 2 giờ luôn dưới 6,2 mmol/L, HbA1c 5,2%. Hiện tại sản phụ không có dấu hiệu chuyển dạ, không đau đầu, không phù và thai máy đều.\n\nKhám thực thể: Thể trạng bình thường, cân nặng tăng 11 kg trong thai kỳ, BMI 23,8 kg/m2. Dấu hiệu sinh tồn: Mạch 76 lần/phút, Huyết áp 110/70 mmHg, Thân nhiệt 36,8°C. Bề cao tử cung 32 cm, ngôi đầu, tim thai 142 lần/phút. Khám trong: Cổ tử cung đóng kín, dài, mật độ chắc, chỉ số Bishop 2 điểm.\n\nSiêu âm thai ước lượng cân nặng thai nhi là 3250 gram (ở bách phân vị thứ 50), chỉ số nước ối AFI là 13 cm, Doppler động mạch rốn bình thường. Băng ghi NST có đáp ứng tốt.",
+    "question": "Kế hoạch quản lý thai kỳ tại thời điểm 39 tuần này là gì?",
+    "options": [
+      "Cho dùng viên đặt misoprostol làm mềm cổ tử cung.",
+      "Khởi phát chuyển dạ bằng truyền oxytocin liều cao.",
+      "Tiếp tục theo dõi thai kỳ đến 40 tuần.",
+      "Chỉ định mổ lấy thai chủ động ngay hôm nay.",
+      "Chỉ định tiêm ngay insulin liều thấp dự phòng."
+    ],
+    "correct": 2,
+    "correctReason": "GDM tiết chế kiểm soát tốt, thai phát triển bình thường -> Tiếp tục theo dõi đến 39w0d - 40w6d.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Chưa có chỉ định can thiệp khởi phát chuyển dạ bắt buộc khi thai mới 39w0d kiểm soát tốt."
+      },
+      {
+        "key": "B",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Bishop 2 điểm (CTC chưa chín muồi), truyền oxytocin sẽ thất bại và gây cơn co cường năng."
+      },
+      {
+        "key": "D",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Mổ lấy thai không có chỉ định khi thai 3250g, khung chậu bình thường và đường huyết tốt."
+      },
+      {
+        "key": "E",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Đường huyết hoàn toàn bình thường, tiêm insulin dự phòng là chỉ định sai lầm gây hạ đường huyết."
+      }
+    ],
+    "decision": "1. GDM kiểm soát tốt đơn thuần bằng dinh dưỡng tiết chế (A1GDM) + Thai phát triển bình thường (EFW 3250g) + Nước ối và NST tốt.\n2. Khuyến cáo ACOG/Bộ Y tế: Không chỉ định chấm dứt thai kỳ trước 39 tuần; có thể tiếp tục theo dõi thai kỳ đến 39 tuần 0 ngày - 40 tuần 6 ngày chờ chuyển dạ tự nhiên.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 280, 286-287) và Hướng dẫn của ACOG (2018): Đối với phụ nữ mắc đái tháo đường thai kỳ được kiểm soát tốt đường huyết đơn thuần bằng chế độ dinh dưỡng và vận động (A1GDM), không có biến chứng mẹ và thai, khuyến cáo KHÔNG can thiệp chấm dứt thai kỳ chủ động trước 39 tuần. Có thể tiếp tục theo dõi thai kỳ chờ chuyển dạ tự nhiên cho đến 40 tuần 0 ngày đến 40 tuần 6 ngày, miễn là theo dõi sức khỏe thai nhi (NST, chỉ số ối) định kỳ bình thường.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 280, 286-287)."
+  },
+  {
+    "id": 17,
+    "title": "CA LÂM SÀNG 17",
+    "topic": "Sản khoa - Chuyển dạ",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Phụ sản Tỉnh",
+    "stem": "Sản phụ 34 tuổi, PARA 1001, thai 39 tuần 1 ngày theo siêu âm quý 1, mắc đái tháo đường thai kỳ phải điều trị phối hợp insulin NPH và insulin Aspart từ tuần thứ 28 tại Bệnh viện Phụ sản Tỉnh. Quá trình điều trị ghi nhận đường huyết được kiểm soát tương đối ổn định trong 4 tuần qua: Glucose đói dao động 4,9 đến 5,2 mmol/L, sau ăn 2 giờ dao động 6,0 đến 6,6 mmol/L. Sản phụ không sốt, không có dấu hiệu tiền sản giật và thai máy tốt.\n\nKhám thực thể: Sinh hiệu ổn định, Mạch 80 lần/phút, Huyết áp 120/75 mmHg, Thân nhiệt 36,8°C. Bề cao tử cung 33 cm, ngôi đầu, tim thai rõ 140 lần/phút. Khám âm đạo: Cổ tử cung mềm, mở 2 cm, xóa 60%, đầu thai nhi chúc thấp, điểm Bishop đánh giá được 7 điểm.\n\nSiêu âm kiểm tra hôm nay: Thai nhi phát triển phù hợp tuổi thai với trọng lượng ước tính 3400 gram, nước ối bình thường AFI 11 cm. Băng ghi NST có nhịp tăng đáp ứng tốt.",
+    "question": "Quyết định can thiệp sản khoa phù hợp nhất tại thời điểm 39 tuần là gì?",
+    "options": [
+      "Tiêm bắp 2 liều corticosteroid kích thích trưởng thành.",
+      "Tăng liều tiêm insulin lên gấp 2 lần thường.",
+      "Chỉ định mổ lấy thai chủ động ngay hôm nay.",
+      "Tiếp tục chờ đợi chuyển dạ tự nhiên đến 42 tuần.",
+      "Chỉ định chủ động chấm dứt thai kỳ hiện tại."
+    ],
+    "correct": 4,
+    "correctReason": "ĐTĐ điều trị insulin kiểm soát tốt -> Mốc chấm dứt thai kỳ chủ động là 39w0d - 39w6d.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "guideline_cu",
+        "codeLabel": "Guideline cũ / Sai sinh lý",
+        "trap": "Thai 39 tuần đã đủ tháng, tiêm corticoid là hoàn toàn sai chỉ định tuổi thai."
+      },
+      {
+        "key": "B",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Đường huyết đang kiểm soát ổn định, tăng liều insulin sẽ gây sốc hạ đường huyết."
+      },
+      {
+        "key": "C",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Bishop 7 điểm thuận lợi, thai 3400g không có chỉ định mổ lấy thai chủ động."
+      },
+      {
+        "key": "D",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Kéo dài thai kỳ đến 42 tuần ở bệnh nhân dùng insulin làm tăng vọt nguy cơ thai chết lưu."
+      }
+    ],
+    "decision": "1. Thai phụ ĐTĐ thai kỳ (hoặc ĐTĐ có sẵn) điều trị bằng thuốc insulin kiểm soát tốt đường huyết.\n2. Khuyến cáo của Bộ Y tế và ACOG: Thời điểm chấm dứt thai kỳ chủ động chuẩn mực là ở tuổi thai 39 tuần 0 ngày đến 39 tuần 6 ngày (bằng khởi phát chuyển dạ vì Bishop thuận lợi 7 điểm).",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 280, 286) và Hướng dẫn ACOG (2018): Đối với phụ nữ mắc đái tháo đường thai kỳ được kiểm soát tốt bởi thuốc (insulin), khuyến cáo chủ động chấm dứt thai kỳ tại tuổi thai từ 39 tuần 0 ngày đến 39 tuần 6 ngày. Đái tháo đường thai kỳ đơn thuần không phải là chỉ định mổ lấy thai; ở bệnh nhân này thai 3400g và cổ tử cung đã chín muồi thuận lợi (Bishop 7 điểm), chỉ định phù hợp nhất là chủ động chấm dứt thai kỳ bằng phương pháp khởi phát chuyển dạ sinh ngả âm đạo.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 280, 286-287)."
+  },
+  {
+    "id": 18,
+    "title": "CA LÂM SÀNG 18",
+    "topic": "Sản khoa - Tiền sản",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Đa khoa Tỉnh",
+    "stem": "Sản phụ 36 tuổi, PARA 2002, thai 37 tuần 3 ngày theo siêu âm quý 1, mắc đái tháo đường trước mang thai đang điều trị insulin tại Bệnh viện Đa khoa Tỉnh. Mặc dù đã được chỉnh liều insulin nội trú nhiều lần nhưng đường huyết vẫn dao động thất thường và kiểm soát kém: Glucose lúc đói thường xuyên trên 7,2 mmol/L, glucose sau ăn 2 giờ dao động 8,5 đến 10,2 mmol/L, HbA1c là 7,8%. Sản phụ không sốt, huyết áp dao động 130/85 mmHg, thai cử động giảm nhẹ.\n\nKhám thực thể: Bề cao tử cung 35 cm, tim thai 148 lần/phút. Siêu âm thai ước lượng cân nặng thai nhi là 3750 gram (ở bách phân vị thứ 90), chỉ số nước ối AFI tăng 23 cm.\n\nBăng ghi thử nghiệm không đả kích NST trong 40 phút ghi nhận: Nhịp tim thai cơ bản 145 lần/phút, dao động nội tại giảm còn 3 đến 5 nhịp/phút, không xuất hiện nhịp tăng sau các cử động thai (NST không đáp ứng).",
+    "question": "Quyết định xử trí sản khoa tiếp theo phù hợp nhất là gì?",
+    "options": [
+      "Chỉ định chọc hút nước ối để giảm áp lực.",
+      "Lập kế hoạch chủ động chấm dứt thai kỳ ngay.",
+      "Cho sản phụ về nhà tự theo dõi cử động.",
+      "Chuyển sang dùng thuốc hạ đường huyết dạng viên.",
+      "Tiếp tục dưỡng thai chờ chuyển dạ ở 40 tuần."
+    ],
+    "correct": 1,
+    "correctReason": "Đường huyết kiểm soát kém + NST không đáp ứng ở tuần 37-38 -> Chỉ định chấm dứt thai kỳ ngay.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Chọc hút ối ở tuần 37 không giải quyết được suy tuần hoàn nhau thai và toan hóa máu thai."
+      },
+      {
+        "key": "C",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Cho về nhà khi NST nghi ngờ suy thai là sai sót nghiêm trọng đe dọa tử vong thai."
+      },
+      {
+        "key": "D",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Thuốc viên không đủ hiệu lực và chống chỉ định trên thai phụ ĐTĐ kiểm soát kém."
+      },
+      {
+        "key": "E",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Đường huyết kém + NST không đáp ứng mà chờ đến 40 tuần sẽ gây thai chết lưu đột ngột."
+      }
+    ],
+    "decision": "1. Thai phụ ĐTĐ kiểm soát đường huyết kém (HbA1c 7.8%) + Thai 37 tuần 3 ngày + NST không đáp ứng (dao động tối thiểu).\n2. Khuyến cáo ACOG/Bộ Y tế: Khi đường huyết kiểm soát không tốt hoặc có dấu hiệu suy thoái thai nhi, chỉ định chấm dứt thai kỳ vào thời điểm 37 tuần 0 ngày đến 38 tuần 6 ngày.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 280-281, 286) và Hướng dẫn ACOG: Đối với thai phụ đái tháo đường kiểm soát đường huyết không tốt (glucose thường xuyên vượt mục tiêu, HbA1c cao) hoặc có bằng chứng suy giảm dự trữ thai nhi (NST không đáp ứng, dao động nội tại giảm), nguy cơ thai chết lưu trong tử cung tăng vọt. Khuyến cáo chấm dứt thai kỳ ở mốc 37 tuần 0 ngày đến 38 tuần 6 ngày. Thai đã được 37 tuần 3 ngày, chỉ định phù hợp nhất là lập kế hoạch chủ động chấm dứt thai kỳ ngay.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 280-281, 286)."
+  },
+  {
+    "id": 19,
+    "title": "CA LÂM SÀNG 19",
+    "topic": "Sản khoa - Phẫu thuật",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Phụ sản Tỉnh",
+    "stem": "Sản phụ 33 tuổi, con so, thai 38 tuần 4 ngày theo siêu âm quý 1, mắc đái tháo đường thai kỳ được theo dõi tại Bệnh viện Phụ sản Tỉnh. Sản phụ tuân thủ điều trị không đều, cân nặng tăng 21 kg từ đầu thai kỳ. Bệnh nhân không có dấu hiệu chuyển dạ, không đau bụng, không ra máu âm đạo, không đau đầu và cử động thai máy bình thường.\n\nKhám thực thể: Thể trạng béo phì, cân nặng 82 kg, BMI 33,2 kg/m2. Dấu hiệu sinh tồn: Mạch 82 lần/phút, Huyết áp 120/80 mmHg, Thân nhiệt 36,7°C. Khám sản khoa: Bề cao tử cung 38 cm, vòng bụng 108 cm, nắn thấy thai rất to, đầu thai nhi cao lỏng trên eo trên. Khám khung chậu trên lâm sàng các đường kính bình thường, cổ tử cung đóng kín và dài.\n\nSiêu âm sản khoa hôm nay: Đơn thai ngôi đầu, các số đo sinh trắc học gồm đường kính lưỡng đỉnh BPD 98 mm, chu vi vòng bụng AC 385 mm, trọng lượng thai ước tính EFW là 4650 gram. Nước ối bình thường AFI 15 cm.",
+    "question": "Phương thức kết thúc thai kỳ tối ưu và an toàn nhất là gì?",
+    "options": [
+      "Cho sản phụ thử thách sinh thường đường âm đạo.",
+      "Khởi phát chuyển dạ bằng truyền tĩnh mạch oxytocin.",
+      "Tiếp tục chờ đợi chuyển dạ tự nhiên tới 40 tuần.",
+      "Chỉ định phẫu thuật mổ lấy thai chủ động.",
+      "Sinh hỗ trợ bằng dụng cụ giác hút kéo thai."
+    ],
+    "correct": 3,
+    "correctReason": "EFW >= 4500g ở mẹ ĐTĐ (hoặc >= 4000g kèm nguy cơ) -> Chỉ định mổ lấy thai chủ động để phòng kẹt vai.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Thử thách sinh ngả âm đạo với thai 4650g ở mẹ ĐTĐ nguy cơ kẹt vai và tổn thương đám rối cánh tay rất cao."
+      },
+      {
+        "key": "B",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Khởi phát chuyển dạ khi thai 4650g ở con so làm tăng nguy cơ kẹt vai trầm trọng và vỡ tử cung."
+      },
+      {
+        "key": "C",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Chờ đợi làm thai tiếp tục tăng cân và tăng thêm nguy cơ tử vong chu sinh."
+      },
+      {
+        "key": "E",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Sinh giúp giác hút khi thai to làm tăng nguy cơ kẹt vai và chấn thương sọ não thai nhi."
+      }
+    ],
+    "decision": "1. Thai phụ đái tháo đường có trọng lượng thai ước tính EFW = 4650 gram (vượt ngưỡng 4500 gram theo khuyến cáo của ACOG).\n2. Chỉ định chuẩn mực: Phẫu thuật mổ lấy thai chủ động để phòng ngừa tai biến kẹt vai, gãy xương đòn và liệt đám rối thần kinh cánh tay Erb-Duchenne.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 286-287) và Hướng dẫn của ACOG (Practice Bulletin No. 190): Đái tháo đường thai kỳ làm tăng nguy cơ sinh khó do kẹt vai độc lập với trọng lượng thai do tăng chu vi vai/ngực. Để phòng ngừa tai biến kẹt vai đe dọa tính mạng và di chứng liệt thần kinh cánh tay, khuyến cáo mổ lấy thai chủ động (Cesarean delivery) khi trọng lượng thai ước tính EFW >= 4.500 gram ở phụ nữ mắc đái tháo đường (hoặc >= 4.000 gram theo nhiều khuyến cáo trong nước kết hợp tiền sử).",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 286-287)."
+  },
+  {
+    "id": 20,
+    "title": "CA LÂM SÀNG 20",
+    "topic": "Sản khoa - Chuyển dạ",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Đa khoa Tỉnh",
+    "stem": "Sản phụ 28 tuổi, con rạ PARA 1001 (lần trước sinh thường ngả âm đạo con nặng 3200 gram), thai 39 tuần 2 ngày, mắc đái tháo đường thai kỳ kiểm soát tốt bằng tiết chế, vào Khoa Sanh Bệnh viện Đa khoa Tỉnh vì đau bụng chuyển dạ tự nhiên 3 giờ. Sản phụ không sốt, không nhức đầu, không có tiền căn mổ cũ ở tử cung và không có nước ối vỡ rỉ ra ngoài.\n\nKhám thực thể: Sinh hiệu ổn định, Mạch 78 lần/phút, Huyết áp 115/75 mmHg, Thân nhiệt 36,8°C. Bề cao tử cung 32 cm, cơn co tử cung tần số 3 cơn trong 10 phút, cường độ co vừa. Khám trong: Cổ tử cung mở 4 cm, xóa 70%, mật độ mềm, đầu ối còn nguyên vẹn, đầu thai nhi ở vị trí trừ 1 so với hai gai hông. Khung chậu người mẹ rộng rãi trên lâm sàng.\n\nSiêu âm tại phòng sinh ghi nhận: Ngôi đầu thế trái, trọng lượng thai ước tính là 3300 gram, nước ối bình thường. Băng ghi CTG tim thai cơ bản 140 lần/phút, dao động nội tại bình thường và có nhịp tăng.",
+    "question": "Quyết định quản lý cuộc sinh phù hợp và an toàn nhất là gì?",
+    "options": [
+      "Theo dõi tiếp tục tiến triển sinh ngả âm đạo.",
+      "Tiêm tĩnh mạch thuốc giảm co để ngừng chuyển dạ.",
+      "Khởi động truyền oxytocin liều cao tăng co tối đa.",
+      "Chỉ định mổ lấy thai cấp cứu ngay lập tức.",
+      "Chỉ định bấm ối và đặt giác hút kéo thai."
+    ],
+    "correct": 0,
+    "correctReason": "Con rạ, thai 3300g, khung chậu tốt, CTG nhóm I -> Tiếp tục theo dõi sinh thường ngả âm đạo.",
+    "traps": [
+      {
+        "key": "B",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Thai 39 tuần đủ tháng đang chuyển dạ bình thường, không có chỉ định dùng thuốc giảm co."
+      },
+      {
+        "key": "C",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Cơn co 3 cơn/10 phút đang phù hợp tiến triển mở 4 cm, tăng co liều cao gây cường năng tử cung."
+      },
+      {
+        "key": "D",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "ĐTĐ thai kỳ đơn thuần không phải chỉ định mổ lấy thai khi thai 3300g và chuyển dạ thuận lợi."
+      },
+      {
+        "key": "E",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "CTC mở 4 cm chưa đủ điều kiện sinh thủ thuật giác hút."
+      }
+    ],
+    "decision": "1. Nguyên tắc cốt lõi: Đái tháo đường thai kỳ KHÔNG PHẢI là chỉ định mổ lấy thai tuyệt đối.\n2. Sản phụ sinh con rạ + Khung chậu tốt + Thai 3300g phù hợp tuổi thai + CTG bình thường -> Quyết định chuẩn: Theo dõi tiếp tục tiến triển sinh thường ngả âm đạo.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 286, 289): Đái tháo đường thai kỳ đơn thuần KHÔNG PHẢI là chỉ định để mổ lấy thai. Nếu trọng lượng thai ước tính dưới 4.000 gram, khung chậu mẹ bình thường, đường huyết được kiểm soát tốt và sức khỏe thai nhi bình thường (CTG nhóm I), sản phụ hoàn toàn có chỉ định theo dõi chuyển dạ sinh ngả âm đạo tự nhiên. Trong quá trình theo dõi, duy trì kiểm tra đường huyết mẹ mỗi 1 - 2 giờ và theo dõi tim thai liên tục.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 286, 289)."
+  },
+  {
+    "id": 21,
+    "title": "CA LÂM SÀNG 21",
+    "topic": "Sản khoa - Chuyển dạ",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Đa khoa Tỉnh",
+    "stem": "Sản phụ 30 tuổi, con so, thai 39 tuần 1 ngày, mắc đái tháo đường thai kỳ đang điều trị insulin NPH, nhập Khoa Sanh Bệnh viện Đa khoa Tỉnh vì đau bụng chuyển dạ tự nhiên 4 giờ. Bệnh nhân không sốt, cơn co tử cung tần số 3 cơn trong 10 phút, cổ tử cung mở 4 cm, xóa 70%, ối chưa vỡ, đầu thai nhi chúc thấp.\n\nKhám thực thể: Sinh hiệu ổn định, Mạch 80 lần/phút, Huyết áp 120/75 mmHg, Thân nhiệt 36,8°C. Tim thai nghe đều rõ 140 lần/phút. Bệnh nhân được chỉ định nhịn ăn thức ăn đặc và lập đường truyền tĩnh mạch giữ ven Natri Clorid 0,9%.\n\nKết quả kiểm tra đường huyết mao mạch tại thời điểm vào phòng sinh ghi nhận nồng độ glucose là 8,8 mmol/L. Bác sĩ trực giải thích rằng tình trạng tăng đường huyết trong chuyển dạ sẽ kích thích thai nhi bài tiết nhiều insulin, dẫn đến biến chứng hạ đường huyết sơ sinh nghiêm trọng ngay sau khi chào đời.",
+    "question": "Mục tiêu glucose huyết tương cần duy trì trong chuyển dạ là bao nhiêu?",
+    "options": [
+      "Duy trì nồng độ glucose máu trên 11.0 mmol/L.",
+      "Duy trì không cần giới hạn ngưỡng đường huyết.",
+      "Duy trì nồng độ từ 4.0 đến 7.0 mmol/L.",
+      "Duy trì nồng độ từ 8.0 đến 10.0 mmol/L.",
+      "Duy trì nồng độ glucose máu dưới 3.3 mmol/L."
+    ],
+    "correct": 2,
+    "correctReason": "Mục tiêu glucose trong chuyển dạ là 4.0 - 7.0 mmol/L (72 - 126 mg/dL) để phòng hạ đường sơ sinh.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Trên 11 mmol/L là mức tăng đường huyết nặng đe dọa toan ceton và suy thai cấp."
+      },
+      {
+        "key": "B",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Không kiểm soát đường huyết trong chuyển dạ là bỏ sót nguy cơ hạ đường huyết sơ sinh tử vong."
+      },
+      {
+        "key": "D",
+        "code": "sai_thu_tu",
+        "codeLabel": "Sai thứ tự / Sai hướng",
+        "trap": "Đường huyết 8 - 10 mmol/L quá cao, kích hoạt tụy thai tiết nhiều insulin gây ngạt và hạ đường sơ sinh."
+      },
+      {
+        "key": "E",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Dưới 3.3 mmol/L là ngưỡng hạ đường huyết mẹ gây hôn mê và suy thai."
+      }
+    ],
+    "decision": "1. Trong chuyển dạ, co cơ tử cung làm tiêu hao năng lượng kết hợp với tình trạng nhịn đói của sản phụ.\n2. Mục tiêu kiểm soát glucose huyết tương trong chuyển dạ và lúc sinh theo Bộ Y tế/ACOG là: 4,0 - 7,0 mmol/L (72 - 126 mg/dL) để giảm thiểu nguy cơ hạ đường huyết ở trẻ sơ sinh.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 282, 289): Mục đích của quản lý đường máu trong chuyển dạ là duy trì nồng độ glucose máu tối ưu nhằm tránh hạ đường huyết sơ sinh. Hướng dẫn của Bộ Y tế và các hiệp hội quốc tế thống nhất duy trì mức glucose máu trong khi chuyển dạ và lúc sinh là 4,0 - 7,0 mmol/L (72 - 126 mg/dL). Nếu glucose máu vượt quá 7,0 - 7,8 mmol/L (120 - 140 mg/dL), cần truyền tĩnh mạch insulin tác dụng nhanh (Regular) hòa trong dung dịch muối hoặc glucose 5% điều chỉnh bằng bơm tiêm điện.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 282, 289)."
+  },
+  {
+    "id": 22,
+    "title": "CA LÂM SÀNG 22",
+    "topic": "Sản khoa - Phẫu thuật",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Phụ sản Tỉnh",
+    "stem": "Sản phụ 33 tuổi, PARA 1011, thai 39 tuần 0 ngày, mắc đái tháo đường trước mang thai đang điều trị phác đồ phối hợp insulin NPH tiêm tối 18 UI và insulin Lispro tiêm trước các bữa ăn, được lên lịch phẫu thuật mổ lấy thai chủ động vào 8 giờ sáng nay do thai to 4300 gram tại Bệnh viện Phụ sản Tỉnh. Sản phụ đã được hướng dẫn nhịn ăn uống tuyệt đối từ 0 giờ đêm qua.\n\nKhám thực thể lúc 6 giờ 30 phút sáng: Sản phụ tỉnh táo, không chóng mặt, không vã mồ hôi. Dấu hiệu sinh tồn: Mạch 78 lần/phút, Huyết áp 120/75 mmHg, Thân nhiệt 36,8°C. Bề cao tử cung 36 cm, tim thai 140 lần/phút.\n\nXét nghiệm glucose huyết tương mao mạch lúc 6 giờ 30 phút sáng là 5,6 mmol/L. Nữ hộ sinh chuẩn bị tiêm mũi thuốc cữ sáng trước khi chuyển bệnh nhân lên phòng phẫu thuật và xin ý kiến chỉ định của bác sĩ điều trị.",
+    "question": "Quyết định y lệnh đối với mũi tiêm insulin cữ sáng nay là gì?",
+    "options": [
+      "Tiêm đủ toàn bộ liều insulin nhanh buổi sáng.",
+      "Tiêm bổ sung thêm 1 liều insulin bán chậm.",
+      "Chuyển sang cho uống thuốc viên hạ đường huyết.",
+      "Tiêm tăng gấp 2 lần liều insulin thường dùng.",
+      "Tạm ngừng mũi tiêm insulin nhanh cữ sáng nay."
+    ],
+    "correct": 4,
+    "correctReason": "Quy tắc ngày mổ: Nhịn ăn từ 0h, tạm ngừng mũi insulin nhanh cữ sáng để phòng hạ đường huyết.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Nhịn ăn phẫu thuật mà vẫn tiêm insulin nhanh sẽ gây hạ đường huyết trụy tim mạch trong mổ."
+      },
+      {
+        "key": "B",
+        "code": "sai_thu_tu",
+        "codeLabel": "Sai thứ tự / Sai hướng",
+        "trap": "Thêm NPH buổi sáng làm đỉnh tác dụng rơi vào lúc mổ gây tụt đường huyết khó kiểm soát."
+      },
+      {
+        "key": "C",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Bệnh nhân nhịn ăn trước phẫu thuật tuyệt đối không được cho uống thuốc viên."
+      },
+      {
+        "key": "D",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Tăng liều insulin khi nhịn ăn là tử huyệt gây sốc hạ đường huyết hôn mê."
+      }
+    ],
+    "decision": "1. Quy trình quản lý insulin ngày mổ lấy thai: Sản phụ nhịn ăn từ 0 giờ, kiểm tra glucose máu lúc đói buổi sáng.\n2. Y lệnh chuẩn: Ngưng mũi insulin tác dụng nhanh cữ sáng (vì bệnh nhân không ăn sáng). Bắt đầu truyền Glucose 5% và kiểm tra đường huyết mao mạch mỗi 1 - 2 giờ.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 285-286): Quy trình quản lý insulin vào ngày phẫu thuật mổ lấy thai: Đêm trước ngày mổ dùng insulin nền bình thường. Vào sáng ngày mổ, sản phụ nhịn ăn từ 0 giờ, thử glucose huyết tương đói và NGƯNG MŨI INSULIN CỮ SÁNG (insulin tác dụng nhanh, ngắn) vì người bệnh không ăn bữa sáng. Nếu dùng insulin hỗn hợp (trộn) thì giảm 1/2 liều. Thiết lập đường truyền dung dịch Glucose 5% để duy trì đường huyết trong khoảng 4 - 7 mmol/L.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 285-286)."
+  },
+  {
+    "id": 23,
+    "title": "CA LÂM SÀNG 23",
+    "topic": "Sản khoa - Sơ sinh",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Đa khoa Tỉnh",
+    "stem": "Trẻ sơ sinh nam, cân nặng 4100 gram, chào đời bằng phẫu thuật mổ lấy thai ở tuần 39 tuần 2 ngày từ người mẹ mắc đái tháo đường thai kỳ điều trị insulin tại Bệnh viện Đa khoa Tỉnh. Sau sinh trẻ khóc to ngay, hồng hào, chỉ số Apgar 1 phút đạt 9 điểm, 5 phút đạt 10 điểm. Khám thực thể ban đầu ghi nhận trẻ không có dị tật bẩm sinh ngoài da, trương lực cơ tốt, phản xạ bú nuốt tốt.\n\nTrẻ được lau khô, ủ ấm và thực hiện tiếp xúc da kề da trên ngực mẹ tại phòng hồi tỉnh. Bác sĩ sơ sinh tư vấn cho sản phụ và gia đình về nguy cơ hạ đường huyết sơ sinh cấp tính do tụy của trẻ tăng sản xuất insulin nhưng nguồn cung cấp glucose từ máu mẹ bị cắt đứt đột ngột ngay sau khi kẹp cắt dây rốn.",
+    "question": "Biện pháp chăm sóc dự phòng hạ đường huyết tối ưu nhất trong giờ đầu là gì?",
+    "options": [
+      "Cho trẻ uống dung dịch nước đường glucose 5%.",
+      "Cho trẻ bú mẹ sớm trong 1 giờ đầu.",
+      "Tiêm bắp ngay 1 liều thuốc hydrocortison phòng ngừa.",
+      "Truyền tĩnh mạch dung dịch glucose ưu trương 10%.",
+      "Chuyển ngay trẻ vào phòng hồi sức tích cực."
+    ],
+    "correct": 1,
+    "correctReason": "Cho bú mẹ sớm trong 1 giờ đầu và kiểm tra đường huyết lúc 2-4 giờ tuổi là chuẩn mực.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "guideline_cu",
+        "codeLabel": "Guideline cũ / Sai sinh lý",
+        "trap": "Cho uống nước đường làm chậm bú mẹ và tăng nguy cơ kích thích tụy tiết thêm insulin."
+      },
+      {
+        "key": "C",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Corticoid không có chỉ định dự phòng hạ đường huyết thường quy ở trẻ sơ sinh khỏe mạnh."
+      },
+      {
+        "key": "D",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Truyền glucose ưu trương chỉ dành cho trẻ có hạ đường huyết triệu chứng hoặc không đáp ứng bú."
+      },
+      {
+        "key": "E",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Trẻ khỏe mạnh Apgar 9/10 không cần chuyển NICU, ưu tiên da kề da và bú mẹ."
+      }
+    ],
+    "decision": "1. Trẻ sơ sinh của mẹ ĐTĐ có nồng độ insulin máu cao -> Nguy cơ hạ đường huyết sơ sinh (< 2.2 - 2.6 mmol/L) cao nhất trong 2 - 4 giờ đầu.\n2. Xử trí dự phòng chuẩn theo WHO/Bộ Y tế: Da kề da liên tục, cho trẻ bú mẹ sớm trong vòng 1 giờ đầu sau sinh và xét nghiệm kiểm tra đường huyết lúc 2 - 4 giờ tuổi.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 277, 290) và Bài 44: Chăm sóc sơ sinh bình thường: Trẻ sinh ra từ mẹ đái tháo đường có tình trạng tăng insulin máu bù trừ. Ngay khi kẹp cắt rốn, dòng glucose từ mẹ đột ngột dừng lại trong khi nồng độ insulin thai nhi vẫn ở mức cao, khiến trẻ rất dễ bị hạ đường huyết cấp tính trong 2 - 4 giờ đầu sau sinh. Biện pháp can thiệp đầu tay chuẩn mực là cho trẻ tiếp xúc da kề da và bú mẹ sớm nhất có thể trong vòng 1 giờ đầu sau sinh, cho bú sữa non mỗi 2 - 3 giờ và kiểm tra đường huyết mao mạch trước các cữ bú.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 277, 290)."
+  },
+  {
+    "id": 24,
+    "title": "CA LÂM SÀNG 24",
+    "topic": "Sản khoa - Sơ sinh",
+    "bloom": "Vận dụng / Phân tích",
+    "facility": "BV Phụ sản Tỉnh",
+    "stem": "Bé gái sơ sinh chào đời ở tuần thai thứ 37 tuần 1 ngày bằng phương pháp mổ lấy thai do thai to 4200 gram từ người mẹ 35 tuổi mắc đái tháo đường thai kỳ kiểm soát không tối ưu tại Bệnh viện Phụ sản Tỉnh. Sau sinh 30 phút, trẻ xuất hiện triệu chứng thở rên rỉ, thở nhanh nông 72 lần/phút, rút lõm lồng ngực và phập phồng cánh mũi, đo SpO2 tụt còn 88% khi thở khí phòng.\n\nKhám thực thể tại phòng chăm sóc sơ sinh: Thể trạng thai to phổng phao, da niêm tái nhẹ, mạch 152 lần/phút, thân nhiệt 36,6°C. Nghe phổi hai bên thông khí giảm, có ran ẩm rải rác. Kết quả xét nghiệm đường huyết mao mạch ban đầu là 2,9 mmol/L, canxi máu toàn phần bình thường.\n\nChụp X-quang lồng ngực thẳng của trẻ ghi nhận hình ảnh tổn thương mờ dạng lưới hạt phế nang đồng đều kèm hình ảnh ứ khí phế quản đồ, đặc trưng của Hội chứng suy hô hấp cấp do thiếu hụt surfactant (Bệnh màng trong).",
+    "question": "Cơ chế phân tử chính dẫn đến tình trạng chậm trưởng thành phổi ở thai nhi này là gì?",
+    "options": [
+      "Nồng độ glucose máu mẹ bị giảm trầm trọng.",
+      "Tác động kích thích trực tiếp của hormone estrogen.",
+      "Tình trạng thiếu hụt insulin mạn tính ở thai.",
+      "Nồng độ insulin thai cao ức chế sản xuất surfactant.",
+      "Tăng đào thải dịch phế nang qua ống động mạch."
+    ],
+    "correct": 3,
+    "correctReason": "Hyperinsulinemia ở thai nhi ức chế tác dụng của cortisol lên tổng hợp surfactant ở phế nang.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Đường huyết mẹ tăng cao qua nhau thai chứ không giảm."
+      },
+      {
+        "key": "B",
+        "code": "bat_tu_khoa",
+        "codeLabel": "Bắt từ khóa",
+        "trap": "Estrogen thúc đẩy trưởng thành phổi chứ không làm chậm quá trình này."
+      },
+      {
+        "key": "C",
+        "code": "phan_biet_hep",
+        "codeLabel": "Phân biệt hẹp",
+        "trap": "Thai nhi tăng tiết insulin bù trừ chứ không phải thiếu hụt insulin."
+      },
+      {
+        "key": "E",
+        "code": "bat_tu_khoa",
+        "codeLabel": "Bắt từ khóa",
+        "trap": "Ống động mạch là mạch máu tuần hoàn, không đào thải dịch phế nang."
+      }
+    ],
+    "decision": "1. Trẻ sơ sinh 37 tuần của mẹ ĐTĐ bị suy hô hấp do Bệnh màng trong (thiếu hụt chất có hoạt tính bề mặt Surfactant).\n2. Cơ chế bệnh sinh: Tăng insulin máu thai nhi (Hyperinsulinemia) đối kháng trực tiếp và ức chế tác dụng của Cortisol lên quá trình tổng hợp dipalmitoyl phosphatidylcholine (Surfactant) tại phế nang type II.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 277, 286): Thai nhi của mẹ đái tháo đường bị tăng insulin máu mạn tính (Hyperinsulinemia). Insulin có tác dụng đối kháng và ức chế cảm ứng của glucocorticoid (cortisol) lên quá trình biệt hóa tế bào phế nang type II và ức chế tổng hợp surfactant (đặc biệt là phosphatidylglycerol). Do đó, sự trưởng thành phổi ở thai của mẹ đái tháo đường diễn biến chậm hơn so với thai kỳ bình thường cùng tuổi thai, khiến trẻ dễ mắc Hội chứng suy hô hấp do bệnh màng trong ngay cả khi sinh đủ tháng (37 - 38 tuần).",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 277, 286)."
+  },
+  {
+    "id": 25,
+    "title": "CA LÂM SÀNG 25",
+    "topic": "Sản khoa - Sơ sinh",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Đa khoa Tỉnh",
+    "stem": "Bé trai sơ sinh nặng 4250 gram, con của sản phụ 34 tuổi mắc đái tháo đường thai kỳ kiểm soát kém, chào đời bằng mổ lấy thai ở tuần 38 tuần 3 ngày tại Bệnh viện Đa khoa Tỉnh. Đến ngày thứ 2 sau sinh, trẻ bú kém, ngủ li bì, da đỏ tía sẫm màu và bắt đầu xuất hiện vàng da từ mặt lan xuống bụng và đùi. Trẻ không sốt, không co giật, nhịp thở 52 lần/phút, tim đều rõ.\n\nKhám thực thể: Trương lực cơ giảm nhẹ, gan to 2,5 cm dưới bờ sườn, phân su đã tống xuất màu xanh thẫm, nước tiểu vàng sẫm. Khám tim phổi chưa phát hiện tiếng thổi bất thường.\n\nXét nghiệm cận lâm sàng máu sơ sinh ghi nhận: Nồng độ Hemoglobin là 215 g/L, chỉ số Hematocrit tĩnh mạch là 68%; Bilirubin toàn phần huyết thanh tăng cao 245 micromol/L (tương đương 14,3 mg/dL) với Bilirubin gián tiếp chiếm ưu thế; Canxi máu toàn phần là 1,85 mmol/L (hạ nhẹ).",
+    "question": "Nguyên nhân gốc rễ dẫn đến tình trạng đa hồng cầu ở trẻ sơ sinh này là gì?",
+    "options": [
+      "Thiếu oxy mạn tính kích thích tăng sinh hồng cầu.",
+      "Bất đồng nhóm máu hệ thống kháng nguyên mẹ con.",
+      "Dị tật bẩm sinh teo tắc đường mật ngoài gan.",
+      "Tình trạng nhiễm trùng huyết do liên cầu khuẩn.",
+      "Mất nước cấp tính do nuôi dưỡng kém sau sinh."
+    ],
+    "correct": 0,
+    "correctReason": "Tăng chuyển hóa thai gây thiếu oxy mô mạn -> Tăng tiết erythropoietin -> Đa hồng cầu (Hct > 65%).",
+    "traps": [
+      {
+        "key": "B",
+        "code": "phan_biet_hep",
+        "codeLabel": "Phân biệt hẹp",
+        "trap": "Bất đồng nhóm máu ABO/Rh gây tan máu dẫn đến thiếu máu nặng chứ không gây đa hồng cầu Hct 68%."
+      },
+      {
+        "key": "C",
+        "code": "phan_biet_hep",
+        "codeLabel": "Phân biệt hẹp",
+        "trap": "Teo tắc mật gây vàng da ứ mật trực tiếp ở tuần thứ 2-4 sau sinh, phân bạc màu."
+      },
+      {
+        "key": "D",
+        "code": "phan_biet_hep",
+        "codeLabel": "Phân biệt hẹp",
+        "trap": "Nhiễm trùng thường gây thiếu máu tan máu chứ không gây tăng sinh đa hồng cầu."
+      },
+      {
+        "key": "E",
+        "code": "bat_tu_khoa",
+        "codeLabel": "Bắt từ khóa",
+        "trap": "Mất nước gây cô đặc máu nhẹ nhưng không giải thích được Hb 215 g/L và tăng sản sinh hồng cầu thực sự."
+      }
+    ],
+    "decision": "1. Trẻ sơ sinh của mẹ ĐTĐ có Hematocrit tĩnh mạch 68% (> 65%) -> Xác định Đa hồng cầu sơ sinh (Polycythemia) kèm Vàng da tăng bilirubin gián tiếp.\n2. Cơ chế: Thai nhi tăng insulin và tăng chuyển hóa làm tiêu thụ oxy quá mức -> Thiếu oxy mô mạn tính trong tử cung -> Tăng sản xuất erythropoietin tủy xương tạo hồng cầu.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 277) và Bài 45: Các bệnh thường gặp ở trẻ sơ sinh: Ở thai nhi của mẹ đái tháo đường, tình trạng tăng đường huyết và tăng insulin máu làm gia tăng tốc độ chuyển hóa cơ bản và tiêu thụ oxy của các mô. Hậu quả là gây ra tình trạng thiếu oxy mô mạn tính trong tử cung (Chronic fetal hypoxia), kích thích thận thai nhi tăng tiết erythropoietin, thúc đẩy tủy xương tăng sinh hồng cầu mạnh mẽ dẫn đến Đa hồng cầu sơ sinh (Hematocrit tĩnh mạch > 65%). Khi lượng hồng cầu dồi dào này bị thoái giáng sinh lý sau sinh, nó giải phóng một lượng lớn bilirubin gián tiếp vượt quá khả năng liên hợp của gan, gây vàng da tăng bilirubin tự do nặng.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18 (tr. 277) & Bài 45: Các bệnh sơ sinh (tr. 660)."
+  },
+  {
+    "id": 26,
+    "title": "CA LÂM SÀNG 26",
+    "topic": "Sản khoa - Hậu sản",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Phụ sản Tỉnh",
+    "stem": "Sản phụ 32 tuổi, PARA 2002, thai 39 tuần 1 ngày, mắc đái tháo đường thai kỳ phải điều trị insulin liều cao 36 UI/ngày trong 8 tuần qua, vừa hoàn thành cuộc phẫu thuật mổ lấy thai chủ động tại Bệnh viện Phụ sản Tỉnh. Bé sơ sinh nặng 3700 gram khỏe mạnh. Toàn bộ bánh nhau và màng nhau đã được bóc tách và tống xuất sạch sẽ ra ngoài, tử cung co hồi tốt thành khối an toàn, lượng máu mất trong mổ khoảng 350 mL.\n\nHiện tại sản phụ tỉnh táo, nằm tại phòng hồi tỉnh sau phẫu thuật 2 giờ. Dấu hiệu sinh tồn ổn định: Mạch 78 lần/phút, Huyết áp 115/75 mmHg, Thân nhiệt 36,8°C. Sản phụ bắt đầu uống được nước lọc và nước cháo loãng.\n\nBác sĩ trực hướng dẫn nữ hộ sinh về kế hoạch dùng thuốc hạ đường huyết cho sản phụ trong những ngày đầu của thời kỳ hậu sản sau khi bánh nhau đã được loại bỏ hoàn toàn khỏi cơ thể.",
+    "question": "Quyết định điều chỉnh insulin cho sản phụ lúc này là gì?",
+    "options": [
+      "Chuyển ngay sang dùng thuốc uống hạ đường huyết.",
+      "Truyền tĩnh mạch liên tục insulin qua bơm tiêm.",
+      "Tạm ngừng tiêm insulin và theo dõi đường huyết.",
+      "Tăng gấp đôi liều insulin nền vào buổi tối.",
+      "Tiếp tục duy trì liều insulin cao như trước."
+    ],
+    "correct": 2,
+    "correctReason": "Sổ nhau -> hPL mất ngay -> Đề kháng insulin biến mất -> Ngưng insulin và thử đường mỗi ngày.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "sai_thu_tu",
+        "codeLabel": "Sai thứ tự / Sai hướng",
+        "trap": "GDM sau sinh thường tự trở về bình thường, không dùng thuốc viên hạ đường huyết ngay."
+      },
+      {
+        "key": "B",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Bơm tiêm điện insulin chỉ dùng khi đường huyết tăng rất cao hoặc có toan ceton."
+      },
+      {
+        "key": "D",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Tăng liều insulin sau sinh là tử huyệt gây tử vong do hạ đường huyết."
+      },
+      {
+        "key": "E",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Duy trì liều 36 UI khi hết đề kháng nhau thai sẽ gây hạ đường huyết hôn mê mẹ nguy kịch."
+      }
+    ],
+    "decision": "1. Ngay sau khi sổ nhau thai, nguồn sản xuất các hormone kháng insulin (hPL, cortisol, progesterone) bị loại bỏ đột ngột -> Tình trạng đề kháng insulin biến mất nhanh chóng.\n2. Quyết định chuẩn: Tạm ngừng (hoặc giảm mạnh liều) insulin ngay sau sinh, theo dõi đường huyết mao mạch để đánh giá sự trở về bình thường.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 276, 280): Nguyên nhân chính gây đề kháng insulin trong thai kỳ là các hormone có nguồn gốc từ bánh nhau, đặc biệt là hPL (Human Placental Lactogen) với thời gian bán hủy chỉ 15 phút. Ngay sau khi sinh và sổ nhau thai, tác dụng của hPL và các nội tiết tố bánh nhau không còn nữa, sự nhạy cảm với insulin của các mô cơ thể được phục hồi gần như ngay lập tức. Do đó, đối với phụ nữ mắc đái tháo đường thai kỳ, bắt buộc phải ngừng sử dụng insulin (hoặc giảm liều tối đa nếu là ĐTĐ trước mang thai) trong những ngày đầu sau sinh và theo dõi đường huyết mao mạch để phòng ngừa tai biến hạ đường huyết.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 276, 280)."
+  },
+  {
+    "id": 27,
+    "title": "CA LÂM SÀNG 27",
+    "topic": "Sản khoa - Hậu sản",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Đa khoa Huyện",
+    "stem": "Sản phụ 30 tuổi, PARA 1001, sinh thường ngả âm đạo con nặng 3400 gram cách đây 6 tuần, đến khám hậu sản tại Bệnh viện Đa khoa Huyện. Trong thai kỳ vừa qua, sản phụ được chẩn đoán đái tháo đường thai kỳ ở tuần thứ 26 và phải điều trị tiết chế dinh dưỡng. Sau khi sinh, sản phụ đã ngừng hoàn toàn chế độ ăn kiêng nghiêm ngặt và đang nuôi con hoàn toàn bằng sữa mẹ. Hiện tại sản phụ cảm thấy khỏe mạnh, không sút cân, không sốt, ăn ngủ tốt.\n\nKhám thực thể: Cân nặng hiện tại 59 kg, chiều cao 158 cm, chỉ số BMI 23,6 kg/m2. Dấu hiệu sinh tồn: Mạch 76 lần/phút, Huyết áp 110/70 mmHg, Thân nhiệt 36,7°C. Tử cung đã co hồi hoàn toàn về kích thước bình thường trong tiểu khung, sản dịch sạch, vết khâu tầng sinh môn liền sẹo tốt.\n\nBác sĩ giải thích cho sản phụ rằng khoảng 5 đến 20% phụ nữ có đái tháo đường thai kỳ sẽ tiến triển thành đái tháo đường thực sự sau sinh, do đó cần thực hiện xét nghiệm đánh giá lại chuyển hóa đường.",
+    "question": "Xét nghiệm cận lâm sàng chuẩn mực cần thực hiện lúc này là gì?",
+    "options": [
+      "Đo nồng độ ceton và protein trong nước tiểu.",
+      "Xét nghiệm định lượng đường huyết mao mạch ngẫu nhiên.",
+      "Xét nghiệm định lượng nồng độ insulin máu lúc đói.",
+      "Chỉ cần làm xét nghiệm tổng phân tích tế bào.",
+      "Làm nghiệm pháp dung nạp 75g glucose đường uống."
+    ],
+    "correct": 4,
+    "correctReason": "Khuyến cáo Bộ Y tế/ADA/WHO: Làm nghiệm pháp dung nạp 75g glucose 2h ở mốc 4-12 tuần sau sinh.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "bat_tu_khoa",
+        "codeLabel": "Bắt từ khóa",
+        "trap": "Ceton nước tiểu chỉ phản ánh tình trạng đói hoặc toan ceton, không dùng sàng lọc ĐTĐ sau sinh."
+      },
+      {
+        "key": "B",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Đường huyết mao mạch ngẫu nhiên không đủ độ nhạy để phân loại chính xác rối loạn dung nạp sau sinh."
+      },
+      {
+        "key": "C",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Định lượng insulin máu không phải xét nghiệm thường quy để chẩn đoán phân loại ĐTĐ."
+      },
+      {
+        "key": "D",
+        "code": "bat_tu_khoa",
+        "codeLabel": "Bắt từ khóa",
+        "trap": "Tổng phân tích tế bào máu không đánh giá được chuyển hóa carbohydrate."
+      }
+    ],
+    "decision": "1. Tất cả phụ nữ có tiền sử đái tháo đường thai kỳ cần được sàng lọc lại để phát hiện đái tháo đường típ 2 hoặc tiền đái tháo đường.\n2. Tiêu chuẩn vàng theo Bộ Y tế và ADA: Thực hiện Nghiệm pháp dung nạp 75g glucose (OGTT 2 giờ) ở thời điểm 4 đến 12 tuần (hoặc 6 đến 12 tuần) sau sinh.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 290, 292) và Hướng dẫn Quốc gia của Bộ Y tế: Có khoảng 5 - 20% phụ nữ bị ĐTĐ thai kỳ sẽ tiến triển thành đái tháo đường thực sự sau sinh và 50% bị tái phát ở thai kỳ sau. Do đó, khuyến cáo bắt buộc là thực hiện Nghiệm pháp dung nạp đường 75g glucose (đo glucose lúc đói và sau uống 2 giờ) ở thời điểm 4 - 12 tuần sau sinh (thường vào tuần thứ 6 hậu sản) nhằm phân loại chính xác: Bình thường, Tiền đái tháo đường, hoặc Đái tháo đường thực sự.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 290, 292)."
+  },
+  {
+    "id": 28,
+    "title": "CA LÂM SÀNG 28",
+    "topic": "Sản khoa - Hậu sản",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Đa khoa Tỉnh",
+    "stem": "Sản phụ 35 tuổi, PARA 2002, có tiền sử đái tháo đường thai kỳ ở lần sinh này, đến Bệnh viện Đa khoa Tỉnh làm nghiệm pháp dung nạp 75g glucose sau sinh 8 tuần. Hiện tại sản phụ đang nuôi con bằng sữa mẹ kết hợp sữa công thức, thể trạng thừa cân với chỉ số khối cơ thể BMI 26,8 kg/m2, huyết áp 120/75 mmHg. Sản phụ không có triệu chứng uống nhiều, tiểu nhiều và không sút cân.\n\nKết quả xét nghiệm nghiệm pháp dung nạp 75g glucose ghi nhận: Nồng độ glucose huyết tương lúc đói là 5,8 mmol/L (tương đương 105 mg/dL); nồng độ glucose huyết tương sau uống 2 giờ là 8,2 mmol/L (tương đương 148 mg/dL).\n\nBác sĩ điều trị đối chiếu với sơ đồ phân loại chẩn đoán sau sinh theo Hướng dẫn Quốc gia của Bộ Y tế và tư vấn phác đồ quản lý sức khỏe lâu dài cho người bệnh.",
+    "question": "Chẩn đoán phân loại và kế hoạch theo dõi phù hợp nhất là gì?",
+    "options": [
+      "Chẩn đoán bình thường và kết thúc theo dõi luôn.",
+      "Chẩn đoán tiền đái tháo đường và can thiệp lối sống.",
+      "Chẩn đoán đái tháo đường và bắt đầu tiêm insulin.",
+      "Chẩn đoán rối loạn phân giải lipid máu sau sinh.",
+      "Chẩn đoán hạ đường huyết phản ứng do cho con bú."
+    ],
+    "correct": 1,
+    "correctReason": "Đói 100-125 mg/dL và sau 2h 140-199 mg/dL -> Tiền đái tháo đường -> Can thiệp dinh dưỡng, giảm cân, theo dõi mỗi năm.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Cả đường đói (105 mg/dL) và sau 2h (148 mg/dL) đều vượt ngưỡng bình thường, kết luận bình thường là bỏ sót."
+      },
+      {
+        "key": "C",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Chưa đạt ngưỡng ĐTĐ thực sự (đói >= 126 mg/dL hoặc 2h >= 200 mg/dL), tiêm insulin là sai chỉ định."
+      },
+      {
+        "key": "D",
+        "code": "phan_biet_hep",
+        "codeLabel": "Phân biệt hẹp",
+        "trap": "Rối loạn chuyển hóa đường chứ không phải rối loạn lipid máu đơn thuần."
+      },
+      {
+        "key": "E",
+        "code": "bat_tu_khoa",
+        "codeLabel": "Bắt từ khóa",
+        "trap": "Đường huyết tăng trên ngưỡng bình thường, không có tình trạng hạ đường huyết."
+      }
+    ],
+    "decision": "1. Tiêu chuẩn chẩn đoán sau sinh (Sơ đồ 18.2): Glucose đói 100 - 125 mg/dL (5.6 - 6.9 mmol/L) HOẶC Glucose sau 2h 140 - 199 mg/dL (7.8 - 11.0 mmol/L) -> Chẩn đoán Tiền đái tháo đường (Pre-diabetes).\n2. Xử trí: Tư vấn giảm cân, hoạt động thể lực, điều tiết chế độ ăn, theo dõi glucose huyết tương định kỳ mỗi năm một lần.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 291-292): Tiêu chuẩn phân loại nghiệm pháp dung nạp 75g glucose sau sinh 4 - 12 tuần: (1) Bình thường: Glucose đói < 100 mg/dL (< 5.6 mmol/L) và sau 2 giờ < 140 mg/dL (< 7.8 mmol/L); (2) Tiền đái tháo đường: Glucose đói từ 100 - 125 mg/dL (5.6 - 6.9 mmol/L) hoặc sau 2 giờ từ 140 - 199 mg/dL (7.8 - 11.0 mmol/L); (3) Đái tháo đường: Glucose đói >= 126 mg/dL hoặc sau 2 giờ >= 200 mg/dL. Bệnh nhân có đường đói 105 mg/dL và sau 2 giờ 148 mg/dL -> Xác định Tiền đái tháo đường. Hướng xử trí là can thiệp lối sống, giảm cân, vận động thể lực và tầm soát định kỳ mỗi năm.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 291-292)."
+  },
+  {
+    "id": 29,
+    "title": "CA LÂM SÀNG 29",
+    "topic": "Sản khoa - Kế hoạch hóa gia đình",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "Trạm Y tế Xã",
+    "stem": "Sản phụ 28 tuổi, PARA 1001, sinh thường con nặng 3300 gram cách đây 7 tuần, đến Trạm Y tế Xã để khám và tư vấn biện pháp kế hoạch hóa gia đình. Tiền sử thai kỳ có đái tháo đường thai kỳ kiểm soát tốt bằng tiết chế, nghiệm pháp dung nạp 75g glucose tuần trước cho kết quả bình thường. Hiện tại sản phụ đang cho con bú hoàn toàn bằng sữa mẹ, sức khỏe tốt, chưa có kinh nguyệt trở lại và không có viêm nhiễm đường sinh dục.\n\nKhám lâm sàng: Thể trạng trung bình, BMI 22,4 kg/m2, Mạch 76 lần/phút, Huyết áp 110/70 mmHg. Khám phụ khoa: Âm hộ và âm đạo bình thường, cổ tử cung trơn láng đóng kín, thân tử cung co hồi tốt về kích thước bình thường, hai phần phụ không sờ thấy khối u.\n\nSản phụ mong muốn sử dụng một biện pháp tránh thai dài hạn, hiệu quả cao, an toàn tuyệt đối cho nguồn sữa mẹ và không làm ảnh hưởng xấu đến sự chuyển hóa carbohydrate.",
+    "question": "Lựa chọn biện pháp tránh thai phù hợp và tối ưu nhất cho sản phụ là gì?",
+    "options": [
+      "Chỉ định phẫu thuật triệt sản thắt vòi tử cung.",
+      "Tiêm thuốc tránh thai liều cao nhóm estrogen tổng.",
+      "Chỉ dựa vào phương pháp cho con bú vô kinh.",
+      "Đặt dụng cụ tử cung chứa đồng tránh thai.",
+      "Uống viên thuốc ngừa thai kết hợp chứa estrogen."
+    ],
+    "correct": 3,
+    "correctReason": "Dụng cụ tử cung chứa đồng (IUD) là biện pháp phi nội tiết hiệu quả cao, không ảnh hưởng sữa và chuyển hóa.",
+    "traps": [
+      {
+        "key": "A",
+        "code": "qua_xam_lan",
+        "codeLabel": "Quá xâm lấn",
+        "trap": "Sản phụ 28 tuổi mới sinh 1 con, triệt sản là can thiệp vĩnh viễn thô bạo và không phù hợp."
+      },
+      {
+        "key": "B",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Estrogen tổng hợp chống chỉ định cho phụ nữ đang cho con bú trong 6 tháng đầu."
+      },
+      {
+        "key": "C",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Phương pháp LAM chỉ hiệu quả khi vô kinh và bú hoàn toàn, tỷ lệ vỡ kế hoạch cao khi con lớn."
+      },
+      {
+        "key": "E",
+        "code": "bo_chong_chi_dinh",
+        "codeLabel": "Chống chỉ định",
+        "trap": "Viên kết hợp chứa estrogen làm giảm tiết sữa mẹ và làm tăng đề kháng insulin, tăng đông máu."
+      }
+    ],
+    "decision": "1. Sản phụ đang cho con bú + Tiền sử ĐTĐ thai kỳ -> Cần tránh các biện pháp chứa Estrogen liều cao vì gây giảm tiết sữa và tăng đề kháng insulin.\n2. Lựa chọn tối ưu hàng đầu: Dụng cụ tử cung (IUD chứa đồng hoặc Levonorgestrel) hoặc viên uống progestin đơn thuần, vừa hiệu quả tránh thai cao vừa không ảnh hưởng chuyển hóa đường.",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 290) và Hướng dẫn Quốc gia về KHHGĐ: Đối với phụ nữ sau sinh có tiền sử đái tháo đường thai kỳ và đang nuôi con bằng sữa mẹ: (1) Tránh dùng thuốc ngừa thai kết hợp chứa estrogen vì estrogen làm ức chế tiết sữa mẹ và làm tăng đề kháng insulin cũng như tăng nguy cơ thuyên tắc huyết khối; (2) Các biện pháp được ưu tiên lựa chọn hàng đầu bao gồm: Dụng cụ tử cung (IUD chứa đồng là biện pháp phi nội tiết lý tưởng, hoặc IUD chứa levonorgestrel), bao cao su, que cấy Implanon hoặc viên thuốc tránh thai chỉ chứa progestogen (POPs) do không ảnh hưởng đến số lượng sữa mẹ và không tác động tiêu cực lên chuyển hóa đường.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 290)."
+  },
+  {
+    "id": 30,
+    "title": "CA LÂM SÀNG 30",
+    "topic": "Sản khoa - Tiền thai",
+    "bloom": "Vận dụng / Đánh giá",
+    "facility": "BV Phụ sản Tỉnh",
+    "stem": "Sản phụ 31 tuổi, PARA 1001, có tiền sử đái tháo đường thai kỳ ở lần mang thai trước cách 2 năm, đến Phòng khám Tư vấn Tiền thai Bệnh viện Phụ sản Tỉnh để chuẩn bị cho lần mang thai tiếp theo. Sau lần sinh trước, nghiệm pháp dung nạp đường của bệnh nhân bình thường. Hiện tại bệnh nhân cảm thấy khỏe mạnh, kinh nguyệt đều đặn 28 ngày, không có bệnh lý mạn tính khác.\n\nKhám thực thể: Chiều cao 156 cm, cân nặng 65 kg, chỉ số khối cơ thể BMI 26,7 kg/m2 (thừa cân). Dấu hiệu sinh tồn: Mạch 74 lần/phút, Huyết áp 115/75 mmHg. Khám toàn diện chưa phát hiện bệnh lý cơ quan đích.\n\nXét nghiệm kiểm tra sức khỏe trước mang thai: Nồng độ glucose huyết tương tĩnh mạch lúc đói là 5,2 mmol/L, nồng độ HbA1c huyết thanh là 5,4%, lipid máu bình thường. Bệnh nhân lo lắng hỏi bác sĩ về nguy cơ tái phát đái tháo đường thai kỳ và những việc cần chuẩn bị trước khi thụ thai.",
+    "question": "Tỷ lệ nguy cơ tái phát đái tháo đường thai kỳ ở lần mang thai này là bao nhiêu?",
+    "options": [
+      "Tỷ lệ nguy cơ tái phát có thể đến 50%.",
+      "Tỷ lệ nguy cơ tái phát ở mức khoảng 30%.",
+      "Tỷ lệ nguy cơ tái phát ở mức khoảng 20%.",
+      "Tỷ lệ nguy cơ tái phát ở mức dưới 5%.",
+      "Tỷ lệ nguy cơ tái phát ở mức khoảng 10%."
+    ],
+    "correct": 0,
+    "correctReason": "Giáo trình khẳng định: Khả năng lại bị đái tháo đường thai kỳ ở lần có thai sau lên đến 50%.",
+    "traps": [
+      {
+        "key": "B",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "30% vẫn đánh giá thấp nguy cơ tái phát GDM ở lần mang thai kế tiếp."
+      },
+      {
+        "key": "C",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "20% là tỷ lệ tiến triển thành ĐTĐ thực sự sau sinh, không phải tỷ lệ tái phát GDM."
+      },
+      {
+        "key": "D",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "Dưới 5% là tỷ lệ rất thấp của dân số chung, không đúng với người đã từng bị GDM."
+      },
+      {
+        "key": "E",
+        "code": "qua_bao_ton",
+        "codeLabel": "Quá bảo tồn",
+        "trap": "10% quá thấp so với nguy cơ thực tế của thai phụ đã có tiền sử GDM."
+      }
+    ],
+    "decision": "1. Tiền sử đái tháo đường thai kỳ ở lần mang thai trước là yếu tố nguy cơ mạnh nhất.\n2. Dữ liệu dịch tễ học trong Giáo trình Sản khoa Sau đại học: Khả năng bị tái phát đái tháo đường thai kỳ ở những lần có thai tiếp theo lên đến 50% (cần sàng lọc sớm ngay quý 1).",
+    "explanation": "Theo Giáo trình Sản khoa Sau đại học ĐH Y Dược Huế (Bài 18, tr. 277, 290): Tiền sử đã từng bị đái tháo đường thai kỳ ở lần mang thai trước là một trong những yếu tố nguy cơ quan trọng nhất. Y văn ghi nhận: 'Khả năng lại bị đái tháo đường thai kỳ ở lần có thai sau lên đến 50%'. Vì vậy, trước khi mang thai lần tiếp theo, người phụ nữ cần được tư vấn giảm cân để đưa BMI về mức bình thường, duy trì chế độ dinh dưỡng lành mạnh, vận động thể lực và bắt buộc phải làm xét nghiệm sàng lọc đái tháo đường ngay trong lần khám thai đầu tiên của quý 1 thai kỳ tới.",
+    "source": "Giáo trình Sản khoa Sau đại học (Tập 1 - Sản khoa), ĐH Y Dược Huế - Bài 18: Đái tháo đường thai kỳ (tr. 277, 290)."
+  }
+];
+
+    let state = {
+      answers: {},      // { [questionId]: selectedOptionIndex }
+      bookmarks: {},    // { [questionId]: true }
+      notes: {},        // { [questionId]: "string" }
+      currentId: 1,
+      filter: 'all'
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          state.answers = parsed.answers || {};
+          state.bookmarks = parsed.bookmarks || {};
+          state.notes = parsed.notes || {};
+          state.currentId = parsed.currentId || 1;
+        }
+      } catch (e) {
+        // Fallback silently in restricted iframe environments
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          answers: state.answers,
+          bookmarks: state.bookmarks,
+          notes: state.notes,
+          currentId: state.currentId
+        }));
+      } catch (e) {}
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function formatStemParagraph(para) {
+      const escaped = escapeHtml(para);
+      // Bold standard clinical sub-headers at the start of paragraphs for effortless scanning
+      return escaped.replace(
+        /^((?:Thăm khám lâm sàng|Khám lâm sàng|Khám thực thể|Xét nghiệm cận lâm sàng[^:]*|Xét nghiệm cấp cứu|Xét nghiệm[^:]*|Siêu âm[^:]*|Kết quả[^:]*|Nhật ký[^:]*|Băng ghi[^:]*|Chụp X-quang[^:]*):)/,
+        '<span class="font-semibold text-slate-900">$1</span>'
+      );
+    }
+
+    function formatDecisionLines(text) {
+      const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+      return lines.map(line => {
+        const escaped = escapeHtml(line);
+        return `<p class="leading-relaxed">${escaped.replace(/^(\d+\.)/, '<span class="font-bold text-clinical-800 mr-1">$1</span>')}</p>`;
+      }).join('');
+    }
+
+    function getFilteredQuestions() {
+      if (state.filter === 'bookmarked') {
+        return QUESTIONS.filter(q => Boolean(state.bookmarks[q.id]));
+      }
+      if (state.filter === 'wrong') {
+        return QUESTIONS.filter(q => state.answers[q.id] !== undefined && state.answers[q.id] !== q.correct);
+      }
+      if (state.filter === 'unanswered') {
+        return QUESTIONS.filter(q => state.answers[q.id] === undefined);
+      }
+      return QUESTIONS;
+    }
+
+    function updateStatsAndTabs() {
+      const total = QUESTIONS.length;
+      let correctCount = 0;
+      let wrongCount = 0;
+      let bookmarkedCount = 0;
+
+      for (const q of QUESTIONS) {
+        if (state.bookmarks[q.id]) bookmarkedCount++;
+        const ans = state.answers[q.id];
+        if (ans !== undefined) {
+          if (ans === q.correct) correctCount++;
+          else wrongCount++;
+        }
+      }
+
+      const answered = correctCount + wrongCount;
+      const unanswered = total - answered;
+      const pct = Math.round((answered / total) * 100);
+      const correctPct = (correctCount / total) * 100;
+      const wrongPct = (wrongCount / total) * 100;
+
+      document.getElementById('statCorrect').textContent = correctCount;
+      document.getElementById('statWrong').textContent = wrongCount;
+      document.getElementById('statPercent').textContent = `Hoàn thành ${pct}% (${answered}/${total})`;
+      document.getElementById('barCorrect').style.width = `${correctPct}%`;
+      document.getElementById('barWrong').style.width = `${wrongPct}%`;
+
+      document.getElementById('cntAll').textContent = total;
+      document.getElementById('cntBookmarked').textContent = bookmarkedCount;
+      document.getElementById('cntWrong').textContent = wrongCount;
+      document.getElementById('cntUnanswered').textContent = unanswered;
+
+      document.querySelectorAll('.filter-tab').forEach(btn => {
+        const active = btn.dataset.filter === state.filter;
+        btn.className = 'filter-tab shrink-0 px-3 py-1 rounded-full text-xs font-semibold transition-colors ' + (
+          active
+            ? 'bg-slate-900 text-white shadow-xs'
+            : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80'
+        );
+      });
+    }
+
+    function render() {
+      updateStatsAndTabs();
+
+      const filtered = getFilteredQuestions();
+      const container = document.getElementById('quizContainer');
+      const btnPrev = document.getElementById('btnPrev');
+      const btnNext = document.getElementById('btnNext');
+      const btnBottomGrid = document.getElementById('btnBottomGrid');
+      const headerCounter = document.getElementById('headerCounter');
+      const btnBookmark = document.getElementById('btnBookmark');
+      const bookmarkIcon = document.getElementById('bookmarkIcon');
+
+      if (filtered.length === 0) {
+        const emptyMessages = {
+          bookmarked: { title: 'Chưa có câu nào được đánh dấu nhớ', desc: 'Nhấn biểu tượng ngôi sao (☆) ở góc trên để lưu các ca quan trọng cần ôn lại.' },
+          wrong: { title: 'Tuyệt vời! Chưa có câu làm sai', desc: 'Các câu trả lời chưa chính xác sẽ tự động tập hợp tại đây để bạn luyện lại.' },
+          unanswered: { title: 'Bạn đã hoàn thành toàn bộ 30 ca!', desc: 'Bạn có thể xem lại các câu làm sai, câu đã đánh dấu nhớ hoặc làm lại từ đầu.' }
+        };
+        const msg = emptyMessages[state.filter] || { title: 'Không có câu hỏi phù hợp', desc: '' };
+
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl border border-slate-200 p-8 text-center shadow-xs mt-4">
+            <div class="w-12 h-12 mx-auto rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mb-3 text-xl">
+              ${state.filter === 'bookmarked' ? '★' : state.filter === 'wrong' ? '✓' : '🎉'}
+            </div>
+            <h2 class="text-base font-bold text-slate-800">${msg.title}</h2>
+            <p class="text-sm text-slate-500 mt-1.5 max-w-md mx-auto">${msg.desc}</p>
+            <button
+              type="button"
+              onclick="setFilter('all')"
+              class="mt-5 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-clinical-700 hover:bg-clinical-800 text-white text-sm font-semibold transition-colors"
+            >
+              Quay về Tất cả (30 ca)
+            </button>
+          </div>
+        `;
+        btnPrev.disabled = true;
+        btnNext.disabled = true;
+        btnBottomGrid.textContent = `0 / 0`;
+        headerCounter.textContent = `0/${QUESTIONS.length}`;
+        btnBookmark.disabled = true;
+        btnBookmark.classList.add('opacity-40');
+        return;
+      }
+
+      btnBookmark.disabled = false;
+      btnBookmark.classList.remove('opacity-40');
+
+      let idxInFilter = filtered.findIndex(q => q.id === state.currentId);
+      if (idxInFilter === -1) {
+        idxInFilter = 0;
+        state.currentId = filtered[0].id;
+        saveState();
+      }
+
+      const q = filtered[idxInFilter];
+      const userAnswer = state.answers[q.id];
+      const isAnswered = userAnswer !== undefined;
+      const isCorrect = isAnswered && userAnswer === q.correct;
+      const isBookmarked = Boolean(state.bookmarks[q.id]);
+
+      // Update header & bottom bar counters
+      headerCounter.textContent = `Ca ${q.id}/${QUESTIONS.length}`;
+      btnBottomGrid.textContent = `${idxInFilter + 1} / ${filtered.length}`;
+      btnPrev.disabled = idxInFilter === 0;
+      btnNext.disabled = idxInFilter === filtered.length - 1;
+
+      // Bookmark button styling
+      bookmarkIcon.textContent = isBookmarked ? '★' : '☆';
+      btnBookmark.className = 'inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-xs font-semibold transition-colors ' + (
+        isBookmarked
+          ? 'border-amber-300 bg-amber-50 text-amber-700'
+          : 'border-slate-200 bg-white text-slate-600 hover:bg-amber-50 hover:border-amber-300'
+      );
+
+      // Format stem paragraphs
+      const stemHtml = q.stem
+        .split('\n\n')
+        .map(p => `<p class="leading-[1.7] text-[15px] text-slate-700">${formatStemParagraph(p)}</p>`)
+        .join('');
+
+      // Format options
+      const optionsHtml = q.options.map((opt, oi) => {
+        let btnClasses = 'border-slate-200 bg-white hover:border-clinical-600/60 hover:bg-clinical-50/40 text-slate-800';
+        let badgeClasses = 'bg-slate-100 text-slate-700 border-slate-200';
+        let trailingIcon = '';
+
+        if (isAnswered) {
+          if (oi === q.correct) {
+            btnClasses = 'border-emerald-500 bg-emerald-50/90 text-emerald-950 ring-1 ring-emerald-500/30';
+            badgeClasses = 'bg-emerald-600 text-white border-emerald-600';
+            trailingIcon = `
+              <span class="shrink-0 w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">
+                ✓
+              </span>`;
+          } else if (oi === userAnswer) {
+            btnClasses = 'border-rose-500 bg-rose-50/90 text-rose-950 ring-1 ring-rose-500/30';
+            badgeClasses = 'bg-rose-600 text-white border-rose-600';
+            trailingIcon = `
+              <span class="shrink-0 w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center text-xs font-bold">
+                ✕
+              </span>`;
+          } else {
+            btnClasses = 'border-slate-200/80 bg-slate-50/70 text-slate-500 opacity-65';
+            badgeClasses = 'bg-slate-100 text-slate-400 border-slate-200';
+          }
+        }
+
+        return `
+          <button
+            type="button"
+            onclick="selectOption(${q.id}, ${oi})"
+            ${isAnswered ? 'disabled' : ''}
+            class="option-btn w-full min-h-[52px] text-left px-3.5 py-3 rounded-xl border-2 flex items-center gap-3 ${btnClasses} ${isAnswered ? 'cursor-default' : 'cursor-pointer'}"
+          >
+            <span class="shrink-0 w-7 h-7 rounded-lg border text-xs font-extrabold flex items-center justify-center ${badgeClasses}">
+              ${LETTERS[oi]}
+            </span>
+            <span class="flex-1 text-[14.5px] sm:text-[15px] font-medium leading-snug">
+              ${escapeHtml(opt)}
+            </span>
+            ${trailingIcon}
+          </button>
+        `;
+      }).join('');
+
+      // Deep Explanation Block (Reveal on Answer)
+      let revealHtml = '';
+      if (isAnswered) {
+        const trapsHtml = q.traps.map(t => `
+          <div class="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
+            <span class="shrink-0 w-6 h-6 rounded-md bg-rose-100 text-rose-700 font-extrabold text-xs flex items-center justify-center mt-0.5">
+              ${escapeHtml(t.key)}
+            </span>
+            <div class="min-w-0 flex-1 text-[13.5px] leading-relaxed">
+              <span class="inline-block px-1.5 py-0.5 rounded bg-slate-200/80 text-slate-700 text-[11px] font-bold uppercase tracking-wide mr-1.5 mb-0.5">
+                ${escapeHtml(t.codeLabel)}
+              </span>
+              <span class="text-slate-700">${escapeHtml(t.trap)}</span>
+            </div>
+          </div>
+        `).join('');
+
+        const noteVal = state.notes[q.id] || '';
+
+        revealHtml = `
+          <section class="mt-5 space-y-4 animate-reveal">
+            <!-- Verdict Banner -->
+            <div class="rounded-2xl p-4 border ${isCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}">
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold text-white ${isCorrect ? 'bg-emerald-600' : 'bg-rose-600'}">
+                  ${isCorrect ? '✓' : '✕'}
+                </span>
+                <h3 class="text-sm font-extrabold ${isCorrect ? 'text-emerald-900' : 'text-rose-900'}">
+                  ${isCorrect
+                    ? `Chính xác! Đáp án đúng là ${LETTERS[q.correct]}`
+                    : `Chưa chính xác — Bạn chọn ${LETTERS[userAnswer]}, đáp án đúng là ${LETTERS[q.correct]}`
+                  }
+                </h3>
+              </div>
+              <p class="mt-2 text-[13.5px] leading-relaxed ${isCorrect ? 'text-emerald-900/90' : 'text-rose-900/90'}">
+                <strong>Cốt lõi đáp án ${LETTERS[q.correct]}:</strong> ${escapeHtml(q.correctReason)}
+              </p>
+            </div>
+
+            <!-- Chốt Quyết Định Thực Chiến -->
+            <div class="rounded-2xl bg-clinical-50/90 border border-clinical-200 p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-clinical-700 text-base leading-none">⚡</span>
+                <h4 class="text-xs font-extrabold uppercase tracking-wider text-clinical-900">
+                  Chốt Quyết Định Thực Chiến
+                </h4>
+              </div>
+              <div class="space-y-1.5 text-[14px] text-slate-800">
+                ${formatDecisionLines(q.decision)}
+              </div>
+            </div>
+
+            <!-- Biện Luận Lâm Sàng & Nguồn -->
+            <div class="rounded-2xl bg-white border border-slate-200 p-4 shadow-2xs">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-indigo-600 text-base leading-none">📘</span>
+                <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-800">
+                  Biện Luận Y Khoa Chuyên Sâu
+                </h4>
+              </div>
+              <p class="text-[14px] leading-[1.7] text-slate-700">
+                ${escapeHtml(q.explanation)}
+              </p>
+              <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-start gap-1.5 text-xs text-slate-500">
+                <span class="font-semibold text-slate-600 shrink-0">Nguồn:</span>
+                <span>${escapeHtml(q.source)}</span>
+              </div>
+            </div>
+
+            <!-- Giải Mã Cạm Bẫy -->
+            <div class="rounded-2xl bg-white border border-slate-200 p-4 shadow-2xs">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-amber-500 text-base leading-none">⚠️</span>
+                <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-800">
+                  Giải Mã Cạm Bẫy Lâm Sàng (4 Phương Án Nhiễu)
+                </h4>
+              </div>
+              <div class="space-y-2">
+                ${trapsHtml}
+              </div>
+            </div>
+
+            <!-- Ghi Chú Cá Nhân -->
+            <div class="rounded-2xl bg-white border border-slate-200 p-4 shadow-2xs">
+              <div class="flex items-center justify-between mb-2">
+                <label for="personalNote" class="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                  <span>📝</span> Ghi Chú Cá Nhân (Ca #${String(q.id).padStart(2, '0')})
+                </label>
+                <span id="noteSaveStatus" class="text-[11px] font-medium text-slate-400">
+                  ${noteVal ? 'Đã lưu' : 'Tự động lưu'}
+                </span>
+              </div>
+              <textarea
+                id="personalNote"
+                rows="2"
+                oninput="saveNote(${q.id}, this.value)"
+                placeholder="Ghi lại mốc ngưỡng đường huyết, mẹo nhớ hoặc bẫy hay nhầm cho ca này..."
+                class="w-full rounded-xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:border-clinical-600 focus:ring-2 focus:ring-clinical-600/15 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 outline-none transition-all resize-y"
+              >${escapeHtml(noteVal)}</textarea>
+            </div>
+          </section>
+        `;
+      }
+
+      // Main Card Render
+      container.innerHTML = `
+        <article class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+          <!-- Card Header Meta -->
+          <div class="px-4 sm:px-6 pt-4 pb-3 bg-slate-50/70 border-b border-slate-100">
+            <div class="flex flex-wrap items-center gap-1.5 mb-2">
+              <span class="px-2 py-0.5 rounded-md bg-clinical-700 text-white text-[11px] font-extrabold tracking-wide">
+                CA #${String(q.id).padStart(2, '0')}
+              </span>
+              <span class="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200/70 text-[11px] font-semibold">
+                ${escapeHtml(q.bloom)}
+              </span>
+              <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[11px] font-medium">
+                ${escapeHtml(q.facility)}
+              </span>
+              <span class="ml-auto hidden sm:inline-flex items-center px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-500 text-[11px] font-medium">
+                ĐH Y Dược Huế
+              </span>
+            </div>
+            <h2 class="text-[15px] sm:text-base font-extrabold text-slate-900 leading-snug">
+              ${escapeHtml(q.title)}
+            </h2>
+          </div>
+
+          <!-- Card Body -->
+          <div class="px-4 sm:px-6 py-4 sm:py-5">
+            <!-- Clinical Stem -->
+            <div class="space-y-3">
+              ${stemHtml}
+            </div>
+
+            <!-- Lead-in Question -->
+            <div class="mt-4 pt-4 border-t border-slate-200/90">
+              <p class="text-[15.5px] sm:text-base font-bold text-slate-900 leading-snug">
+                ${escapeHtml(q.question)}
+              </p>
+            </div>
+
+            <!-- 5 Options -->
+            <div class="mt-4 space-y-2.5">
+              ${optionsHtml}
+            </div>
+          </div>
+        </article>
+
+        ${revealHtml}
+      `;
+    }
+
+    function selectOption(qId, optIdx) {
+      if (state.answers[qId] !== undefined) return;
+      state.answers[qId] = optIdx;
+      saveState();
+      render();
+    }
+
+    function toggleBookmarkCurrent() {
+      const filtered = getFilteredQuestions();
+      if (!filtered.length) return;
+      const id = state.currentId;
+      if (state.bookmarks[id]) {
+        delete state.bookmarks[id];
+      } else {
+        state.bookmarks[id] = true;
+      }
+      saveState();
+      render();
+    }
+
+    function saveNote(qId, value) {
+      if (value.trim() === '') {
+        delete state.notes[qId];
+      } else {
+        state.notes[qId] = value;
+      }
+      saveState();
+      const statusEl = document.getElementById('noteSaveStatus');
+      if (statusEl) {
+        statusEl.textContent = 'Đã lưu ✓';
+        statusEl.classList.remove('text-slate-400');
+        statusEl.classList.add('text-emerald-600');
+      }
+    }
+
+    function setFilter(filterName) {
+      state.filter = filterName;
+      const filtered = getFilteredQuestions();
+      if (filtered.length && !filtered.some(q => q.id === state.currentId)) {
+        state.currentId = filtered[0].id;
+      }
+      saveState();
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function navigate(delta) {
+      const filtered = getFilteredQuestions();
+      if (!filtered.length) return;
+      const currIdx = filtered.findIndex(q => q.id === state.currentId);
+      const nextIdx = currIdx + delta;
+      if (nextIdx >= 0 && nextIdx < filtered.length) {
+        state.currentId = filtered[nextIdx].id;
+        saveState();
+        render();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function jumpToQuestion(qId) {
+      const filtered = getFilteredQuestions();
+      if (!filtered.some(q => q.id === qId)) {
+        state.filter = 'all';
+      }
+      state.currentId = qId;
+      saveState();
+      closeDrawer();
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openDrawer() {
+      const grid = document.getElementById('drawerGrid');
+      const answeredTotal = Object.keys(state.answers).length;
+      document.getElementById('drawerSummary').textContent = `Đã hoàn thành ${answeredTotal}/${QUESTIONS.length} câu`;
+
+      grid.innerHTML = QUESTIONS.map(q => {
+        const ans = state.answers[q.id];
+        const isCurrent = q.id === state.currentId;
+        const isBookmarked = Boolean(state.bookmarks[q.id]);
+
+        let colorCls = 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200/80';
+        if (ans !== undefined) {
+          if (ans === q.correct) {
+            colorCls = 'bg-emerald-500 text-white border-emerald-600 hover:bg-emerald-600';
+          } else {
+            colorCls = 'bg-rose-500 text-white border-rose-600 hover:bg-rose-600';
+          }
+        }
+        const currentRing = isCurrent ? 'ring-2 ring-offset-2 ring-clinical-700' : '';
+
+        return `
+          <button
+            type="button"
+            onclick="jumpToQuestion(${q.id})"
+            class="relative h-11 rounded-xl border font-bold text-sm flex items-center justify-center transition-all ${colorCls} ${currentRing}"
+          >
+            ${String(q.id).padStart(2, '0')}
+            ${isBookmarked ? '<span class="absolute -top-1.5 -right-1 text-amber-400 drop-shadow-xs text-xs leading-none">★</span>' : ''}
+          </button>
+        `;
+      }).join('');
+
+      document.getElementById('drawerOverlay').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+      document.getElementById('drawerOverlay').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    function openResetModal() {
+      const m = document.getElementById('resetModal');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeResetModal() {
+      const m = document.getElementById('resetModal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    function confirmReset(clearAll) {
+      state.answers = {};
+      if (clearAll) {
+        state.bookmarks = {};
+        state.notes = {};
+      }
+      state.filter = 'all';
+      state.currentId = 1;
+      saveState();
+      closeResetModal();
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Touch Swipe Navigation for Mobile
+    let touchStartX = 0;
+    let touchStartY = 0;
+    document.addEventListener('touchstart', (e) => {
+      if (e.target.closest('textarea, input, #drawerOverlay, #resetModal')) return;
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+      if (!touchStartX && !touchStartY) return;
+      if (e.target.closest('textarea, input, #drawerOverlay, #resetModal')) {
+        touchStartX = 0; touchStartY = 0;
+        return;
+      }
+      const dx = e.changedTouches[0].screenX - touchStartX;
+      const dy = e.changedTouches[0].screenY - touchStartY;
+      touchStartX = 0; touchStartY = 0;
+      if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        if (dx < 0) navigate(1);
+        else navigate(-1);
+      }
+    }, { passive: true });
+
+    // Keyboard Shortcuts (Desktop / iPad Keyboard)
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+      if (e.key === 'Escape') {
+        closeDrawer();
+        closeResetModal();
+        return;
+      }
+      if (!document.getElementById('drawerOverlay').classList.contains('hidden')) return;
+      if (!document.getElementById('resetModal').classList.contains('hidden')) return;
+
+      if (e.key === 'ArrowLeft') { e.preventDefault(); navigate(-1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); navigate(1); }
+      else if (e.key.toLowerCase() === 's') { toggleBookmarkCurrent(); }
+      else if (e.key.toLowerCase() === 'g') { openDrawer(); }
+      else {
+        const keyMap = { '1': 0, '2': 1, '3': 2, '4': 3, '5': 4, 'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4 };
+        const idx = keyMap[e.key.toLowerCase()];
+        if (idx !== undefined) {
+          selectOption(state.currentId, idx);
+        }
+      }
+    });
+
+    // Init
+    loadState();
+    render();
+  </script>
+</body>
+</html>
